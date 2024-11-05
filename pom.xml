@@ -10,7 +10,7 @@
   <name>Common classes for gamedata project</name>
   <description>Common classes, such as database access, for gamedata project</description>
   
-    <inceptionYear>2023</inceptionYear>
+  <inceptionYear>2024</inceptionYear>
 
   <properties>
     <jdk.version>17</jdk.version>
