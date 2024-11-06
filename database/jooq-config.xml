@@ -113,7 +113,7 @@
            jOOQ may append the schema name to this package if generating multiple schemas,
            e.g. org.jooq.your.packagename.schema1
                 org.jooq.your.packagename.schema2 -->
-      <packageName>nl.tudelft.simulation.housinggame.data</packageName>
+      <packageName>nl.gamedata.data</packageName>
 
       <!-- The destination directory of your generated classes -->
       <directory>data</directory>
