@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.GroupScoreRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function8;
+import org.jooq.Function11;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row8;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -89,6 +89,21 @@ public class GroupScore extends TableImpl<GroupScoreRecord> {
      * The column <code>gamedata.group_score.final_score</code>.
      */
     public final TableField<GroupScoreRecord, Byte> FINAL_SCORE = createField(DSL.name("final_score"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.group_score.status</code>.
+     */
+    public final TableField<GroupScoreRecord, String> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>gamedata.group_score.round</code>.
+     */
+    public final TableField<GroupScoreRecord, String> ROUND = createField(DSL.name("round"), SQLDataType.VARCHAR(16).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>gamedata.group_score.game_time</code>.
+     */
+    public final TableField<GroupScoreRecord, String> GAME_TIME = createField(DSL.name("game_time"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>gamedata.group_score.group_id</code>.
@@ -210,18 +225,18 @@ public class GroupScore extends TableImpl<GroupScoreRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, Double, Double, LocalDateTime, Integer, Byte, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row11<Integer, String, Double, Double, LocalDateTime, Integer, Byte, String, String, String, Integer> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function8<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function11<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -229,7 +244,7 @@ public class GroupScore extends TableImpl<GroupScoreRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function11<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

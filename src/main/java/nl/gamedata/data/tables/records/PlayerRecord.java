@@ -50,30 +50,30 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
     }
 
     /**
-     * Setter for <code>gamedata.player.gamesession_id</code>.
+     * Setter for <code>gamedata.player.game_session_id</code>.
      */
-    public void setGamesessionId(Integer value) {
+    public void setGameSessionId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>gamedata.player.gamesession_id</code>.
+     * Getter for <code>gamedata.player.game_session_id</code>.
      */
-    public Integer getGamesessionId() {
+    public Integer getGameSessionId() {
         return (Integer) get(2);
     }
 
     /**
-     * Setter for <code>gamedata.player.gamegroup_id</code>.
+     * Setter for <code>gamedata.player.group_role_id</code>.
      */
-    public void setGamegroupId(Integer value) {
+    public void setGroupRoleId(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>gamedata.player.gamegroup_id</code>.
+     * Getter for <code>gamedata.player.group_role_id</code>.
      */
-    public Integer getGamegroupId() {
+    public Integer getGroupRoleId() {
         return (Integer) get(3);
     }
 
@@ -112,12 +112,12 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public Field<Integer> field3() {
-        return Player.PLAYER.GAMESESSION_ID;
+        return Player.PLAYER.GAME_SESSION_ID;
     }
 
     @Override
     public Field<Integer> field4() {
-        return Player.PLAYER.GAMEGROUP_ID;
+        return Player.PLAYER.GROUP_ROLE_ID;
     }
 
     @Override
@@ -132,12 +132,12 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public Integer component3() {
-        return getGamesessionId();
+        return getGameSessionId();
     }
 
     @Override
     public Integer component4() {
-        return getGamegroupId();
+        return getGroupRoleId();
     }
 
     @Override
@@ -152,12 +152,12 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public Integer value3() {
-        return getGamesessionId();
+        return getGameSessionId();
     }
 
     @Override
     public Integer value4() {
-        return getGamegroupId();
+        return getGroupRoleId();
     }
 
     @Override
@@ -174,13 +174,13 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
 
     @Override
     public PlayerRecord value3(Integer value) {
-        setGamesessionId(value);
+        setGameSessionId(value);
         return this;
     }
 
     @Override
     public PlayerRecord value4(Integer value) {
-        setGamegroupId(value);
+        setGroupRoleId(value);
         return this;
     }
 
@@ -207,13 +207,13 @@ public class PlayerRecord extends UpdatableRecordImpl<PlayerRecord> implements R
     /**
      * Create a detached, initialised PlayerRecord
      */
-    public PlayerRecord(Integer id, String name, Integer gamesessionId, Integer gamegroupId) {
+    public PlayerRecord(Integer id, String name, Integer gameSessionId, Integer groupRoleId) {
         super(Player.PLAYER);
 
         setId(id);
         setName(name);
-        setGamesessionId(gamesessionId);
-        setGamegroupId(gamegroupId);
+        setGameSessionId(gameSessionId);
+        setGroupRoleId(groupRoleId);
         resetChangedOnNotNull();
     }
 }

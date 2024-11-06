@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.PlayerEventRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
+import org.jooq.Function9;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -81,9 +81,24 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
     public final TableField<PlayerEventRecord, Integer> MISSION_ATTEMPT = createField(DSL.name("mission_attempt"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>gamedata.player_event.player_id</code>.
+     * The column <code>gamedata.player_event.status</code>.
      */
-    public final TableField<PlayerEventRecord, Integer> PLAYER_ID = createField(DSL.name("player_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<PlayerEventRecord, String> STATUS = createField(DSL.name("status"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>gamedata.player_event.round</code>.
+     */
+    public final TableField<PlayerEventRecord, String> ROUND = createField(DSL.name("round"), SQLDataType.VARCHAR(16).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>gamedata.player_event.game_time</code>.
+     */
+    public final TableField<PlayerEventRecord, String> GAME_TIME = createField(DSL.name("game_time"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>gamedata.player_event.player_attempt_id</code>.
+     */
+    public final TableField<PlayerEventRecord, Integer> PLAYER_ATTEMPT_ID = createField(DSL.name("player_attempt_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private PlayerEvent(Name alias, Table<PlayerEventRecord> aliased) {
         this(alias, aliased, null);
@@ -125,7 +140,7 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYER_EVENT_FK_PLAYEREVENT_PLAYER1_IDX);
+        return Arrays.asList(Indexes.PLAYER_EVENT_FK_PLAYER_EVENT_PLAYER_ATTEMPT1_IDX);
     }
 
     @Override
@@ -145,19 +160,20 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
 
     @Override
     public List<ForeignKey<PlayerEventRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYEREVENT_PLAYER1);
+        return Arrays.asList(Keys.FK_PLAYER_EVENT_PLAYER_ATTEMPT1);
     }
 
-    private transient Player _player;
+    private transient PlayerAttempt _playerAttempt;
 
     /**
-     * Get the implicit join path to the <code>gamedata.player</code> table.
+     * Get the implicit join path to the <code>gamedata.player_attempt</code>
+     * table.
      */
-    public Player player() {
-        if (_player == null)
-            _player = new Player(this, Keys.FK_PLAYEREVENT_PLAYER1);
+    public PlayerAttempt playerAttempt() {
+        if (_playerAttempt == null)
+            _playerAttempt = new PlayerAttempt(this, Keys.FK_PLAYER_EVENT_PLAYER_ATTEMPT1);
 
-        return _player;
+        return _playerAttempt;
     }
 
     @Override
@@ -200,18 +216,18 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, LocalDateTime, Integer, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row9<Integer, String, String, LocalDateTime, Integer, String, String, String, Integer> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function9<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -219,7 +235,7 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

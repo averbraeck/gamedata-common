@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.GameRoleRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
+import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -60,14 +60,19 @@ public class GameRole extends TableImpl<GameRoleRecord> {
     public final TableField<GameRoleRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
+     * The column <code>gamedata.game_role.game_admin</code>.
+     */
+    public final TableField<GameRoleRecord, Byte> GAME_ADMIN = createField(DSL.name("game_admin"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.game_role.result_reader</code>.
+     */
+    public final TableField<GameRoleRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.game_role.user_id</code>.
      */
     public final TableField<GameRoleRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>gamedata.game_role.role_id</code>.
-     */
-    public final TableField<GameRoleRecord, Integer> ROLE_ID = createField(DSL.name("role_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.game_role.game_id</code>.
@@ -114,7 +119,7 @@ public class GameRole extends TableImpl<GameRoleRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAME_ROLE_FK_USERROLE_GAME1_IDX, Indexes.GAME_ROLE_FK_USERROLE_ROLE1_IDX, Indexes.GAME_ROLE_FK_USERROLE_USER_IDX);
+        return Arrays.asList(Indexes.GAME_ROLE_FK_USERROLE_GAME1_IDX, Indexes.GAME_ROLE_FK_USERROLE_USER_IDX);
     }
 
     @Override
@@ -134,11 +139,10 @@ public class GameRole extends TableImpl<GameRoleRecord> {
 
     @Override
     public List<ForeignKey<GameRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_USERROLE_USER, Keys.FK_USERROLE_ROLE1, Keys.FK_USERROLE_GAME1);
+        return Arrays.asList(Keys.FK_USERROLE_USER, Keys.FK_USERROLE_GAME1);
     }
 
     private transient User _user;
-    private transient Role _role;
     private transient Game _game;
 
     /**
@@ -149,16 +153,6 @@ public class GameRole extends TableImpl<GameRoleRecord> {
             _user = new User(this, Keys.FK_USERROLE_USER);
 
         return _user;
-    }
-
-    /**
-     * Get the implicit join path to the <code>gamedata.role</code> table.
-     */
-    public Role role() {
-        if (_role == null)
-            _role = new Role(this, Keys.FK_USERROLE_ROLE1);
-
-        return _role;
     }
 
     /**
@@ -211,18 +205,18 @@ public class GameRole extends TableImpl<GameRoleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Integer, Byte, Byte, Integer, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -230,7 +224,7 @@ public class GameRole extends TableImpl<GameRoleRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

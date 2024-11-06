@@ -143,7 +143,7 @@ public class User extends TableImpl<UserRecord> {
     }
 
     private transient Organization _organization;
-    private transient Role _role;
+    private transient UserRole _userRole;
 
     /**
      * Get the implicit join path to the <code>gamedata.organization</code>
@@ -157,13 +157,13 @@ public class User extends TableImpl<UserRecord> {
     }
 
     /**
-     * Get the implicit join path to the <code>gamedata.role</code> table.
+     * Get the implicit join path to the <code>gamedata.user_role</code> table.
      */
-    public Role role() {
-        if (_role == null)
-            _role = new Role(this, Keys.FK_USER_ROLE1);
+    public UserRole userRole() {
+        if (_userRole == null)
+            _userRole = new UserRole(this, Keys.FK_USER_ROLE1);
 
-        return _role;
+        return _userRole;
     }
 
     @Override

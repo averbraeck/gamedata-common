@@ -65,14 +65,14 @@ public class Player extends TableImpl<PlayerRecord> {
     public final TableField<PlayerRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.player.gamesession_id</code>.
+     * The column <code>gamedata.player.game_session_id</code>.
      */
-    public final TableField<PlayerRecord, Integer> GAMESESSION_ID = createField(DSL.name("gamesession_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<PlayerRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.player.gamegroup_id</code>.
+     * The column <code>gamedata.player.group_role_id</code>.
      */
-    public final TableField<PlayerRecord, Integer> GAMEGROUP_ID = createField(DSL.name("gamegroup_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
+    public final TableField<PlayerRecord, Integer> GROUP_ROLE_ID = createField(DSL.name("group_role_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
 
     private Player(Name alias, Table<PlayerRecord> aliased) {
         this(alias, aliased, null);
@@ -114,7 +114,7 @@ public class Player extends TableImpl<PlayerRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYER_FK_GAMEUSER_GAMEGROUP1_IDX, Indexes.PLAYER_FK_GAMEUSER_GAMESESSION1_IDX);
+        return Arrays.asList(Indexes.PLAYER_FK_PLAYER_GAME_SESSION1_IDX, Indexes.PLAYER_FK_PLAYER_GROUP_ROLE1_IDX);
     }
 
     @Override
@@ -134,31 +134,31 @@ public class Player extends TableImpl<PlayerRecord> {
 
     @Override
     public List<ForeignKey<PlayerRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAMEUSER_GAMESESSION1, Keys.FK_GAMEUSER_GAMEGROUP1);
+        return Arrays.asList(Keys.FK_PLAYER_GAME_SESSION1, Keys.FK_PLAYER_GROUP_ROLE1);
     }
 
-    private transient GameMission _gameMission;
-    private transient Group _group;
+    private transient GameSession _gameSession;
+    private transient GroupRole _groupRole;
 
     /**
-     * Get the implicit join path to the <code>gamedata.game_mission</code>
+     * Get the implicit join path to the <code>gamedata.game_session</code>
      * table.
      */
-    public GameMission gameMission() {
-        if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_GAMEUSER_GAMESESSION1);
+    public GameSession gameSession() {
+        if (_gameSession == null)
+            _gameSession = new GameSession(this, Keys.FK_PLAYER_GAME_SESSION1);
 
-        return _gameMission;
+        return _gameSession;
     }
 
     /**
-     * Get the implicit join path to the <code>gamedata.group</code> table.
+     * Get the implicit join path to the <code>gamedata.group_role</code> table.
      */
-    public Group group() {
-        if (_group == null)
-            _group = new Group(this, Keys.FK_GAMEUSER_GAMEGROUP1);
+    public GroupRole groupRole() {
+        if (_groupRole == null)
+            _groupRole = new GroupRole(this, Keys.FK_PLAYER_GROUP_ROLE1);
 
-        return _group;
+        return _groupRole;
     }
 
     @Override

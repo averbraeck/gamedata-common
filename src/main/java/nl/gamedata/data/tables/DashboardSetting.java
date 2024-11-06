@@ -67,7 +67,7 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
     /**
      * The column <code>gamedata.dashboard_setting.value</code>.
      */
-    public final TableField<DashboardSettingRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+    public final TableField<DashboardSettingRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.dashboard_setting.game_id</code>.

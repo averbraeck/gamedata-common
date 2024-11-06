@@ -65,9 +65,9 @@ public class Group extends TableImpl<GroupRecord> {
     public final TableField<GroupRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.group.gamesession_id</code>.
+     * The column <code>gamedata.group.game_session_id</code>.
      */
-    public final TableField<GroupRecord, Integer> GAMESESSION_ID = createField(DSL.name("gamesession_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<GroupRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Group(Name alias, Table<GroupRecord> aliased) {
         this(alias, aliased, null);
@@ -109,7 +109,7 @@ public class Group extends TableImpl<GroupRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GROUP_FK_GAMEGROUP_GAMESESSION1_IDX);
+        return Arrays.asList(Indexes.GROUP_FK_GROUP_GAME_SESSION1_IDX);
     }
 
     @Override
@@ -129,20 +129,20 @@ public class Group extends TableImpl<GroupRecord> {
 
     @Override
     public List<ForeignKey<GroupRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAMEGROUP_GAMESESSION1);
+        return Arrays.asList(Keys.FK_GROUP_GAME_SESSION1);
     }
 
-    private transient GameMission _gameMission;
+    private transient GameSession _gameSession;
 
     /**
-     * Get the implicit join path to the <code>gamedata.game_mission</code>
+     * Get the implicit join path to the <code>gamedata.game_session</code>
      * table.
      */
-    public GameMission gameMission() {
-        if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_GAMEGROUP_GAMESESSION1);
+    public GameSession gameSession() {
+        if (_gameSession == null)
+            _gameSession = new GameSession(this, Keys.FK_GROUP_GAME_SESSION1);
 
-        return _gameMission;
+        return _gameSession;
     }
 
     @Override

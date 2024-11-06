@@ -65,9 +65,9 @@ public class GameMission extends TableImpl<GameMissionRecord> {
     public final TableField<GameMissionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_mission.gameversion_id</code>.
+     * The column <code>gamedata.game_mission.game_version_id</code>.
      */
-    public final TableField<GameMissionRecord, Integer> GAMEVERSION_ID = createField(DSL.name("gameversion_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<GameMissionRecord, Integer> GAME_VERSION_ID = createField(DSL.name("game_version_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GameMission(Name alias, Table<GameMissionRecord> aliased) {
         this(alias, aliased, null);
@@ -109,7 +109,7 @@ public class GameMission extends TableImpl<GameMissionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAME_MISSION_FK_GAMESESSION_GAMEVERSION1_IDX);
+        return Arrays.asList(Indexes.GAME_MISSION_FK_GAME_MISSION_GAME_VERSION1_IDX);
     }
 
     @Override
@@ -129,20 +129,20 @@ public class GameMission extends TableImpl<GameMissionRecord> {
 
     @Override
     public List<ForeignKey<GameMissionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAMESESSION_GAMEVERSION1);
+        return Arrays.asList(Keys.FK_GAME_MISSION_GAME_VERSION1);
     }
 
-    private transient GameSession _gameSession;
+    private transient GameVersion _gameVersion;
 
     /**
-     * Get the implicit join path to the <code>gamedata.game_session</code>
+     * Get the implicit join path to the <code>gamedata.game_version</code>
      * table.
      */
-    public GameSession gameSession() {
-        if (_gameSession == null)
-            _gameSession = new GameSession(this, Keys.FK_GAMESESSION_GAMEVERSION1);
+    public GameVersion gameVersion() {
+        if (_gameVersion == null)
+            _gameVersion = new GameVersion(this, Keys.FK_GAME_MISSION_GAME_VERSION1);
 
-        return _gameSession;
+        return _gameVersion;
     }
 
     @Override

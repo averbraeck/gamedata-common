@@ -50,16 +50,16 @@ public class GameMissionRecord extends UpdatableRecordImpl<GameMissionRecord> im
     }
 
     /**
-     * Setter for <code>gamedata.game_mission.gameversion_id</code>.
+     * Setter for <code>gamedata.game_mission.game_version_id</code>.
      */
-    public void setGameversionId(Integer value) {
+    public void setGameVersionId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>gamedata.game_mission.gameversion_id</code>.
+     * Getter for <code>gamedata.game_mission.game_version_id</code>.
      */
-    public Integer getGameversionId() {
+    public Integer getGameVersionId() {
         return (Integer) get(2);
     }
 
@@ -98,7 +98,7 @@ public class GameMissionRecord extends UpdatableRecordImpl<GameMissionRecord> im
 
     @Override
     public Field<Integer> field3() {
-        return GameMission.GAME_MISSION.GAMEVERSION_ID;
+        return GameMission.GAME_MISSION.GAME_VERSION_ID;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class GameMissionRecord extends UpdatableRecordImpl<GameMissionRecord> im
 
     @Override
     public Integer component3() {
-        return getGameversionId();
+        return getGameVersionId();
     }
 
     @Override
@@ -128,7 +128,7 @@ public class GameMissionRecord extends UpdatableRecordImpl<GameMissionRecord> im
 
     @Override
     public Integer value3() {
-        return getGameversionId();
+        return getGameVersionId();
     }
 
     @Override
@@ -145,7 +145,7 @@ public class GameMissionRecord extends UpdatableRecordImpl<GameMissionRecord> im
 
     @Override
     public GameMissionRecord value3(Integer value) {
-        setGameversionId(value);
+        setGameVersionId(value);
         return this;
     }
 
@@ -171,12 +171,12 @@ public class GameMissionRecord extends UpdatableRecordImpl<GameMissionRecord> im
     /**
      * Create a detached, initialised GameMissionRecord
      */
-    public GameMissionRecord(Integer id, String name, Integer gameversionId) {
+    public GameMissionRecord(Integer id, String name, Integer gameVersionId) {
         super(GameMission.GAME_MISSION);
 
         setId(id);
         setName(name);
-        setGameversionId(gameversionId);
+        setGameVersionId(gameVersionId);
         resetChangedOnNotNull();
     }
 }

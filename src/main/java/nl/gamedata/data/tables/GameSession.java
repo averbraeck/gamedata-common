@@ -5,6 +5,7 @@ package nl.gamedata.data.tables;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -16,13 +17,13 @@ import nl.gamedata.data.tables.records.GameSessionRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
+import org.jooq.Function8;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -61,19 +62,39 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     public final TableField<GameSessionRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
+     * The column <code>gamedata.game_session.code</code>.
+     */
+    public final TableField<GameSessionRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.game_session.name</code>.
      */
     public final TableField<GameSessionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_session.date</code>.
+     * The column <code>gamedata.game_session.play_date</code>.
      */
-    public final TableField<GameSessionRecord, LocalDate> DATE = createField(DSL.name("date"), SQLDataType.LOCALDATE.nullable(false), this, "");
+    public final TableField<GameSessionRecord, LocalDate> PLAY_DATE = createField(DSL.name("play_date"), SQLDataType.LOCALDATE.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATE)), this, "");
 
     /**
-     * The column <code>gamedata.game_session.game_id</code>.
+     * The column <code>gamedata.game_session.valid</code>.
      */
-    public final TableField<GameSessionRecord, Integer> GAME_ID = createField(DSL.name("game_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<GameSessionRecord, Byte> VALID = createField(DSL.name("valid"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>gamedata.game_session.valid_from</code>.
+     */
+    public final TableField<GameSessionRecord, LocalDateTime> VALID_FROM = createField(DSL.name("valid_from"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>gamedata.game_session.valid_until</code>.
+     */
+    public final TableField<GameSessionRecord, LocalDateTime> VALID_UNTIL = createField(DSL.name("valid_until"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>gamedata.game_session.game_version_id</code>.
+     */
+    public final TableField<GameSessionRecord, Integer> GAME_VERSION_ID = createField(DSL.name("game_version_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GameSession(Name alias, Table<GameSessionRecord> aliased) {
         this(alias, aliased, null);
@@ -115,7 +136,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAME_SESSION_FK_GAMEVERSION_GAME1_IDX);
+        return Arrays.asList(Indexes.GAME_SESSION_FK_GAME_SESSION_GAME_VERSION1_IDX);
     }
 
     @Override
@@ -135,19 +156,20 @@ public class GameSession extends TableImpl<GameSessionRecord> {
 
     @Override
     public List<ForeignKey<GameSessionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAMEVERSION_GAME1);
+        return Arrays.asList(Keys.FK_GAME_SESSION_GAME_VERSION1);
     }
 
-    private transient Game _game;
+    private transient GameVersion _gameVersion;
 
     /**
-     * Get the implicit join path to the <code>gamedata.game</code> table.
+     * Get the implicit join path to the <code>gamedata.game_version</code>
+     * table.
      */
-    public Game game() {
-        if (_game == null)
-            _game = new Game(this, Keys.FK_GAMEVERSION_GAME1);
+    public GameVersion gameVersion() {
+        if (_gameVersion == null)
+            _gameVersion = new GameVersion(this, Keys.FK_GAME_SESSION_GAME_VERSION1);
 
-        return _game;
+        return _gameVersion;
     }
 
     @Override
@@ -190,18 +212,18 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, LocalDate, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row8<Integer, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super LocalDate, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function8<? super Integer, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -209,7 +231,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super LocalDate, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

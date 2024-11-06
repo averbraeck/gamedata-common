@@ -9,20 +9,23 @@ import nl.gamedata.data.tables.Game;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
+import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
 import nl.gamedata.data.tables.GroupEvent;
 import nl.gamedata.data.tables.GroupLogdata;
+import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.MissionLogdata;
 import nl.gamedata.data.tables.Organization;
 import nl.gamedata.data.tables.Player;
+import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
 import nl.gamedata.data.tables.PlayerLogdata;
 import nl.gamedata.data.tables.PlayerScore;
-import nl.gamedata.data.tables.Role;
-import nl.gamedata.data.tables.SessionRole;
+import nl.gamedata.data.tables.Token;
 import nl.gamedata.data.tables.User;
+import nl.gamedata.data.tables.UserRole;
 
 
 /**
@@ -57,6 +60,11 @@ public class Tables {
     public static final GameSession GAME_SESSION = GameSession.GAME_SESSION;
 
     /**
+     * The table <code>gamedata.game_version</code>.
+     */
+    public static final GameVersion GAME_VERSION = GameVersion.GAME_VERSION;
+
+    /**
      * The table <code>gamedata.group</code>.
      */
     public static final Group GROUP = Group.GROUP;
@@ -70,6 +78,11 @@ public class Tables {
      * The table <code>gamedata.group_logdata</code>.
      */
     public static final GroupLogdata GROUP_LOGDATA = GroupLogdata.GROUP_LOGDATA;
+
+    /**
+     * The table <code>gamedata.group_role</code>.
+     */
+    public static final GroupRole GROUP_ROLE = GroupRole.GROUP_ROLE;
 
     /**
      * The table <code>gamedata.group_score</code>.
@@ -97,6 +110,11 @@ public class Tables {
     public static final Player PLAYER = Player.PLAYER;
 
     /**
+     * The table <code>gamedata.player_attempt</code>.
+     */
+    public static final PlayerAttempt PLAYER_ATTEMPT = PlayerAttempt.PLAYER_ATTEMPT;
+
+    /**
      * The table <code>gamedata.player_event</code>.
      */
     public static final PlayerEvent PLAYER_EVENT = PlayerEvent.PLAYER_EVENT;
@@ -112,17 +130,17 @@ public class Tables {
     public static final PlayerScore PLAYER_SCORE = PlayerScore.PLAYER_SCORE;
 
     /**
-     * The table <code>gamedata.role</code>.
+     * The table <code>gamedata.token</code>.
      */
-    public static final Role ROLE = Role.ROLE;
-
-    /**
-     * The table <code>gamedata.session_role</code>.
-     */
-    public static final SessionRole SESSION_ROLE = SessionRole.SESSION_ROLE;
+    public static final Token TOKEN = Token.TOKEN;
 
     /**
      * The table <code>gamedata.user</code>.
      */
     public static final User USER = User.USER;
+
+    /**
+     * The table <code>gamedata.user_role</code>.
+     */
+    public static final UserRole USER_ROLE = UserRole.USER_ROLE;
 }
