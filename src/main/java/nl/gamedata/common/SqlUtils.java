@@ -28,7 +28,7 @@ public class SqlUtils {
     public static Connection dbConnection() throws SQLException, ClassNotFoundException
     {
         String jdbcURL = "jdbc:mysql://localhost:3306/gamedata";
-        String dbUser = "housinggame";
+        String dbUser = "gamedata";
         String dbPassword = "get this from a property"; // TODO: get password from a property
 
         Class.forName("com.mysql.cj.jdbc.Driver");
