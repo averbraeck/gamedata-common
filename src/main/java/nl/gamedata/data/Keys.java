@@ -25,7 +25,6 @@ import nl.gamedata.data.tables.PlayerLogdata;
 import nl.gamedata.data.tables.PlayerScore;
 import nl.gamedata.data.tables.Token;
 import nl.gamedata.data.tables.User;
-import nl.gamedata.data.tables.UserRole;
 import nl.gamedata.data.tables.records.DashboardSettingRecord;
 import nl.gamedata.data.tables.records.GameMissionRecord;
 import nl.gamedata.data.tables.records.GameRecord;
@@ -47,7 +46,6 @@ import nl.gamedata.data.tables.records.PlayerRecord;
 import nl.gamedata.data.tables.records.PlayerScoreRecord;
 import nl.gamedata.data.tables.records.TokenRecord;
 import nl.gamedata.data.tables.records.UserRecord;
-import nl.gamedata.data.tables.records.UserRoleRecord;
 
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
@@ -70,6 +68,7 @@ public class Keys {
     public static final UniqueKey<DashboardSettingRecord> KEY_DASHBOARD_SETTING_ID_UNIQUE = Internal.createUniqueKey(DashboardSetting.DASHBOARD_SETTING, DSL.name("KEY_dashboard_setting_id_UNIQUE"), new TableField[] { DashboardSetting.DASHBOARD_SETTING.ID }, true);
     public static final UniqueKey<DashboardSettingRecord> KEY_DASHBOARD_SETTING_PRIMARY = Internal.createUniqueKey(DashboardSetting.DASHBOARD_SETTING, DSL.name("KEY_dashboard_setting_PRIMARY"), new TableField[] { DashboardSetting.DASHBOARD_SETTING.ID }, true);
     public static final UniqueKey<GameRecord> KEY_GAME_ID_UNIQUE = Internal.createUniqueKey(Game.GAME, DSL.name("KEY_game_id_UNIQUE"), new TableField[] { Game.GAME.ID }, true);
+    public static final UniqueKey<GameRecord> KEY_GAME_NAME_UNIQUE = Internal.createUniqueKey(Game.GAME, DSL.name("KEY_game_name_UNIQUE"), new TableField[] { Game.GAME.NAME }, true);
     public static final UniqueKey<GameRecord> KEY_GAME_PRIMARY = Internal.createUniqueKey(Game.GAME, DSL.name("KEY_game_PRIMARY"), new TableField[] { Game.GAME.ID }, true);
     public static final UniqueKey<GameMissionRecord> KEY_GAME_MISSION_ID_UNIQUE = Internal.createUniqueKey(GameMission.GAME_MISSION, DSL.name("KEY_game_mission_id_UNIQUE"), new TableField[] { GameMission.GAME_MISSION.ID }, true);
     public static final UniqueKey<GameMissionRecord> KEY_GAME_MISSION_PRIMARY = Internal.createUniqueKey(GameMission.GAME_MISSION, DSL.name("KEY_game_mission_PRIMARY"), new TableField[] { GameMission.GAME_MISSION.ID }, true);
@@ -93,6 +92,7 @@ public class Keys {
     public static final UniqueKey<MissionEventRecord> KEY_MISSION_EVENT_PRIMARY = Internal.createUniqueKey(MissionEvent.MISSION_EVENT, DSL.name("KEY_mission_event_PRIMARY"), new TableField[] { MissionEvent.MISSION_EVENT.ID }, true);
     public static final UniqueKey<MissionLogdataRecord> KEY_MISSION_LOGDATA_ID_UNIQUE = Internal.createUniqueKey(MissionLogdata.MISSION_LOGDATA, DSL.name("KEY_mission_logdata_id_UNIQUE"), new TableField[] { MissionLogdata.MISSION_LOGDATA.ID }, true);
     public static final UniqueKey<MissionLogdataRecord> KEY_MISSION_LOGDATA_PRIMARY = Internal.createUniqueKey(MissionLogdata.MISSION_LOGDATA, DSL.name("KEY_mission_logdata_PRIMARY"), new TableField[] { MissionLogdata.MISSION_LOGDATA.ID }, true);
+    public static final UniqueKey<OrganizationRecord> KEY_ORGANIZATION_CODE_UNIQUE = Internal.createUniqueKey(Organization.ORGANIZATION, DSL.name("KEY_organization_code_UNIQUE"), new TableField[] { Organization.ORGANIZATION.CODE }, true);
     public static final UniqueKey<OrganizationRecord> KEY_ORGANIZATION_ID_UNIQUE = Internal.createUniqueKey(Organization.ORGANIZATION, DSL.name("KEY_organization_id_UNIQUE"), new TableField[] { Organization.ORGANIZATION.ID }, true);
     public static final UniqueKey<OrganizationRecord> KEY_ORGANIZATION_PRIMARY = Internal.createUniqueKey(Organization.ORGANIZATION, DSL.name("KEY_organization_PRIMARY"), new TableField[] { Organization.ORGANIZATION.ID }, true);
     public static final UniqueKey<PlayerRecord> KEY_PLAYER_ID_UNIQUE = Internal.createUniqueKey(Player.PLAYER, DSL.name("KEY_player_id_UNIQUE"), new TableField[] { Player.PLAYER.ID }, true);
@@ -108,9 +108,8 @@ public class Keys {
     public static final UniqueKey<TokenRecord> KEY_TOKEN_ID_UNIQUE = Internal.createUniqueKey(Token.TOKEN, DSL.name("KEY_token_id_UNIQUE"), new TableField[] { Token.TOKEN.ID }, true);
     public static final UniqueKey<TokenRecord> KEY_TOKEN_PRIMARY = Internal.createUniqueKey(Token.TOKEN, DSL.name("KEY_token_PRIMARY"), new TableField[] { Token.TOKEN.ID }, true);
     public static final UniqueKey<UserRecord> KEY_USER_ID_UNIQUE = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_id_UNIQUE"), new TableField[] { User.USER.ID }, true);
+    public static final UniqueKey<UserRecord> KEY_USER_NAME_UNIQUE = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_name_UNIQUE"), new TableField[] { User.USER.NAME }, true);
     public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_PRIMARY"), new TableField[] { User.USER.ID }, true);
-    public static final UniqueKey<UserRoleRecord> KEY_USER_ROLE_ID_UNIQUE = Internal.createUniqueKey(UserRole.USER_ROLE, DSL.name("KEY_user_role_id_UNIQUE"), new TableField[] { UserRole.USER_ROLE.ID }, true);
-    public static final UniqueKey<UserRoleRecord> KEY_USER_ROLE_PRIMARY = Internal.createUniqueKey(UserRole.USER_ROLE, DSL.name("KEY_user_role_PRIMARY"), new TableField[] { UserRole.USER_ROLE.ID }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -140,5 +139,4 @@ public class Keys {
     public static final ForeignKey<TokenRecord, GameRecord> FK_TOKEN_GAME1 = Internal.createForeignKey(Token.TOKEN, DSL.name("fk_token_game1"), new TableField[] { Token.TOKEN.GAME_ID }, Keys.KEY_GAME_PRIMARY, new TableField[] { Game.GAME.ID }, true);
     public static final ForeignKey<TokenRecord, OrganizationRecord> FK_TOKEN_ORGANIZATION1 = Internal.createForeignKey(Token.TOKEN, DSL.name("fk_token_organization1"), new TableField[] { Token.TOKEN.ORGANIZATION_ID }, Keys.KEY_ORGANIZATION_PRIMARY, new TableField[] { Organization.ORGANIZATION.ID }, true);
     public static final ForeignKey<UserRecord, OrganizationRecord> FK_USER_ORGANIZATION1 = Internal.createForeignKey(User.USER, DSL.name("fk_user_organization1"), new TableField[] { User.USER.ORGANIZATION_ID }, Keys.KEY_ORGANIZATION_PRIMARY, new TableField[] { Organization.ORGANIZATION.ID }, true);
-    public static final ForeignKey<UserRecord, UserRoleRecord> FK_USER_ROLE1 = Internal.createForeignKey(User.USER, DSL.name("fk_user_role1"), new TableField[] { User.USER.ROLE_ID }, Keys.KEY_USER_ROLE_PRIMARY, new TableField[] { UserRole.USER_ROLE.ID }, true);
 }

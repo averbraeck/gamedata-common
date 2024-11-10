@@ -25,7 +25,6 @@ import nl.gamedata.data.tables.PlayerLogdata;
 import nl.gamedata.data.tables.PlayerScore;
 import nl.gamedata.data.tables.Token;
 import nl.gamedata.data.tables.User;
-import nl.gamedata.data.tables.UserRole;
 
 
 /**
@@ -138,9 +137,4 @@ public class Tables {
      * The table <code>gamedata.user</code>.
      */
     public static final User USER = User.USER;
-
-    /**
-     * The table <code>gamedata.user_role</code>.
-     */
-    public static final UserRole USER_ROLE = UserRole.USER_ROLE;
 }

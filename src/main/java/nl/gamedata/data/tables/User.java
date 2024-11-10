@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.UserRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
+import org.jooq.Function8;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -79,6 +79,21 @@ public class User extends TableImpl<UserRecord> {
      */
     public final TableField<UserRecord, Integer> ROLE_ID = createField(DSL.name("role_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
+    /**
+     * The column <code>gamedata.user.super_admin</code>.
+     */
+    public final TableField<UserRecord, Byte> SUPER_ADMIN = createField(DSL.name("super_admin"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>gamedata.user.org_admin</code>.
+     */
+    public final TableField<UserRecord, Byte> ORG_ADMIN = createField(DSL.name("org_admin"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>gamedata.user.game_admin</code>.
+     */
+    public final TableField<UserRecord, Byte> GAME_ADMIN = createField(DSL.name("game_admin"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
+
     private User(Name alias, Table<UserRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -119,7 +134,7 @@ public class User extends TableImpl<UserRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.USER_FK_USER_ORGANIZATION1_IDX, Indexes.USER_FK_USER_ROLE1_IDX);
+        return Arrays.asList(Indexes.USER_FK_USER_ORGANIZATION1_IDX);
     }
 
     @Override
@@ -134,16 +149,15 @@ public class User extends TableImpl<UserRecord> {
 
     @Override
     public List<UniqueKey<UserRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_USER_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_USER_ID_UNIQUE, Keys.KEY_USER_NAME_UNIQUE);
     }
 
     @Override
     public List<ForeignKey<UserRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_USER_ORGANIZATION1, Keys.FK_USER_ROLE1);
+        return Arrays.asList(Keys.FK_USER_ORGANIZATION1);
     }
 
     private transient Organization _organization;
-    private transient UserRole _userRole;
 
     /**
      * Get the implicit join path to the <code>gamedata.organization</code>
@@ -154,16 +168,6 @@ public class User extends TableImpl<UserRecord> {
             _organization = new Organization(this, Keys.FK_USER_ORGANIZATION1);
 
         return _organization;
-    }
-
-    /**
-     * Get the implicit join path to the <code>gamedata.user_role</code> table.
-     */
-    public UserRole userRole() {
-        if (_userRole == null)
-            _userRole = new UserRole(this, Keys.FK_USER_ROLE1);
-
-        return _userRole;
     }
 
     @Override
@@ -206,18 +210,18 @@ public class User extends TableImpl<UserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, String, String, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row8<Integer, String, String, Integer, Integer, Byte, Byte, Byte> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function8<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? super Byte, ? super Byte, ? super Byte, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -225,7 +229,7 @@ public class User extends TableImpl<UserRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? super Byte, ? super Byte, ? super Byte, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

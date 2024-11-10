@@ -62,7 +62,6 @@ public class Indexes {
     public static final Index TOKEN_FK_TOKEN_GAME1_IDX = Internal.createIndex(DSL.name("fk_token_game1_idx"), Token.TOKEN, new OrderField[] { Token.TOKEN.GAME_ID }, false);
     public static final Index TOKEN_FK_TOKEN_ORGANIZATION1_IDX = Internal.createIndex(DSL.name("fk_token_organization1_idx"), Token.TOKEN, new OrderField[] { Token.TOKEN.ORGANIZATION_ID }, false);
     public static final Index USER_FK_USER_ORGANIZATION1_IDX = Internal.createIndex(DSL.name("fk_user_organization1_idx"), User.USER, new OrderField[] { User.USER.ORGANIZATION_ID }, false);
-    public static final Index USER_FK_USER_ROLE1_IDX = Internal.createIndex(DSL.name("fk_user_role1_idx"), User.USER, new OrderField[] { User.USER.ROLE_ID }, false);
     public static final Index GAME_ROLE_FK_USERROLE_GAME1_IDX = Internal.createIndex(DSL.name("fk_userrole_game1_idx"), GameRole.GAME_ROLE, new OrderField[] { GameRole.GAME_ROLE.GAME_ID }, false);
     public static final Index GAME_ROLE_FK_USERROLE_USER_IDX = Internal.createIndex(DSL.name("fk_userrole_user_idx"), GameRole.GAME_ROLE, new OrderField[] { GameRole.GAME_ROLE.USER_ID }, false);
 }

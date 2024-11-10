@@ -122,7 +122,7 @@ public class Game extends TableImpl<GameRecord> {
 
     @Override
     public List<UniqueKey<GameRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_GAME_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_GAME_ID_UNIQUE, Keys.KEY_GAME_NAME_UNIQUE);
     }
 
     @Override

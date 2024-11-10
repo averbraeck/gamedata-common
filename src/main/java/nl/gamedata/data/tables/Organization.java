@@ -14,12 +14,12 @@ import nl.gamedata.data.tables.records.OrganizationRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function2;
+import org.jooq.Function3;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row2;
+import org.jooq.Row3;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -56,6 +56,11 @@ public class Organization extends TableImpl<OrganizationRecord> {
      * The column <code>gamedata.organization.id</code>.
      */
     public final TableField<OrganizationRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
+
+    /**
+     * The column <code>gamedata.organization.code</code>.
+     */
+    public final TableField<OrganizationRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(16).nullable(false), this, "");
 
     /**
      * The column <code>gamedata.organization.name</code>.
@@ -112,7 +117,7 @@ public class Organization extends TableImpl<OrganizationRecord> {
 
     @Override
     public List<UniqueKey<OrganizationRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_ORGANIZATION_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_ORGANIZATION_ID_UNIQUE, Keys.KEY_ORGANIZATION_CODE_UNIQUE);
     }
 
     @Override
@@ -155,18 +160,18 @@ public class Organization extends TableImpl<OrganizationRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row2 type methods
+    // Row3 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Integer, String> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<Integer, String, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function2<? super Integer, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function3<? super Integer, ? super String, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -174,7 +179,7 @@ public class Organization extends TableImpl<OrganizationRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function2<? super Integer, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super Integer, ? super String, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
