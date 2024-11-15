@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.PlayerEventRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function9;
+import org.jooq.Function10;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row9;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -68,7 +68,7 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
     /**
      * The column <code>gamedata.player_event.value</code>.
      */
-    public final TableField<PlayerEventRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.VARCHAR(255).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+    public final TableField<PlayerEventRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>gamedata.player_event.timestamp</code>.
@@ -94,6 +94,11 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
      * The column <code>gamedata.player_event.game_time</code>.
      */
     public final TableField<PlayerEventRecord, String> GAME_TIME = createField(DSL.name("game_time"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>gamedata.player_event.grouping_code</code>.
+     */
+    public final TableField<PlayerEventRecord, String> GROUPING_CODE = createField(DSL.name("grouping_code"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>gamedata.player_event.player_attempt_id</code>.
@@ -216,18 +221,18 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, String, String, LocalDateTime, Integer, String, String, String, Integer> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<Integer, String, String, LocalDateTime, Integer, String, String, String, String, Integer> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function9<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function10<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -235,7 +240,7 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function10<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

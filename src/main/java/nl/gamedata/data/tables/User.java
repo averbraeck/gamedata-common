@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.UserRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function7;
+import org.jooq.Function9;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row7;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -65,9 +65,19 @@ public class User extends TableImpl<UserRecord> {
     public final TableField<UserRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
+     * The column <code>gamedata.user.email</code>.
+     */
+    public final TableField<UserRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(255).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
      * The column <code>gamedata.user.password</code>.
      */
     public final TableField<UserRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.user.salt</code>.
+     */
+    public final TableField<UserRecord, String> SALT = createField(DSL.name("salt"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
      * The column <code>gamedata.user.organization_id</code>.
@@ -205,18 +215,18 @@ public class User extends TableImpl<UserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, Integer, Byte, Byte, Byte> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row9<Integer, String, String, String, String, Integer, Byte, Byte, Byte> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function7<? super Integer, ? super String, ? super String, ? super Integer, ? super Byte, ? super Byte, ? super Byte, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function9<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Byte, ? super Byte, ? super Byte, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -224,7 +234,7 @@ public class User extends TableImpl<UserRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Integer, ? super String, ? super String, ? super Integer, ? super Byte, ? super Byte, ? super Byte, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Byte, ? super Byte, ? super Byte, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

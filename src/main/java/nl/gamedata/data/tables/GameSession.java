@@ -17,13 +17,13 @@ import nl.gamedata.data.tables.records.GameSessionRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function8;
+import org.jooq.Function12;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row8;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -72,6 +72,16 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     public final TableField<GameSessionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
+     * The column <code>gamedata.game_session.session_token</code>.
+     */
+    public final TableField<GameSessionRecord, String> SESSION_TOKEN = createField(DSL.name("session_token"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.game_session.session_status</code>.
+     */
+    public final TableField<GameSessionRecord, String> SESSION_STATUS = createField(DSL.name("session_status"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.game_session.play_date</code>.
      */
     public final TableField<GameSessionRecord, LocalDate> PLAY_DATE = createField(DSL.name("play_date"), SQLDataType.LOCALDATE.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATE)), this, "");
@@ -95,6 +105,16 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * The column <code>gamedata.game_session.game_version_id</code>.
      */
     public final TableField<GameSessionRecord, Integer> GAME_VERSION_ID = createField(DSL.name("game_version_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.game_session.organization_id</code>.
+     */
+    public final TableField<GameSessionRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.game_session.token_for_dashboard</code>.
+     */
+    public final TableField<GameSessionRecord, Byte> TOKEN_FOR_DASHBOARD = createField(DSL.name("token_for_dashboard"), SQLDataType.TINYINT.nullable(false), this, "");
 
     private GameSession(Name alias, Table<GameSessionRecord> aliased) {
         this(alias, aliased, null);
@@ -136,7 +156,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAME_SESSION_FK_GAME_SESSION_GAME_VERSION1_IDX);
+        return Arrays.asList(Indexes.GAME_SESSION_FK_GAME_SESSION_GAME_VERSION1_IDX, Indexes.GAME_SESSION_FK_GAME_SESSION_ORGANIZATION1_IDX);
     }
 
     @Override
@@ -156,10 +176,11 @@ public class GameSession extends TableImpl<GameSessionRecord> {
 
     @Override
     public List<ForeignKey<GameSessionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAME_SESSION_GAME_VERSION1);
+        return Arrays.asList(Keys.FK_GAME_SESSION_GAME_VERSION1, Keys.FK_GAME_SESSION_ORGANIZATION1);
     }
 
     private transient GameVersion _gameVersion;
+    private transient Organization _organization;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_version</code>
@@ -170,6 +191,17 @@ public class GameSession extends TableImpl<GameSessionRecord> {
             _gameVersion = new GameVersion(this, Keys.FK_GAME_SESSION_GAME_VERSION1);
 
         return _gameVersion;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.organization</code>
+     * table.
+     */
+    public Organization organization() {
+        if (_organization == null)
+            _organization = new Organization(this, Keys.FK_GAME_SESSION_ORGANIZATION1);
+
+        return _organization;
     }
 
     @Override
@@ -212,18 +244,18 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row12<Integer, String, String, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Integer, Integer, Byte> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function8<? super Integer, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? super Integer, ? super Byte, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -231,7 +263,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? super Integer, ? super Byte, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

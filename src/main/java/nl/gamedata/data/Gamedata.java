@@ -14,19 +14,23 @@ import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
+import nl.gamedata.data.tables.GroupAction;
 import nl.gamedata.data.tables.GroupEvent;
-import nl.gamedata.data.tables.GroupLogdata;
+import nl.gamedata.data.tables.GroupObjective;
 import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
+import nl.gamedata.data.tables.MissionAction;
 import nl.gamedata.data.tables.MissionEvent;
-import nl.gamedata.data.tables.MissionLogdata;
 import nl.gamedata.data.tables.Organization;
+import nl.gamedata.data.tables.OrganizationToken;
 import nl.gamedata.data.tables.Player;
+import nl.gamedata.data.tables.PlayerAction;
 import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
-import nl.gamedata.data.tables.PlayerLogdata;
+import nl.gamedata.data.tables.PlayerObjective;
 import nl.gamedata.data.tables.PlayerScore;
-import nl.gamedata.data.tables.Token;
+import nl.gamedata.data.tables.Scale;
+import nl.gamedata.data.tables.SessionRole;
 import nl.gamedata.data.tables.User;
 
 import org.jooq.Catalog;
@@ -83,14 +87,19 @@ public class Gamedata extends SchemaImpl {
     public final Group GROUP = Group.GROUP;
 
     /**
+     * The table <code>gamedata.group_action</code>.
+     */
+    public final GroupAction GROUP_ACTION = GroupAction.GROUP_ACTION;
+
+    /**
      * The table <code>gamedata.group_event</code>.
      */
     public final GroupEvent GROUP_EVENT = GroupEvent.GROUP_EVENT;
 
     /**
-     * The table <code>gamedata.group_logdata</code>.
+     * The table <code>gamedata.group_objective</code>.
      */
-    public final GroupLogdata GROUP_LOGDATA = GroupLogdata.GROUP_LOGDATA;
+    public final GroupObjective GROUP_OBJECTIVE = GroupObjective.GROUP_OBJECTIVE;
 
     /**
      * The table <code>gamedata.group_role</code>.
@@ -103,14 +112,14 @@ public class Gamedata extends SchemaImpl {
     public final GroupScore GROUP_SCORE = GroupScore.GROUP_SCORE;
 
     /**
+     * The table <code>gamedata.mission_action</code>.
+     */
+    public final MissionAction MISSION_ACTION = MissionAction.MISSION_ACTION;
+
+    /**
      * The table <code>gamedata.mission_event</code>.
      */
     public final MissionEvent MISSION_EVENT = MissionEvent.MISSION_EVENT;
-
-    /**
-     * The table <code>gamedata.mission_logdata</code>.
-     */
-    public final MissionLogdata MISSION_LOGDATA = MissionLogdata.MISSION_LOGDATA;
 
     /**
      * The table <code>gamedata.organization</code>.
@@ -118,9 +127,19 @@ public class Gamedata extends SchemaImpl {
     public final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
+     * The table <code>gamedata.organization_token</code>.
+     */
+    public final OrganizationToken ORGANIZATION_TOKEN = OrganizationToken.ORGANIZATION_TOKEN;
+
+    /**
      * The table <code>gamedata.player</code>.
      */
     public final Player PLAYER = Player.PLAYER;
+
+    /**
+     * The table <code>gamedata.player_action</code>.
+     */
+    public final PlayerAction PLAYER_ACTION = PlayerAction.PLAYER_ACTION;
 
     /**
      * The table <code>gamedata.player_attempt</code>.
@@ -133,9 +152,9 @@ public class Gamedata extends SchemaImpl {
     public final PlayerEvent PLAYER_EVENT = PlayerEvent.PLAYER_EVENT;
 
     /**
-     * The table <code>gamedata.player_logdata</code>.
+     * The table <code>gamedata.player_objective</code>.
      */
-    public final PlayerLogdata PLAYER_LOGDATA = PlayerLogdata.PLAYER_LOGDATA;
+    public final PlayerObjective PLAYER_OBJECTIVE = PlayerObjective.PLAYER_OBJECTIVE;
 
     /**
      * The table <code>gamedata.player_score</code>.
@@ -143,9 +162,14 @@ public class Gamedata extends SchemaImpl {
     public final PlayerScore PLAYER_SCORE = PlayerScore.PLAYER_SCORE;
 
     /**
-     * The table <code>gamedata.token</code>.
+     * The table <code>gamedata.scale</code>.
      */
-    public final Token TOKEN = Token.TOKEN;
+    public final Scale SCALE = Scale.SCALE;
+
+    /**
+     * The table <code>gamedata.session_role</code>.
+     */
+    public final SessionRole SESSION_ROLE = SessionRole.SESSION_ROLE;
 
     /**
      * The table <code>gamedata.user</code>.
@@ -175,19 +199,23 @@ public class Gamedata extends SchemaImpl {
             GameSession.GAME_SESSION,
             GameVersion.GAME_VERSION,
             Group.GROUP,
+            GroupAction.GROUP_ACTION,
             GroupEvent.GROUP_EVENT,
-            GroupLogdata.GROUP_LOGDATA,
+            GroupObjective.GROUP_OBJECTIVE,
             GroupRole.GROUP_ROLE,
             GroupScore.GROUP_SCORE,
+            MissionAction.MISSION_ACTION,
             MissionEvent.MISSION_EVENT,
-            MissionLogdata.MISSION_LOGDATA,
             Organization.ORGANIZATION,
+            OrganizationToken.ORGANIZATION_TOKEN,
             Player.PLAYER,
+            PlayerAction.PLAYER_ACTION,
             PlayerAttempt.PLAYER_ATTEMPT,
             PlayerEvent.PLAYER_EVENT,
-            PlayerLogdata.PLAYER_LOGDATA,
+            PlayerObjective.PLAYER_OBJECTIVE,
             PlayerScore.PLAYER_SCORE,
-            Token.TOKEN,
+            Scale.SCALE,
+            SessionRole.SESSION_ROLE,
             User.USER
         );
     }

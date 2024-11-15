@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.MissionEventRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function8;
+import org.jooq.Function9;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -68,7 +68,7 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
     /**
      * The column <code>gamedata.mission_event.value</code>.
      */
-    public final TableField<MissionEventRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.VARCHAR(255).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+    public final TableField<MissionEventRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
 
     /**
      * The column <code>gamedata.mission_event.timestamp</code>.
@@ -89,6 +89,11 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
      * The column <code>gamedata.mission_event.game_time</code>.
      */
     public final TableField<MissionEventRecord, String> GAME_TIME = createField(DSL.name("game_time"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>gamedata.mission_event.grouping_code</code>.
+     */
+    public final TableField<MissionEventRecord, String> GROUPING_CODE = createField(DSL.name("grouping_code"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>gamedata.mission_event.gamesession_id</code>.
@@ -211,18 +216,18 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Integer, String, String, LocalDateTime, String, String, String, Integer> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Integer, String, String, LocalDateTime, String, String, String, String, Integer> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function8<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function9<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -230,7 +235,7 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

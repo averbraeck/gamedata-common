@@ -11,19 +11,23 @@ import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
+import nl.gamedata.data.tables.GroupAction;
 import nl.gamedata.data.tables.GroupEvent;
-import nl.gamedata.data.tables.GroupLogdata;
+import nl.gamedata.data.tables.GroupObjective;
 import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
+import nl.gamedata.data.tables.MissionAction;
 import nl.gamedata.data.tables.MissionEvent;
-import nl.gamedata.data.tables.MissionLogdata;
 import nl.gamedata.data.tables.Organization;
+import nl.gamedata.data.tables.OrganizationToken;
 import nl.gamedata.data.tables.Player;
+import nl.gamedata.data.tables.PlayerAction;
 import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
-import nl.gamedata.data.tables.PlayerLogdata;
+import nl.gamedata.data.tables.PlayerObjective;
 import nl.gamedata.data.tables.PlayerScore;
-import nl.gamedata.data.tables.Token;
+import nl.gamedata.data.tables.Scale;
+import nl.gamedata.data.tables.SessionRole;
 import nl.gamedata.data.tables.User;
 
 
@@ -69,14 +73,19 @@ public class Tables {
     public static final Group GROUP = Group.GROUP;
 
     /**
+     * The table <code>gamedata.group_action</code>.
+     */
+    public static final GroupAction GROUP_ACTION = GroupAction.GROUP_ACTION;
+
+    /**
      * The table <code>gamedata.group_event</code>.
      */
     public static final GroupEvent GROUP_EVENT = GroupEvent.GROUP_EVENT;
 
     /**
-     * The table <code>gamedata.group_logdata</code>.
+     * The table <code>gamedata.group_objective</code>.
      */
-    public static final GroupLogdata GROUP_LOGDATA = GroupLogdata.GROUP_LOGDATA;
+    public static final GroupObjective GROUP_OBJECTIVE = GroupObjective.GROUP_OBJECTIVE;
 
     /**
      * The table <code>gamedata.group_role</code>.
@@ -89,14 +98,14 @@ public class Tables {
     public static final GroupScore GROUP_SCORE = GroupScore.GROUP_SCORE;
 
     /**
+     * The table <code>gamedata.mission_action</code>.
+     */
+    public static final MissionAction MISSION_ACTION = MissionAction.MISSION_ACTION;
+
+    /**
      * The table <code>gamedata.mission_event</code>.
      */
     public static final MissionEvent MISSION_EVENT = MissionEvent.MISSION_EVENT;
-
-    /**
-     * The table <code>gamedata.mission_logdata</code>.
-     */
-    public static final MissionLogdata MISSION_LOGDATA = MissionLogdata.MISSION_LOGDATA;
 
     /**
      * The table <code>gamedata.organization</code>.
@@ -104,9 +113,19 @@ public class Tables {
     public static final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
+     * The table <code>gamedata.organization_token</code>.
+     */
+    public static final OrganizationToken ORGANIZATION_TOKEN = OrganizationToken.ORGANIZATION_TOKEN;
+
+    /**
      * The table <code>gamedata.player</code>.
      */
     public static final Player PLAYER = Player.PLAYER;
+
+    /**
+     * The table <code>gamedata.player_action</code>.
+     */
+    public static final PlayerAction PLAYER_ACTION = PlayerAction.PLAYER_ACTION;
 
     /**
      * The table <code>gamedata.player_attempt</code>.
@@ -119,9 +138,9 @@ public class Tables {
     public static final PlayerEvent PLAYER_EVENT = PlayerEvent.PLAYER_EVENT;
 
     /**
-     * The table <code>gamedata.player_logdata</code>.
+     * The table <code>gamedata.player_objective</code>.
      */
-    public static final PlayerLogdata PLAYER_LOGDATA = PlayerLogdata.PLAYER_LOGDATA;
+    public static final PlayerObjective PLAYER_OBJECTIVE = PlayerObjective.PLAYER_OBJECTIVE;
 
     /**
      * The table <code>gamedata.player_score</code>.
@@ -129,9 +148,14 @@ public class Tables {
     public static final PlayerScore PLAYER_SCORE = PlayerScore.PLAYER_SCORE;
 
     /**
-     * The table <code>gamedata.token</code>.
+     * The table <code>gamedata.scale</code>.
      */
-    public static final Token TOKEN = Token.TOKEN;
+    public static final Scale SCALE = Scale.SCALE;
+
+    /**
+     * The table <code>gamedata.session_role</code>.
+     */
+    public static final SessionRole SESSION_ROLE = SessionRole.SESSION_ROLE;
 
     /**
      * The table <code>gamedata.user</code>.
