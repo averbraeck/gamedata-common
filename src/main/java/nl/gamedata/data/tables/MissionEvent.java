@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.MissionEventRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function9;
+import org.jooq.Function12;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row9;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -66,9 +66,14 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
     public final TableField<MissionEventRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
+     * The column <code>gamedata.mission_event.key</code>.
+     */
+    public final TableField<MissionEventRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.mission_event.value</code>.
      */
-    public final TableField<MissionEventRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
+    public final TableField<MissionEventRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.mission_event.timestamp</code>.
@@ -96,9 +101,19 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
     public final TableField<MissionEventRecord, String> GROUPING_CODE = createField(DSL.name("grouping_code"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>gamedata.mission_event.gamesession_id</code>.
+     * The column <code>gamedata.mission_event.facilitator_initiated</code>.
      */
-    public final TableField<MissionEventRecord, Integer> GAMESESSION_ID = createField(DSL.name("gamesession_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<MissionEventRecord, Byte> FACILITATOR_INITIATED = createField(DSL.name("facilitator_initiated"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>gamedata.mission_event.game_session_id</code>.
+     */
+    public final TableField<MissionEventRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.mission_event.game_mission_id</code>.
+     */
+    public final TableField<MissionEventRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private MissionEvent(Name alias, Table<MissionEventRecord> aliased) {
         this(alias, aliased, null);
@@ -140,7 +155,7 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.MISSION_EVENT_FK_SESSIONEVENT_GAMESESSION1_IDX);
+        return Arrays.asList(Indexes.MISSION_EVENT_FK_MISSION_EVENT_GAME_MISSION1_IDX, Indexes.MISSION_EVENT_FK_MISSION_EVENT_GAME_SESSION1_IDX);
     }
 
     @Override
@@ -160,10 +175,22 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
 
     @Override
     public List<ForeignKey<MissionEventRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_SESSIONEVENT_GAMESESSION1);
+        return Arrays.asList(Keys.FK_MISSION_EVENT_GAME_SESSION1, Keys.FK_MISSION_EVENT_GAME_MISSION1);
     }
 
+    private transient GameSession _gameSession;
     private transient GameMission _gameMission;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game_session</code>
+     * table.
+     */
+    public GameSession gameSession() {
+        if (_gameSession == null)
+            _gameSession = new GameSession(this, Keys.FK_MISSION_EVENT_GAME_SESSION1);
+
+        return _gameSession;
+    }
 
     /**
      * Get the implicit join path to the <code>gamedata.game_mission</code>
@@ -171,7 +198,7 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
      */
     public GameMission gameMission() {
         if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_SESSIONEVENT_GAMESESSION1);
+            _gameMission = new GameMission(this, Keys.FK_MISSION_EVENT_GAME_MISSION1);
 
         return _gameMission;
     }
@@ -216,18 +243,18 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, String, String, LocalDateTime, String, String, String, String, Integer> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row12<Integer, String, String, String, LocalDateTime, String, String, String, String, Byte, Integer, Integer> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function9<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -235,7 +262,7 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

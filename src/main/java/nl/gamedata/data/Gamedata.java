@@ -9,22 +9,20 @@ import java.util.List;
 
 import nl.gamedata.data.tables.DashboardSetting;
 import nl.gamedata.data.tables.Game;
+import nl.gamedata.data.tables.GameAccess;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
-import nl.gamedata.data.tables.GroupAction;
+import nl.gamedata.data.tables.GroupAttempt;
 import nl.gamedata.data.tables.GroupEvent;
 import nl.gamedata.data.tables.GroupObjective;
 import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
-import nl.gamedata.data.tables.MissionAction;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
-import nl.gamedata.data.tables.OrganizationToken;
 import nl.gamedata.data.tables.Player;
-import nl.gamedata.data.tables.PlayerAction;
 import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
 import nl.gamedata.data.tables.PlayerObjective;
@@ -62,6 +60,11 @@ public class Gamedata extends SchemaImpl {
     public final Game GAME = Game.GAME;
 
     /**
+     * The table <code>gamedata.game_access</code>.
+     */
+    public final GameAccess GAME_ACCESS = GameAccess.GAME_ACCESS;
+
+    /**
      * The table <code>gamedata.game_mission</code>.
      */
     public final GameMission GAME_MISSION = GameMission.GAME_MISSION;
@@ -87,9 +90,9 @@ public class Gamedata extends SchemaImpl {
     public final Group GROUP = Group.GROUP;
 
     /**
-     * The table <code>gamedata.group_action</code>.
+     * The table <code>gamedata.group_attempt</code>.
      */
-    public final GroupAction GROUP_ACTION = GroupAction.GROUP_ACTION;
+    public final GroupAttempt GROUP_ATTEMPT = GroupAttempt.GROUP_ATTEMPT;
 
     /**
      * The table <code>gamedata.group_event</code>.
@@ -112,11 +115,6 @@ public class Gamedata extends SchemaImpl {
     public final GroupScore GROUP_SCORE = GroupScore.GROUP_SCORE;
 
     /**
-     * The table <code>gamedata.mission_action</code>.
-     */
-    public final MissionAction MISSION_ACTION = MissionAction.MISSION_ACTION;
-
-    /**
      * The table <code>gamedata.mission_event</code>.
      */
     public final MissionEvent MISSION_EVENT = MissionEvent.MISSION_EVENT;
@@ -127,19 +125,9 @@ public class Gamedata extends SchemaImpl {
     public final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
-     * The table <code>gamedata.organization_token</code>.
-     */
-    public final OrganizationToken ORGANIZATION_TOKEN = OrganizationToken.ORGANIZATION_TOKEN;
-
-    /**
      * The table <code>gamedata.player</code>.
      */
     public final Player PLAYER = Player.PLAYER;
-
-    /**
-     * The table <code>gamedata.player_action</code>.
-     */
-    public final PlayerAction PLAYER_ACTION = PlayerAction.PLAYER_ACTION;
 
     /**
      * The table <code>gamedata.player_attempt</code>.
@@ -194,22 +182,20 @@ public class Gamedata extends SchemaImpl {
         return Arrays.asList(
             DashboardSetting.DASHBOARD_SETTING,
             Game.GAME,
+            GameAccess.GAME_ACCESS,
             GameMission.GAME_MISSION,
             GameRole.GAME_ROLE,
             GameSession.GAME_SESSION,
             GameVersion.GAME_VERSION,
             Group.GROUP,
-            GroupAction.GROUP_ACTION,
+            GroupAttempt.GROUP_ATTEMPT,
             GroupEvent.GROUP_EVENT,
             GroupObjective.GROUP_OBJECTIVE,
             GroupRole.GROUP_ROLE,
             GroupScore.GROUP_SCORE,
-            MissionAction.MISSION_ACTION,
             MissionEvent.MISSION_EVENT,
             Organization.ORGANIZATION,
-            OrganizationToken.ORGANIZATION_TOKEN,
             Player.PLAYER,
-            PlayerAction.PLAYER_ACTION,
             PlayerAttempt.PLAYER_ATTEMPT,
             PlayerEvent.PLAYER_EVENT,
             PlayerObjective.PLAYER_OBJECTIVE,

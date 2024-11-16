@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.PlayerAttemptRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
+import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -79,11 +79,6 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
      */
     public final TableField<PlayerAttemptRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
-    /**
-     * The column <code>gamedata.player_attempt.game_session_id</code>.
-     */
-    public final TableField<PlayerAttemptRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
     private PlayerAttempt(Name alias, Table<PlayerAttemptRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -124,7 +119,7 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYER_ATTEMPT_FK_PLAYER_ATTEMPT_GAME_MISSION1_IDX, Indexes.PLAYER_ATTEMPT_FK_PLAYER_ATTEMPT_GAME_SESSION1_IDX, Indexes.PLAYER_ATTEMPT_FK_PLAYER_ATTEMPT_PLAYER1_IDX);
+        return Arrays.asList(Indexes.PLAYER_ATTEMPT_FK_PLAYER_ATTEMPT_GAME_MISSION1_IDX, Indexes.PLAYER_ATTEMPT_FK_PLAYER_ATTEMPT_PLAYER1_IDX);
     }
 
     @Override
@@ -144,12 +139,11 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
 
     @Override
     public List<ForeignKey<PlayerAttemptRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYER_ATTEMPT_PLAYER1, Keys.FK_PLAYER_ATTEMPT_GAME_MISSION1, Keys.FK_PLAYER_ATTEMPT_GAME_SESSION1);
+        return Arrays.asList(Keys.FK_PLAYER_ATTEMPT_PLAYER1, Keys.FK_PLAYER_ATTEMPT_GAME_MISSION1);
     }
 
     private transient Player _player;
     private transient GameMission _gameMission;
-    private transient GameSession _gameSession;
 
     /**
      * Get the implicit join path to the <code>gamedata.player</code> table.
@@ -170,17 +164,6 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
             _gameMission = new GameMission(this, Keys.FK_PLAYER_ATTEMPT_GAME_MISSION1);
 
         return _gameMission;
-    }
-
-    /**
-     * Get the implicit join path to the <code>gamedata.game_session</code>
-     * table.
-     */
-    public GameSession gameSession() {
-        if (_gameSession == null)
-            _gameSession = new GameSession(this, Keys.FK_PLAYER_ATTEMPT_GAME_SESSION1);
-
-        return _gameSession;
     }
 
     @Override
@@ -223,18 +206,18 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, Integer, String, Integer, Integer, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row5<Integer, Integer, String, Integer, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super Integer, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -242,7 +225,7 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super Integer, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.GroupEventRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function10;
+import org.jooq.Function12;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row10;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -66,9 +66,14 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
     public final TableField<GroupEventRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
+     * The column <code>gamedata.group_event.key</code>.
+     */
+    public final TableField<GroupEventRecord, String> KEY = createField(DSL.name("key"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.group_event.value</code>.
      */
-    public final TableField<GroupEventRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
+    public final TableField<GroupEventRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.group_event.timestamp</code>.
@@ -99,6 +104,11 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
      * The column <code>gamedata.group_event.grouping_code</code>.
      */
     public final TableField<GroupEventRecord, String> GROUPING_CODE = createField(DSL.name("grouping_code"), SQLDataType.VARCHAR(45).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+
+    /**
+     * The column <code>gamedata.group_event.group_initiated</code>.
+     */
+    public final TableField<GroupEventRecord, Byte> GROUP_INITIATED = createField(DSL.name("group_initiated"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.group_event.group_id</code>.
@@ -145,7 +155,7 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GROUP_EVENT_FK_GROUPEVENT_GROUP1_IDX);
+        return Arrays.asList(Indexes.GROUP_EVENT_FK_GROUPLOGDATA_GROUP1_IDX);
     }
 
     @Override
@@ -165,7 +175,7 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
 
     @Override
     public List<ForeignKey<GroupEventRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GROUPEVENT_GROUP1);
+        return Arrays.asList(Keys.FK_GROUPLOGDATA_GROUP1);
     }
 
     private transient Group _group;
@@ -175,7 +185,7 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
      */
     public Group group() {
         if (_group == null)
-            _group = new Group(this, Keys.FK_GROUPEVENT_GROUP1);
+            _group = new Group(this, Keys.FK_GROUPLOGDATA_GROUP1);
 
         return _group;
     }
@@ -220,18 +230,18 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, String, String, LocalDateTime, Integer, String, String, String, String, Integer> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row12<Integer, String, String, String, LocalDateTime, Integer, String, String, String, String, Byte, Integer> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function10<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -239,7 +249,7 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function10<? super Integer, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

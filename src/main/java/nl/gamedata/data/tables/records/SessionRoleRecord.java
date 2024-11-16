@@ -64,30 +64,30 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
     }
 
     /**
-     * Setter for <code>gamedata.session_role.organization_id</code>.
-     */
-    public void setOrganizationId(Integer value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>gamedata.session_role.organization_id</code>.
-     */
-    public Integer getOrganizationId() {
-        return (Integer) get(3);
-    }
-
-    /**
      * Setter for <code>gamedata.session_role.game_session_id</code>.
      */
     public void setGameSessionId(Integer value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>gamedata.session_role.game_session_id</code>.
      */
     public Integer getGameSessionId() {
+        return (Integer) get(3);
+    }
+
+    /**
+     * Setter for <code>gamedata.session_role.user_id</code>.
+     */
+    public void setUserId(Integer value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>gamedata.session_role.user_id</code>.
+     */
+    public Integer getUserId() {
         return (Integer) get(4);
     }
 
@@ -131,12 +131,12 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
 
     @Override
     public Field<Integer> field4() {
-        return SessionRole.SESSION_ROLE.ORGANIZATION_ID;
+        return SessionRole.SESSION_ROLE.GAME_SESSION_ID;
     }
 
     @Override
     public Field<Integer> field5() {
-        return SessionRole.SESSION_ROLE.GAME_SESSION_ID;
+        return SessionRole.SESSION_ROLE.USER_ID;
     }
 
     @Override
@@ -156,12 +156,12 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
 
     @Override
     public Integer component4() {
-        return getOrganizationId();
+        return getGameSessionId();
     }
 
     @Override
     public Integer component5() {
-        return getGameSessionId();
+        return getUserId();
     }
 
     @Override
@@ -181,12 +181,12 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
 
     @Override
     public Integer value4() {
-        return getOrganizationId();
+        return getGameSessionId();
     }
 
     @Override
     public Integer value5() {
-        return getGameSessionId();
+        return getUserId();
     }
 
     @Override
@@ -209,13 +209,13 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
 
     @Override
     public SessionRoleRecord value4(Integer value) {
-        setOrganizationId(value);
+        setGameSessionId(value);
         return this;
     }
 
     @Override
     public SessionRoleRecord value5(Integer value) {
-        setGameSessionId(value);
+        setUserId(value);
         return this;
     }
 
@@ -243,14 +243,14 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
     /**
      * Create a detached, initialised SessionRoleRecord
      */
-    public SessionRoleRecord(Integer id, Byte sessionAdmin, Byte resultReader, Integer organizationId, Integer gameSessionId) {
+    public SessionRoleRecord(Integer id, Byte sessionAdmin, Byte resultReader, Integer gameSessionId, Integer userId) {
         super(SessionRole.SESSION_ROLE);
 
         setId(id);
         setSessionAdmin(sessionAdmin);
         setResultReader(resultReader);
-        setOrganizationId(organizationId);
         setGameSessionId(gameSessionId);
+        setUserId(userId);
         resetChangedOnNotNull();
     }
 }

@@ -70,14 +70,14 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
     public final TableField<SessionRoleRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>gamedata.session_role.organization_id</code>.
-     */
-    public final TableField<SessionRoleRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
      * The column <code>gamedata.session_role.game_session_id</code>.
      */
     public final TableField<SessionRoleRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.session_role.user_id</code>.
+     */
+    public final TableField<SessionRoleRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private SessionRole(Name alias, Table<SessionRoleRecord> aliased) {
         this(alias, aliased, null);
@@ -119,7 +119,7 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.SESSION_ROLE_FK_SESSION_ROLE_GAME_SESSION1_IDX, Indexes.SESSION_ROLE_FK_SESSION_ROLE_ORGANIZATION1_IDX);
+        return Arrays.asList(Indexes.SESSION_ROLE_FK_SESSION_ROLE_GAME_SESSION1_IDX, Indexes.SESSION_ROLE_FK_SESSION_ROLE_USER1_IDX);
     }
 
     @Override
@@ -139,22 +139,11 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
 
     @Override
     public List<ForeignKey<SessionRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_SESSION_ROLE_ORGANIZATION1, Keys.FK_SESSION_ROLE_GAME_SESSION1);
+        return Arrays.asList(Keys.FK_SESSION_ROLE_GAME_SESSION1, Keys.FK_SESSION_ROLE_USER1);
     }
 
-    private transient Organization _organization;
     private transient GameSession _gameSession;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.organization</code>
-     * table.
-     */
-    public Organization organization() {
-        if (_organization == null)
-            _organization = new Organization(this, Keys.FK_SESSION_ROLE_ORGANIZATION1);
-
-        return _organization;
-    }
+    private transient User _user;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_session</code>
@@ -165,6 +154,16 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
             _gameSession = new GameSession(this, Keys.FK_SESSION_ROLE_GAME_SESSION1);
 
         return _gameSession;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.user</code> table.
+     */
+    public User user() {
+        if (_user == null)
+            _user = new User(this, Keys.FK_SESSION_ROLE_USER1);
+
+        return _user;
     }
 
     @Override

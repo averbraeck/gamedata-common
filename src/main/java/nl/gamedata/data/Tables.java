@@ -6,22 +6,20 @@ package nl.gamedata.data;
 
 import nl.gamedata.data.tables.DashboardSetting;
 import nl.gamedata.data.tables.Game;
+import nl.gamedata.data.tables.GameAccess;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
-import nl.gamedata.data.tables.GroupAction;
+import nl.gamedata.data.tables.GroupAttempt;
 import nl.gamedata.data.tables.GroupEvent;
 import nl.gamedata.data.tables.GroupObjective;
 import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
-import nl.gamedata.data.tables.MissionAction;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
-import nl.gamedata.data.tables.OrganizationToken;
 import nl.gamedata.data.tables.Player;
-import nl.gamedata.data.tables.PlayerAction;
 import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
 import nl.gamedata.data.tables.PlayerObjective;
@@ -46,6 +44,11 @@ public class Tables {
      * The table <code>gamedata.game</code>.
      */
     public static final Game GAME = Game.GAME;
+
+    /**
+     * The table <code>gamedata.game_access</code>.
+     */
+    public static final GameAccess GAME_ACCESS = GameAccess.GAME_ACCESS;
 
     /**
      * The table <code>gamedata.game_mission</code>.
@@ -73,9 +76,9 @@ public class Tables {
     public static final Group GROUP = Group.GROUP;
 
     /**
-     * The table <code>gamedata.group_action</code>.
+     * The table <code>gamedata.group_attempt</code>.
      */
-    public static final GroupAction GROUP_ACTION = GroupAction.GROUP_ACTION;
+    public static final GroupAttempt GROUP_ATTEMPT = GroupAttempt.GROUP_ATTEMPT;
 
     /**
      * The table <code>gamedata.group_event</code>.
@@ -98,11 +101,6 @@ public class Tables {
     public static final GroupScore GROUP_SCORE = GroupScore.GROUP_SCORE;
 
     /**
-     * The table <code>gamedata.mission_action</code>.
-     */
-    public static final MissionAction MISSION_ACTION = MissionAction.MISSION_ACTION;
-
-    /**
      * The table <code>gamedata.mission_event</code>.
      */
     public static final MissionEvent MISSION_EVENT = MissionEvent.MISSION_EVENT;
@@ -113,19 +111,9 @@ public class Tables {
     public static final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
-     * The table <code>gamedata.organization_token</code>.
-     */
-    public static final OrganizationToken ORGANIZATION_TOKEN = OrganizationToken.ORGANIZATION_TOKEN;
-
-    /**
      * The table <code>gamedata.player</code>.
      */
     public static final Player PLAYER = Player.PLAYER;
-
-    /**
-     * The table <code>gamedata.player_action</code>.
-     */
-    public static final PlayerAction PLAYER_ACTION = PlayerAction.PLAYER_ACTION;
 
     /**
      * The table <code>gamedata.player_attempt</code>.

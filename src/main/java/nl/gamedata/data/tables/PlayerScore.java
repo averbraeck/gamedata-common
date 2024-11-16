@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.PlayerScoreRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function13;
+import org.jooq.Function14;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row13;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -120,6 +120,11 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
      */
     public final TableField<PlayerScoreRecord, Integer> PLAYER_OBJECTIVE_ID = createField(DSL.name("player_objective_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
 
+    /**
+     * The column <code>gamedata.player_score.scale_id</code>.
+     */
+    public final TableField<PlayerScoreRecord, Integer> SCALE_ID = createField(DSL.name("scale_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
+
     private PlayerScore(Name alias, Table<PlayerScoreRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -160,7 +165,7 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYER_SCORE_FK_PLAYER_SCORE_PLAYER_ATTEMPT1_IDX, Indexes.PLAYER_SCORE_FK_PLAYER_SCORE_PLAYER_OBJECTIVE1_IDX);
+        return Arrays.asList(Indexes.PLAYER_SCORE_FK_PLAYER_SCORE_PLAYER_ATTEMPT1_IDX, Indexes.PLAYER_SCORE_FK_PLAYER_SCORE_PLAYER_OBJECTIVE1_IDX, Indexes.PLAYER_SCORE_FK_PLAYER_SCORE_SCALE1_IDX);
     }
 
     @Override
@@ -180,11 +185,12 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
 
     @Override
     public List<ForeignKey<PlayerScoreRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYER_SCORE_PLAYER_ATTEMPT1, Keys.FK_PLAYER_SCORE_PLAYER_OBJECTIVE1);
+        return Arrays.asList(Keys.FK_PLAYER_SCORE_PLAYER_ATTEMPT1, Keys.FK_PLAYER_SCORE_PLAYER_OBJECTIVE1, Keys.FK_PLAYER_SCORE_SCALE1);
     }
 
     private transient PlayerAttempt _playerAttempt;
     private transient PlayerObjective _playerObjective;
+    private transient Scale _scale;
 
     /**
      * Get the implicit join path to the <code>gamedata.player_attempt</code>
@@ -206,6 +212,16 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
             _playerObjective = new PlayerObjective(this, Keys.FK_PLAYER_SCORE_PLAYER_OBJECTIVE1);
 
         return _playerObjective;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.scale</code> table.
+     */
+    public Scale scale() {
+        if (_scale == null)
+            _scale = new Scale(this, Keys.FK_PLAYER_SCORE_SCALE1);
+
+        return _scale;
     }
 
     @Override
@@ -248,18 +264,18 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Integer, String, Double, Double, LocalDateTime, Integer, Byte, String, String, String, String, Integer, Integer> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row14<Integer, String, Double, Double, LocalDateTime, Integer, Byte, String, String, String, String, Integer, Integer, Integer> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function13<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -267,7 +283,7 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function13<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

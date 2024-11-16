@@ -102,6 +102,11 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     public final TableField<GameSessionRecord, LocalDateTime> VALID_UNTIL = createField(DSL.name("valid_until"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATETIME)), this, "");
 
     /**
+     * The column <code>gamedata.game_session.token_for_dashboard</code>.
+     */
+    public final TableField<GameSessionRecord, Byte> TOKEN_FOR_DASHBOARD = createField(DSL.name("token_for_dashboard"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.game_session.game_version_id</code>.
      */
     public final TableField<GameSessionRecord, Integer> GAME_VERSION_ID = createField(DSL.name("game_version_id"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -110,11 +115,6 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * The column <code>gamedata.game_session.organization_id</code>.
      */
     public final TableField<GameSessionRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>gamedata.game_session.token_for_dashboard</code>.
-     */
-    public final TableField<GameSessionRecord, Byte> TOKEN_FOR_DASHBOARD = createField(DSL.name("token_for_dashboard"), SQLDataType.TINYINT.nullable(false), this, "");
 
     private GameSession(Name alias, Table<GameSessionRecord> aliased) {
         this(alias, aliased, null);
@@ -171,7 +171,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
 
     @Override
     public List<UniqueKey<GameSessionRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_GAME_SESSION_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_GAME_SESSION_ID_UNIQUE, Keys.KEY_GAME_SESSION_SESSION_TOKEN_UNIQUE);
     }
 
     @Override
@@ -248,14 +248,14 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Integer, Integer, Byte> fieldsRow() {
+    public Row12<Integer, String, String, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Byte, Integer, Integer> fieldsRow() {
         return (Row12) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? super Integer, ? super Byte, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -263,7 +263,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Integer, ? super Integer, ? super Byte, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

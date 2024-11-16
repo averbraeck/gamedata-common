@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.DashboardSettingRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
+import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -70,9 +70,14 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
     public final TableField<DashboardSettingRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.dashboard_setting.game_id</code>.
+     * The column <code>gamedata.dashboard_setting.organization_id</code>.
      */
-    public final TableField<DashboardSettingRecord, Integer> GAME_ID = createField(DSL.name("game_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<DashboardSettingRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.dashboard_setting.game_mission_id</code>.
+     */
+    public final TableField<DashboardSettingRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private DashboardSetting(Name alias, Table<DashboardSettingRecord> aliased) {
         this(alias, aliased, null);
@@ -114,7 +119,7 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.DASHBOARD_SETTING_FK_DASHBOARD_GAME1_IDX);
+        return Arrays.asList(Indexes.DASHBOARD_SETTING_FK_DASHBOARD_SETTING_GAME_MISSION1_IDX, Indexes.DASHBOARD_SETTING_FK_DASHBOARD_SETTING_ORGANIZATION1_IDX);
     }
 
     @Override
@@ -134,19 +139,32 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
 
     @Override
     public List<ForeignKey<DashboardSettingRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_DASHBOARD_GAME1);
+        return Arrays.asList(Keys.FK_DASHBOARD_SETTING_ORGANIZATION1, Keys.FK_DASHBOARD_SETTING_GAME_MISSION1);
     }
 
-    private transient Game _game;
+    private transient Organization _organization;
+    private transient GameMission _gameMission;
 
     /**
-     * Get the implicit join path to the <code>gamedata.game</code> table.
+     * Get the implicit join path to the <code>gamedata.organization</code>
+     * table.
      */
-    public Game game() {
-        if (_game == null)
-            _game = new Game(this, Keys.FK_DASHBOARD_GAME1);
+    public Organization organization() {
+        if (_organization == null)
+            _organization = new Organization(this, Keys.FK_DASHBOARD_SETTING_ORGANIZATION1);
 
-        return _game;
+        return _organization;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game_mission</code>
+     * table.
+     */
+    public GameMission gameMission() {
+        if (_gameMission == null)
+            _gameMission = new GameMission(this, Keys.FK_DASHBOARD_SETTING_GAME_MISSION1);
+
+        return _gameMission;
     }
 
     @Override
@@ -189,18 +207,18 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Integer, String, String, Integer, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function5<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -208,7 +226,7 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
