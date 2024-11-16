@@ -43,4 +43,6 @@ The dynamic game data that is offered from the `Game` to the game data server th
 
 **Note:** The `MissionAction` and `MissionEvent` (possibly combined -- see previous remark) should also be lined to the `GameSession`, which they are not at the moment. 
 
+**Note:** To make the player and group data storage consistent, a `Group` should also have its `GroupAttempt`.
+
 All stored data is linked to a `GameSession`, a `GameMission` and a `Player` and/or `Group`. The `GameSession` and `GameMission` uniquely define the `GameVersion`, the `Game` and the `Organization` that is playing the `Game`. 
