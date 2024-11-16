@@ -132,7 +132,7 @@ public class Scale extends TableImpl<ScaleRecord> {
 
     @Override
     public List<UniqueKey<ScaleRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_SCALE_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_SCALE_ID_UNIQUE, Keys.KEY_SCALE_TYPE_UNIQUE);
     }
 
     @Override

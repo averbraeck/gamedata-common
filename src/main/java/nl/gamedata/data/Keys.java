@@ -115,6 +115,7 @@ public class Keys {
     public static final UniqueKey<PlayerScoreRecord> KEY_PLAYER_SCORE_PRIMARY = Internal.createUniqueKey(PlayerScore.PLAYER_SCORE, DSL.name("KEY_player_score_PRIMARY"), new TableField[] { PlayerScore.PLAYER_SCORE.ID }, true);
     public static final UniqueKey<ScaleRecord> KEY_SCALE_ID_UNIQUE = Internal.createUniqueKey(Scale.SCALE, DSL.name("KEY_scale_id_UNIQUE"), new TableField[] { Scale.SCALE.ID }, true);
     public static final UniqueKey<ScaleRecord> KEY_SCALE_PRIMARY = Internal.createUniqueKey(Scale.SCALE, DSL.name("KEY_scale_PRIMARY"), new TableField[] { Scale.SCALE.ID }, true);
+    public static final UniqueKey<ScaleRecord> KEY_SCALE_TYPE_UNIQUE = Internal.createUniqueKey(Scale.SCALE, DSL.name("KEY_scale_type_UNIQUE"), new TableField[] { Scale.SCALE.TYPE }, true);
     public static final UniqueKey<SessionRoleRecord> KEY_SESSION_ROLE_ID_UNIQUE = Internal.createUniqueKey(SessionRole.SESSION_ROLE, DSL.name("KEY_session_role_id_UNIQUE"), new TableField[] { SessionRole.SESSION_ROLE.ID }, true);
     public static final UniqueKey<SessionRoleRecord> KEY_SESSION_ROLE_PRIMARY = Internal.createUniqueKey(SessionRole.SESSION_ROLE, DSL.name("KEY_session_role_PRIMARY"), new TableField[] { SessionRole.SESSION_ROLE.ID }, true);
     public static final UniqueKey<UserRecord> KEY_USER_ID_UNIQUE = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_id_UNIQUE"), new TableField[] { User.USER.ID }, true);
