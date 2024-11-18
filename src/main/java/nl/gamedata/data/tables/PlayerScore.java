@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.PlayerScoreRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function14;
+import org.jooq.Function15;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row14;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -68,12 +68,17 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
     /**
      * The column <code>gamedata.player_score.delta</code>.
      */
-    public final TableField<PlayerScoreRecord, Double> DELTA = createField(DSL.name("delta"), SQLDataType.FLOAT.nullable(false), this, "");
+    public final TableField<PlayerScoreRecord, Double> DELTA = createField(DSL.name("delta"), SQLDataType.FLOAT.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.FLOAT)), this, "");
 
     /**
-     * The column <code>gamedata.player_score.new_score</code>.
+     * The column <code>gamedata.player_score.new_score_number</code>.
      */
-    public final TableField<PlayerScoreRecord, Double> NEW_SCORE = createField(DSL.name("new_score"), SQLDataType.FLOAT.nullable(false), this, "");
+    public final TableField<PlayerScoreRecord, Double> NEW_SCORE_NUMBER = createField(DSL.name("new_score_number"), SQLDataType.FLOAT.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.FLOAT)), this, "");
+
+    /**
+     * The column <code>gamedata.player_score.new_score_string</code>.
+     */
+    public final TableField<PlayerScoreRecord, String> NEW_SCORE_STRING = createField(DSL.name("new_score_string"), SQLDataType.VARCHAR(16).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>gamedata.player_score.timestamp</code>.
@@ -88,7 +93,7 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
     /**
      * The column <code>gamedata.player_score.final_score</code>.
      */
-    public final TableField<PlayerScoreRecord, Byte> FINAL_SCORE = createField(DSL.name("final_score"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<PlayerScoreRecord, Byte> FINAL_SCORE = createField(DSL.name("final_score"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.player_score.status</code>.
@@ -264,18 +269,18 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Integer, String, Double, Double, LocalDateTime, Integer, Byte, String, String, String, String, Integer, Integer, Integer> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public Row15<Integer, String, Double, Double, String, LocalDateTime, Integer, Byte, String, String, String, String, Integer, Integer, Integer> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function15<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -283,7 +288,7 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function15<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

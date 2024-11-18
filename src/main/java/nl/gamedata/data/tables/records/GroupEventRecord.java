@@ -178,16 +178,16 @@ public class GroupEventRecord extends UpdatableRecordImpl<GroupEventRecord> impl
     }
 
     /**
-     * Setter for <code>gamedata.group_event.group_id</code>.
+     * Setter for <code>gamedata.group_event.group_attempt_id</code>.
      */
-    public void setGroupId(Integer value) {
+    public void setGroupAttemptId(Integer value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>gamedata.group_event.group_id</code>.
+     * Getter for <code>gamedata.group_event.group_attempt_id</code>.
      */
-    public Integer getGroupId() {
+    public Integer getGroupAttemptId() {
         return (Integer) get(11);
     }
 
@@ -271,7 +271,7 @@ public class GroupEventRecord extends UpdatableRecordImpl<GroupEventRecord> impl
 
     @Override
     public Field<Integer> field12() {
-        return GroupEvent.GROUP_EVENT.GROUP_ID;
+        return GroupEvent.GROUP_EVENT.GROUP_ATTEMPT_ID;
     }
 
     @Override
@@ -331,7 +331,7 @@ public class GroupEventRecord extends UpdatableRecordImpl<GroupEventRecord> impl
 
     @Override
     public Integer component12() {
-        return getGroupId();
+        return getGroupAttemptId();
     }
 
     @Override
@@ -391,7 +391,7 @@ public class GroupEventRecord extends UpdatableRecordImpl<GroupEventRecord> impl
 
     @Override
     public Integer value12() {
-        return getGroupId();
+        return getGroupAttemptId();
     }
 
     @Override
@@ -462,7 +462,7 @@ public class GroupEventRecord extends UpdatableRecordImpl<GroupEventRecord> impl
 
     @Override
     public GroupEventRecord value12(Integer value) {
-        setGroupId(value);
+        setGroupAttemptId(value);
         return this;
     }
 
@@ -497,7 +497,7 @@ public class GroupEventRecord extends UpdatableRecordImpl<GroupEventRecord> impl
     /**
      * Create a detached, initialised GroupEventRecord
      */
-    public GroupEventRecord(Integer id, String type, String key, String value, LocalDateTime timestamp, Integer missionAttempt, String status, String round, String gameTime, String groupingCode, Byte groupInitiated, Integer groupId) {
+    public GroupEventRecord(Integer id, String type, String key, String value, LocalDateTime timestamp, Integer missionAttempt, String status, String round, String gameTime, String groupingCode, Byte groupInitiated, Integer groupAttemptId) {
         super(GroupEvent.GROUP_EVENT);
 
         setId(id);
@@ -511,7 +511,7 @@ public class GroupEventRecord extends UpdatableRecordImpl<GroupEventRecord> impl
         setGameTime(gameTime);
         setGroupingCode(groupingCode);
         setGroupInitiated(groupInitiated);
-        setGroupId(groupId);
+        setGroupAttemptId(groupAttemptId);
         resetChangedOnNotNull();
     }
 }

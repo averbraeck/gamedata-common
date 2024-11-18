@@ -111,9 +111,9 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
     public final TableField<GroupEventRecord, Byte> GROUP_INITIATED = createField(DSL.name("group_initiated"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>gamedata.group_event.group_id</code>.
+     * The column <code>gamedata.group_event.group_attempt_id</code>.
      */
-    public final TableField<GroupEventRecord, Integer> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<GroupEventRecord, Integer> GROUP_ATTEMPT_ID = createField(DSL.name("group_attempt_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GroupEvent(Name alias, Table<GroupEventRecord> aliased) {
         this(alias, aliased, null);
@@ -155,7 +155,7 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GROUP_EVENT_FK_GROUPLOGDATA_GROUP1_IDX);
+        return Arrays.asList(Indexes.GROUP_EVENT_FK_GROUP_EVENT_GROUP_ATTEMPT1_IDX);
     }
 
     @Override
@@ -175,19 +175,20 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
 
     @Override
     public List<ForeignKey<GroupEventRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GROUPLOGDATA_GROUP1);
+        return Arrays.asList(Keys.FK_GROUP_EVENT_GROUP_ATTEMPT1);
     }
 
-    private transient Group _group;
+    private transient GroupAttempt _groupAttempt;
 
     /**
-     * Get the implicit join path to the <code>gamedata.group</code> table.
+     * Get the implicit join path to the <code>gamedata.group_attempt</code>
+     * table.
      */
-    public Group group() {
-        if (_group == null)
-            _group = new Group(this, Keys.FK_GROUPLOGDATA_GROUP1);
+    public GroupAttempt groupAttempt() {
+        if (_groupAttempt == null)
+            _groupAttempt = new GroupAttempt(this, Keys.FK_GROUP_EVENT_GROUP_ATTEMPT1);
 
-        return _group;
+        return _groupAttempt;
     }
 
     @Override
