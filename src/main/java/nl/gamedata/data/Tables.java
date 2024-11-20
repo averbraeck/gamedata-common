@@ -10,6 +10,7 @@ import nl.gamedata.data.tables.GameAccess;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
+import nl.gamedata.data.tables.GameToken;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
 import nl.gamedata.data.tables.GroupAttempt;
@@ -64,6 +65,11 @@ public class Tables {
      * The table <code>gamedata.game_session</code>.
      */
     public static final GameSession GAME_SESSION = GameSession.GAME_SESSION;
+
+    /**
+     * The table <code>gamedata.game_token</code>.
+     */
+    public static final GameToken GAME_TOKEN = GameToken.GAME_TOKEN;
 
     /**
      * The table <code>gamedata.game_version</code>.

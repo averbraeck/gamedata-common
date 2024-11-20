@@ -70,14 +70,14 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
     public final TableField<DashboardSettingRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.dashboard_setting.organization_id</code>.
-     */
-    public final TableField<DashboardSettingRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
      * The column <code>gamedata.dashboard_setting.game_mission_id</code>.
      */
     public final TableField<DashboardSettingRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.dashboard_setting.game_access_id</code>.
+     */
+    public final TableField<DashboardSettingRecord, Integer> GAME_ACCESS_ID = createField(DSL.name("game_access_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private DashboardSetting(Name alias, Table<DashboardSettingRecord> aliased) {
         this(alias, aliased, null);
@@ -119,7 +119,7 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.DASHBOARD_SETTING_FK_DASHBOARD_SETTING_GAME_MISSION1_IDX, Indexes.DASHBOARD_SETTING_FK_DASHBOARD_SETTING_ORGANIZATION1_IDX);
+        return Arrays.asList(Indexes.DASHBOARD_SETTING_FK_DASHBOARD_SETTING_GAME_ACCESS1_IDX, Indexes.DASHBOARD_SETTING_FK_DASHBOARD_SETTING_GAME_MISSION1_IDX);
     }
 
     @Override
@@ -139,22 +139,11 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
 
     @Override
     public List<ForeignKey<DashboardSettingRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_DASHBOARD_SETTING_ORGANIZATION1, Keys.FK_DASHBOARD_SETTING_GAME_MISSION1);
+        return Arrays.asList(Keys.FK_DASHBOARD_SETTING_GAME_MISSION1, Keys.FK_DASHBOARD_SETTING_GAME_ACCESS1);
     }
 
-    private transient Organization _organization;
     private transient GameMission _gameMission;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.organization</code>
-     * table.
-     */
-    public Organization organization() {
-        if (_organization == null)
-            _organization = new Organization(this, Keys.FK_DASHBOARD_SETTING_ORGANIZATION1);
-
-        return _organization;
-    }
+    private transient GameAccess _gameAccess;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_mission</code>
@@ -165,6 +154,17 @@ public class DashboardSetting extends TableImpl<DashboardSettingRecord> {
             _gameMission = new GameMission(this, Keys.FK_DASHBOARD_SETTING_GAME_MISSION1);
 
         return _gameMission;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game_access</code>
+     * table.
+     */
+    public GameAccess gameAccess() {
+        if (_gameAccess == null)
+            _gameAccess = new GameAccess(this, Keys.FK_DASHBOARD_SETTING_GAME_ACCESS1);
+
+        return _gameAccess;
     }
 
     @Override

@@ -60,9 +60,9 @@ public class GameVersion extends TableImpl<GameVersionRecord> {
     public final TableField<GameVersionRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>gamedata.game_version.version</code>.
+     * The column <code>gamedata.game_version.name</code>.
      */
-    public final TableField<GameVersionRecord, String> VERSION = createField(DSL.name("version"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+    public final TableField<GameVersionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
      * The column <code>gamedata.game_version.game_id</code>.

@@ -36,16 +36,16 @@ public class GameVersionRecord extends UpdatableRecordImpl<GameVersionRecord> im
     }
 
     /**
-     * Setter for <code>gamedata.game_version.version</code>.
+     * Setter for <code>gamedata.game_version.name</code>.
      */
-    public void setVersion(String value) {
+    public void setName(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>gamedata.game_version.version</code>.
+     * Getter for <code>gamedata.game_version.name</code>.
      */
-    public String getVersion() {
+    public String getName() {
         return (String) get(1);
     }
 
@@ -93,7 +93,7 @@ public class GameVersionRecord extends UpdatableRecordImpl<GameVersionRecord> im
 
     @Override
     public Field<String> field2() {
-        return GameVersion.GAME_VERSION.VERSION;
+        return GameVersion.GAME_VERSION.NAME;
     }
 
     @Override
@@ -108,7 +108,7 @@ public class GameVersionRecord extends UpdatableRecordImpl<GameVersionRecord> im
 
     @Override
     public String component2() {
-        return getVersion();
+        return getName();
     }
 
     @Override
@@ -123,7 +123,7 @@ public class GameVersionRecord extends UpdatableRecordImpl<GameVersionRecord> im
 
     @Override
     public String value2() {
-        return getVersion();
+        return getName();
     }
 
     @Override
@@ -139,7 +139,7 @@ public class GameVersionRecord extends UpdatableRecordImpl<GameVersionRecord> im
 
     @Override
     public GameVersionRecord value2(String value) {
-        setVersion(value);
+        setName(value);
         return this;
     }
 
@@ -171,11 +171,11 @@ public class GameVersionRecord extends UpdatableRecordImpl<GameVersionRecord> im
     /**
      * Create a detached, initialised GameVersionRecord
      */
-    public GameVersionRecord(Integer id, String version, Integer gameId) {
+    public GameVersionRecord(Integer id, String name, Integer gameId) {
         super(GameVersion.GAME_VERSION);
 
         setId(id);
-        setVersion(version);
+        setName(name);
         setGameId(gameId);
         resetChangedOnNotNull();
     }

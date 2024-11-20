@@ -179,16 +179,16 @@ public class GameSessionRecord extends UpdatableRecordImpl<GameSessionRecord> im
     }
 
     /**
-     * Setter for <code>gamedata.game_session.organization_id</code>.
+     * Setter for <code>gamedata.game_session.game_access_id</code>.
      */
-    public void setOrganizationId(Integer value) {
+    public void setGameAccessId(Integer value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>gamedata.game_session.organization_id</code>.
+     * Getter for <code>gamedata.game_session.game_access_id</code>.
      */
-    public Integer getOrganizationId() {
+    public Integer getGameAccessId() {
         return (Integer) get(11);
     }
 
@@ -272,7 +272,7 @@ public class GameSessionRecord extends UpdatableRecordImpl<GameSessionRecord> im
 
     @Override
     public Field<Integer> field12() {
-        return GameSession.GAME_SESSION.ORGANIZATION_ID;
+        return GameSession.GAME_SESSION.GAME_ACCESS_ID;
     }
 
     @Override
@@ -332,7 +332,7 @@ public class GameSessionRecord extends UpdatableRecordImpl<GameSessionRecord> im
 
     @Override
     public Integer component12() {
-        return getOrganizationId();
+        return getGameAccessId();
     }
 
     @Override
@@ -392,7 +392,7 @@ public class GameSessionRecord extends UpdatableRecordImpl<GameSessionRecord> im
 
     @Override
     public Integer value12() {
-        return getOrganizationId();
+        return getGameAccessId();
     }
 
     @Override
@@ -463,7 +463,7 @@ public class GameSessionRecord extends UpdatableRecordImpl<GameSessionRecord> im
 
     @Override
     public GameSessionRecord value12(Integer value) {
-        setOrganizationId(value);
+        setGameAccessId(value);
         return this;
     }
 
@@ -498,7 +498,7 @@ public class GameSessionRecord extends UpdatableRecordImpl<GameSessionRecord> im
     /**
      * Create a detached, initialised GameSessionRecord
      */
-    public GameSessionRecord(Integer id, String code, String name, String sessionToken, String sessionStatus, LocalDate playDate, Byte valid, LocalDateTime validFrom, LocalDateTime validUntil, Byte tokenForDashboard, Integer gameVersionId, Integer organizationId) {
+    public GameSessionRecord(Integer id, String code, String name, String sessionToken, String sessionStatus, LocalDate playDate, Byte valid, LocalDateTime validFrom, LocalDateTime validUntil, Byte tokenForDashboard, Integer gameVersionId, Integer gameAccessId) {
         super(GameSession.GAME_SESSION);
 
         setId(id);
@@ -512,7 +512,7 @@ public class GameSessionRecord extends UpdatableRecordImpl<GameSessionRecord> im
         setValidUntil(validUntil);
         setTokenForDashboard(tokenForDashboard);
         setGameVersionId(gameVersionId);
-        setOrganizationId(organizationId);
+        setGameAccessId(gameAccessId);
         resetChangedOnNotNull();
     }
 }

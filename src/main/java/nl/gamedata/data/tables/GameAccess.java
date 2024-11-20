@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.GameAccessRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function7;
+import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row7;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -65,11 +65,6 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
     public final TableField<GameAccessRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_access.token</code>.
-     */
-    public final TableField<GameAccessRecord, String> TOKEN = createField(DSL.name("token"), SQLDataType.VARCHAR(255).nullable(false), this, "");
-
-    /**
      * The column <code>gamedata.game_access.game_id</code>.
      */
     public final TableField<GameAccessRecord, Integer> GAME_ID = createField(DSL.name("game_id"), SQLDataType.INTEGER.nullable(false), this, "");
@@ -78,16 +73,6 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
      * The column <code>gamedata.game_access.organization_id</code>.
      */
     public final TableField<GameAccessRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>gamedata.game_access.data_writer</code>.
-     */
-    public final TableField<GameAccessRecord, Byte> DATA_WRITER = createField(DSL.name("data_writer"), SQLDataType.TINYINT.nullable(false), this, "");
-
-    /**
-     * The column <code>gamedata.game_access.result_reader</code>.
-     */
-    public final TableField<GameAccessRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false), this, "");
 
     private GameAccess(Name alias, Table<GameAccessRecord> aliased) {
         this(alias, aliased, null);
@@ -144,7 +129,7 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
 
     @Override
     public List<UniqueKey<GameAccessRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_GAME_ACCESS_ID_UNIQUE, Keys.KEY_GAME_ACCESS_VALUE_UNIQUE);
+        return Arrays.asList(Keys.KEY_GAME_ACCESS_ID_UNIQUE);
     }
 
     @Override
@@ -216,18 +201,18 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, Integer, Integer, Byte, Byte> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row4<Integer, String, Integer, Integer> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function7<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? super Byte, ? super Byte, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -235,7 +220,7 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? super Byte, ? super Byte, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

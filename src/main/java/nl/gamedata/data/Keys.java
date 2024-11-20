@@ -10,6 +10,7 @@ import nl.gamedata.data.tables.GameAccess;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
+import nl.gamedata.data.tables.GameToken;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
 import nl.gamedata.data.tables.GroupAttempt;
@@ -33,6 +34,7 @@ import nl.gamedata.data.tables.records.GameMissionRecord;
 import nl.gamedata.data.tables.records.GameRecord;
 import nl.gamedata.data.tables.records.GameRoleRecord;
 import nl.gamedata.data.tables.records.GameSessionRecord;
+import nl.gamedata.data.tables.records.GameTokenRecord;
 import nl.gamedata.data.tables.records.GameVersionRecord;
 import nl.gamedata.data.tables.records.GroupAttemptRecord;
 import nl.gamedata.data.tables.records.GroupEventRecord;
@@ -76,7 +78,6 @@ public class Keys {
     public static final UniqueKey<GameRecord> KEY_GAME_PRIMARY = Internal.createUniqueKey(Game.GAME, DSL.name("KEY_game_PRIMARY"), new TableField[] { Game.GAME.ID }, true);
     public static final UniqueKey<GameAccessRecord> KEY_GAME_ACCESS_ID_UNIQUE = Internal.createUniqueKey(GameAccess.GAME_ACCESS, DSL.name("KEY_game_access_id_UNIQUE"), new TableField[] { GameAccess.GAME_ACCESS.ID }, true);
     public static final UniqueKey<GameAccessRecord> KEY_GAME_ACCESS_PRIMARY = Internal.createUniqueKey(GameAccess.GAME_ACCESS, DSL.name("KEY_game_access_PRIMARY"), new TableField[] { GameAccess.GAME_ACCESS.ID }, true);
-    public static final UniqueKey<GameAccessRecord> KEY_GAME_ACCESS_VALUE_UNIQUE = Internal.createUniqueKey(GameAccess.GAME_ACCESS, DSL.name("KEY_game_access_value_UNIQUE"), new TableField[] { GameAccess.GAME_ACCESS.TOKEN }, true);
     public static final UniqueKey<GameMissionRecord> KEY_GAME_MISSION_ID_UNIQUE = Internal.createUniqueKey(GameMission.GAME_MISSION, DSL.name("KEY_game_mission_id_UNIQUE"), new TableField[] { GameMission.GAME_MISSION.ID }, true);
     public static final UniqueKey<GameMissionRecord> KEY_GAME_MISSION_PRIMARY = Internal.createUniqueKey(GameMission.GAME_MISSION, DSL.name("KEY_game_mission_PRIMARY"), new TableField[] { GameMission.GAME_MISSION.ID }, true);
     public static final UniqueKey<GameRoleRecord> KEY_GAME_ROLE_ID_UNIQUE = Internal.createUniqueKey(GameRole.GAME_ROLE, DSL.name("KEY_game_role_id_UNIQUE"), new TableField[] { GameRole.GAME_ROLE.ID }, true);
@@ -84,6 +85,9 @@ public class Keys {
     public static final UniqueKey<GameSessionRecord> KEY_GAME_SESSION_ID_UNIQUE = Internal.createUniqueKey(GameSession.GAME_SESSION, DSL.name("KEY_game_session_id_UNIQUE"), new TableField[] { GameSession.GAME_SESSION.ID }, true);
     public static final UniqueKey<GameSessionRecord> KEY_GAME_SESSION_PRIMARY = Internal.createUniqueKey(GameSession.GAME_SESSION, DSL.name("KEY_game_session_PRIMARY"), new TableField[] { GameSession.GAME_SESSION.ID }, true);
     public static final UniqueKey<GameSessionRecord> KEY_GAME_SESSION_SESSION_TOKEN_UNIQUE = Internal.createUniqueKey(GameSession.GAME_SESSION, DSL.name("KEY_game_session_session_token_UNIQUE"), new TableField[] { GameSession.GAME_SESSION.SESSION_TOKEN }, true);
+    public static final UniqueKey<GameTokenRecord> KEY_GAME_TOKEN_ID_UNIQUE = Internal.createUniqueKey(GameToken.GAME_TOKEN, DSL.name("KEY_game_token_id_UNIQUE"), new TableField[] { GameToken.GAME_TOKEN.ID }, true);
+    public static final UniqueKey<GameTokenRecord> KEY_GAME_TOKEN_PRIMARY = Internal.createUniqueKey(GameToken.GAME_TOKEN, DSL.name("KEY_game_token_PRIMARY"), new TableField[] { GameToken.GAME_TOKEN.ID }, true);
+    public static final UniqueKey<GameTokenRecord> KEY_GAME_TOKEN_VALUE_UNIQUE = Internal.createUniqueKey(GameToken.GAME_TOKEN, DSL.name("KEY_game_token_value_UNIQUE"), new TableField[] { GameToken.GAME_TOKEN.VALUE }, true);
     public static final UniqueKey<GameVersionRecord> KEY_GAME_VERSION_ID_UNIQUE = Internal.createUniqueKey(GameVersion.GAME_VERSION, DSL.name("KEY_game_version_id_UNIQUE"), new TableField[] { GameVersion.GAME_VERSION.ID }, true);
     public static final UniqueKey<GameVersionRecord> KEY_GAME_VERSION_PRIMARY = Internal.createUniqueKey(GameVersion.GAME_VERSION, DSL.name("KEY_game_version_PRIMARY"), new TableField[] { GameVersion.GAME_VERSION.ID }, true);
     public static final UniqueKey<GroupRecord> KEY_GROUP_ID_UNIQUE = Internal.createUniqueKey(Group.GROUP, DSL.name("KEY_group_id_UNIQUE"), new TableField[] { Group.GROUP.ID }, true);
@@ -126,15 +130,16 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<DashboardSettingRecord, GameAccessRecord> FK_DASHBOARD_SETTING_GAME_ACCESS1 = Internal.createForeignKey(DashboardSetting.DASHBOARD_SETTING, DSL.name("fk_dashboard_setting_game_access1"), new TableField[] { DashboardSetting.DASHBOARD_SETTING.GAME_ACCESS_ID }, Keys.KEY_GAME_ACCESS_PRIMARY, new TableField[] { GameAccess.GAME_ACCESS.ID }, true);
     public static final ForeignKey<DashboardSettingRecord, GameMissionRecord> FK_DASHBOARD_SETTING_GAME_MISSION1 = Internal.createForeignKey(DashboardSetting.DASHBOARD_SETTING, DSL.name("fk_dashboard_setting_game_mission1"), new TableField[] { DashboardSetting.DASHBOARD_SETTING.GAME_MISSION_ID }, Keys.KEY_GAME_MISSION_PRIMARY, new TableField[] { GameMission.GAME_MISSION.ID }, true);
-    public static final ForeignKey<DashboardSettingRecord, OrganizationRecord> FK_DASHBOARD_SETTING_ORGANIZATION1 = Internal.createForeignKey(DashboardSetting.DASHBOARD_SETTING, DSL.name("fk_dashboard_setting_organization1"), new TableField[] { DashboardSetting.DASHBOARD_SETTING.ORGANIZATION_ID }, Keys.KEY_ORGANIZATION_PRIMARY, new TableField[] { Organization.ORGANIZATION.ID }, true);
     public static final ForeignKey<GameAccessRecord, GameRecord> FK_TOKEN_GAME1 = Internal.createForeignKey(GameAccess.GAME_ACCESS, DSL.name("fk_token_game1"), new TableField[] { GameAccess.GAME_ACCESS.GAME_ID }, Keys.KEY_GAME_PRIMARY, new TableField[] { Game.GAME.ID }, true);
     public static final ForeignKey<GameAccessRecord, OrganizationRecord> FK_TOKEN_ORGANIZATION1 = Internal.createForeignKey(GameAccess.GAME_ACCESS, DSL.name("fk_token_organization1"), new TableField[] { GameAccess.GAME_ACCESS.ORGANIZATION_ID }, Keys.KEY_ORGANIZATION_PRIMARY, new TableField[] { Organization.ORGANIZATION.ID }, true);
     public static final ForeignKey<GameMissionRecord, GameVersionRecord> FK_GAME_MISSION_GAME_VERSION1 = Internal.createForeignKey(GameMission.GAME_MISSION, DSL.name("fk_game_mission_game_version1"), new TableField[] { GameMission.GAME_MISSION.GAME_VERSION_ID }, Keys.KEY_GAME_VERSION_PRIMARY, new TableField[] { GameVersion.GAME_VERSION.ID }, true);
     public static final ForeignKey<GameRoleRecord, GameRecord> FK_USERROLE_GAME1 = Internal.createForeignKey(GameRole.GAME_ROLE, DSL.name("fk_userrole_game1"), new TableField[] { GameRole.GAME_ROLE.GAME_ID }, Keys.KEY_GAME_PRIMARY, new TableField[] { Game.GAME.ID }, true);
     public static final ForeignKey<GameRoleRecord, UserRecord> FK_USERROLE_USER = Internal.createForeignKey(GameRole.GAME_ROLE, DSL.name("fk_userrole_user"), new TableField[] { GameRole.GAME_ROLE.USER_ID }, Keys.KEY_USER_PRIMARY, new TableField[] { User.USER.ID }, true);
+    public static final ForeignKey<GameSessionRecord, GameAccessRecord> FK_GAME_SESSION_GAME_ACCESS1 = Internal.createForeignKey(GameSession.GAME_SESSION, DSL.name("fk_game_session_game_access1"), new TableField[] { GameSession.GAME_SESSION.GAME_ACCESS_ID }, Keys.KEY_GAME_ACCESS_PRIMARY, new TableField[] { GameAccess.GAME_ACCESS.ID }, true);
     public static final ForeignKey<GameSessionRecord, GameVersionRecord> FK_GAME_SESSION_GAME_VERSION1 = Internal.createForeignKey(GameSession.GAME_SESSION, DSL.name("fk_game_session_game_version1"), new TableField[] { GameSession.GAME_SESSION.GAME_VERSION_ID }, Keys.KEY_GAME_VERSION_PRIMARY, new TableField[] { GameVersion.GAME_VERSION.ID }, true);
-    public static final ForeignKey<GameSessionRecord, OrganizationRecord> FK_GAME_SESSION_ORGANIZATION1 = Internal.createForeignKey(GameSession.GAME_SESSION, DSL.name("fk_game_session_organization1"), new TableField[] { GameSession.GAME_SESSION.ORGANIZATION_ID }, Keys.KEY_ORGANIZATION_PRIMARY, new TableField[] { Organization.ORGANIZATION.ID }, true);
+    public static final ForeignKey<GameTokenRecord, GameAccessRecord> FK_GAME_TOKEN_GAME_ACCESS1 = Internal.createForeignKey(GameToken.GAME_TOKEN, DSL.name("fk_game_token_game_access1"), new TableField[] { GameToken.GAME_TOKEN.GAME_ACCESS_ID }, Keys.KEY_GAME_ACCESS_PRIMARY, new TableField[] { GameAccess.GAME_ACCESS.ID }, true);
     public static final ForeignKey<GameVersionRecord, GameRecord> FK_GAME_VERSION_GAME1 = Internal.createForeignKey(GameVersion.GAME_VERSION, DSL.name("fk_game_version_game1"), new TableField[] { GameVersion.GAME_VERSION.GAME_ID }, Keys.KEY_GAME_PRIMARY, new TableField[] { Game.GAME.ID }, true);
     public static final ForeignKey<GroupRecord, GameSessionRecord> FK_GROUP_GAME_SESSION1 = Internal.createForeignKey(Group.GROUP, DSL.name("fk_group_game_session1"), new TableField[] { Group.GROUP.GAME_SESSION_ID }, Keys.KEY_GAME_SESSION_PRIMARY, new TableField[] { GameSession.GAME_SESSION.ID }, true);
     public static final ForeignKey<GroupAttemptRecord, GameMissionRecord> FK_GROUP_ATTEMPT_GAME_MISSION1 = Internal.createForeignKey(GroupAttempt.GROUP_ATTEMPT, DSL.name("fk_group_attempt_game_mission1"), new TableField[] { GroupAttempt.GROUP_ATTEMPT.GAME_MISSION_ID }, Keys.KEY_GAME_MISSION_PRIMARY, new TableField[] { GameMission.GAME_MISSION.ID }, true);

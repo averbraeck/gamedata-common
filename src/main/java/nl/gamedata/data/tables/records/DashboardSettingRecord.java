@@ -64,30 +64,30 @@ public class DashboardSettingRecord extends UpdatableRecordImpl<DashboardSetting
     }
 
     /**
-     * Setter for <code>gamedata.dashboard_setting.organization_id</code>.
-     */
-    public void setOrganizationId(Integer value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>gamedata.dashboard_setting.organization_id</code>.
-     */
-    public Integer getOrganizationId() {
-        return (Integer) get(3);
-    }
-
-    /**
      * Setter for <code>gamedata.dashboard_setting.game_mission_id</code>.
      */
     public void setGameMissionId(Integer value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>gamedata.dashboard_setting.game_mission_id</code>.
      */
     public Integer getGameMissionId() {
+        return (Integer) get(3);
+    }
+
+    /**
+     * Setter for <code>gamedata.dashboard_setting.game_access_id</code>.
+     */
+    public void setGameAccessId(Integer value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>gamedata.dashboard_setting.game_access_id</code>.
+     */
+    public Integer getGameAccessId() {
         return (Integer) get(4);
     }
 
@@ -131,12 +131,12 @@ public class DashboardSettingRecord extends UpdatableRecordImpl<DashboardSetting
 
     @Override
     public Field<Integer> field4() {
-        return DashboardSetting.DASHBOARD_SETTING.ORGANIZATION_ID;
+        return DashboardSetting.DASHBOARD_SETTING.GAME_MISSION_ID;
     }
 
     @Override
     public Field<Integer> field5() {
-        return DashboardSetting.DASHBOARD_SETTING.GAME_MISSION_ID;
+        return DashboardSetting.DASHBOARD_SETTING.GAME_ACCESS_ID;
     }
 
     @Override
@@ -156,12 +156,12 @@ public class DashboardSettingRecord extends UpdatableRecordImpl<DashboardSetting
 
     @Override
     public Integer component4() {
-        return getOrganizationId();
+        return getGameMissionId();
     }
 
     @Override
     public Integer component5() {
-        return getGameMissionId();
+        return getGameAccessId();
     }
 
     @Override
@@ -181,12 +181,12 @@ public class DashboardSettingRecord extends UpdatableRecordImpl<DashboardSetting
 
     @Override
     public Integer value4() {
-        return getOrganizationId();
+        return getGameMissionId();
     }
 
     @Override
     public Integer value5() {
-        return getGameMissionId();
+        return getGameAccessId();
     }
 
     @Override
@@ -209,13 +209,13 @@ public class DashboardSettingRecord extends UpdatableRecordImpl<DashboardSetting
 
     @Override
     public DashboardSettingRecord value4(Integer value) {
-        setOrganizationId(value);
+        setGameMissionId(value);
         return this;
     }
 
     @Override
     public DashboardSettingRecord value5(Integer value) {
-        setGameMissionId(value);
+        setGameAccessId(value);
         return this;
     }
 
@@ -243,14 +243,14 @@ public class DashboardSettingRecord extends UpdatableRecordImpl<DashboardSetting
     /**
      * Create a detached, initialised DashboardSettingRecord
      */
-    public DashboardSettingRecord(Integer id, String key, String value, Integer organizationId, Integer gameMissionId) {
+    public DashboardSettingRecord(Integer id, String key, String value, Integer gameMissionId, Integer gameAccessId) {
         super(DashboardSetting.DASHBOARD_SETTING);
 
         setId(id);
         setKey(key);
         setValue(value);
-        setOrganizationId(organizationId);
         setGameMissionId(gameMissionId);
+        setGameAccessId(gameAccessId);
         resetChangedOnNotNull();
     }
 }

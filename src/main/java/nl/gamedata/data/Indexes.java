@@ -9,6 +9,7 @@ import nl.gamedata.data.tables.GameAccess;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
+import nl.gamedata.data.tables.GameToken;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
 import nl.gamedata.data.tables.GroupAttempt;
@@ -41,11 +42,12 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index DASHBOARD_SETTING_FK_DASHBOARD_SETTING_GAME_ACCESS1_IDX = Internal.createIndex(DSL.name("fk_dashboard_setting_game_access1_idx"), DashboardSetting.DASHBOARD_SETTING, new OrderField[] { DashboardSetting.DASHBOARD_SETTING.GAME_ACCESS_ID }, false);
     public static final Index DASHBOARD_SETTING_FK_DASHBOARD_SETTING_GAME_MISSION1_IDX = Internal.createIndex(DSL.name("fk_dashboard_setting_game_mission1_idx"), DashboardSetting.DASHBOARD_SETTING, new OrderField[] { DashboardSetting.DASHBOARD_SETTING.GAME_MISSION_ID }, false);
-    public static final Index DASHBOARD_SETTING_FK_DASHBOARD_SETTING_ORGANIZATION1_IDX = Internal.createIndex(DSL.name("fk_dashboard_setting_organization1_idx"), DashboardSetting.DASHBOARD_SETTING, new OrderField[] { DashboardSetting.DASHBOARD_SETTING.ORGANIZATION_ID }, false);
     public static final Index GAME_MISSION_FK_GAME_MISSION_GAME_VERSION1_IDX = Internal.createIndex(DSL.name("fk_game_mission_game_version1_idx"), GameMission.GAME_MISSION, new OrderField[] { GameMission.GAME_MISSION.GAME_VERSION_ID }, false);
+    public static final Index GAME_SESSION_FK_GAME_SESSION_GAME_ACCESS1_IDX = Internal.createIndex(DSL.name("fk_game_session_game_access1_idx"), GameSession.GAME_SESSION, new OrderField[] { GameSession.GAME_SESSION.GAME_ACCESS_ID }, false);
     public static final Index GAME_SESSION_FK_GAME_SESSION_GAME_VERSION1_IDX = Internal.createIndex(DSL.name("fk_game_session_game_version1_idx"), GameSession.GAME_SESSION, new OrderField[] { GameSession.GAME_SESSION.GAME_VERSION_ID }, false);
-    public static final Index GAME_SESSION_FK_GAME_SESSION_ORGANIZATION1_IDX = Internal.createIndex(DSL.name("fk_game_session_organization1_idx"), GameSession.GAME_SESSION, new OrderField[] { GameSession.GAME_SESSION.ORGANIZATION_ID }, false);
+    public static final Index GAME_TOKEN_FK_GAME_TOKEN_GAME_ACCESS1_IDX = Internal.createIndex(DSL.name("fk_game_token_game_access1_idx"), GameToken.GAME_TOKEN, new OrderField[] { GameToken.GAME_TOKEN.GAME_ACCESS_ID }, false);
     public static final Index GAME_VERSION_FK_GAME_VERSION_GAME1_IDX = Internal.createIndex(DSL.name("fk_game_version_game1_idx"), GameVersion.GAME_VERSION, new OrderField[] { GameVersion.GAME_VERSION.GAME_ID }, false);
     public static final Index GROUP_ATTEMPT_FK_GROUP_ATTEMPT_GAME_MISSION1_IDX = Internal.createIndex(DSL.name("fk_group_attempt_game_mission1_idx"), GroupAttempt.GROUP_ATTEMPT, new OrderField[] { GroupAttempt.GROUP_ATTEMPT.GAME_MISSION_ID }, false);
     public static final Index GROUP_ATTEMPT_FK_GROUP_ATTEMPT_GROUP1_IDX = Internal.createIndex(DSL.name("fk_group_attempt_group1_idx"), GroupAttempt.GROUP_ATTEMPT, new OrderField[] { GroupAttempt.GROUP_ATTEMPT.GROUP_ID }, false);
