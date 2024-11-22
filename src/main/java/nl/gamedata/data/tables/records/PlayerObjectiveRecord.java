@@ -64,30 +64,30 @@ public class PlayerObjectiveRecord extends UpdatableRecordImpl<PlayerObjectiveRe
     }
 
     /**
-     * Setter for <code>gamedata.player_objective.game_mission_id</code>.
-     */
-    public void setGameMissionId(Integer value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>gamedata.player_objective.game_mission_id</code>.
-     */
-    public Integer getGameMissionId() {
-        return (Integer) get(3);
-    }
-
-    /**
      * Setter for <code>gamedata.player_objective.scale_id</code>.
      */
     public void setScaleId(Integer value) {
-        set(4, value);
+        set(3, value);
     }
 
     /**
      * Getter for <code>gamedata.player_objective.scale_id</code>.
      */
     public Integer getScaleId() {
+        return (Integer) get(3);
+    }
+
+    /**
+     * Setter for <code>gamedata.player_objective.learning_goal_id</code>.
+     */
+    public void setLearningGoalId(Integer value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>gamedata.player_objective.learning_goal_id</code>.
+     */
+    public Integer getLearningGoalId() {
         return (Integer) get(4);
     }
 
@@ -131,12 +131,12 @@ public class PlayerObjectiveRecord extends UpdatableRecordImpl<PlayerObjectiveRe
 
     @Override
     public Field<Integer> field4() {
-        return PlayerObjective.PLAYER_OBJECTIVE.GAME_MISSION_ID;
+        return PlayerObjective.PLAYER_OBJECTIVE.SCALE_ID;
     }
 
     @Override
     public Field<Integer> field5() {
-        return PlayerObjective.PLAYER_OBJECTIVE.SCALE_ID;
+        return PlayerObjective.PLAYER_OBJECTIVE.LEARNING_GOAL_ID;
     }
 
     @Override
@@ -156,12 +156,12 @@ public class PlayerObjectiveRecord extends UpdatableRecordImpl<PlayerObjectiveRe
 
     @Override
     public Integer component4() {
-        return getGameMissionId();
+        return getScaleId();
     }
 
     @Override
     public Integer component5() {
-        return getScaleId();
+        return getLearningGoalId();
     }
 
     @Override
@@ -181,12 +181,12 @@ public class PlayerObjectiveRecord extends UpdatableRecordImpl<PlayerObjectiveRe
 
     @Override
     public Integer value4() {
-        return getGameMissionId();
+        return getScaleId();
     }
 
     @Override
     public Integer value5() {
-        return getScaleId();
+        return getLearningGoalId();
     }
 
     @Override
@@ -209,13 +209,13 @@ public class PlayerObjectiveRecord extends UpdatableRecordImpl<PlayerObjectiveRe
 
     @Override
     public PlayerObjectiveRecord value4(Integer value) {
-        setGameMissionId(value);
+        setScaleId(value);
         return this;
     }
 
     @Override
     public PlayerObjectiveRecord value5(Integer value) {
-        setScaleId(value);
+        setLearningGoalId(value);
         return this;
     }
 
@@ -243,14 +243,14 @@ public class PlayerObjectiveRecord extends UpdatableRecordImpl<PlayerObjectiveRe
     /**
      * Create a detached, initialised PlayerObjectiveRecord
      */
-    public PlayerObjectiveRecord(Integer id, String name, String threshold, Integer gameMissionId, Integer scaleId) {
+    public PlayerObjectiveRecord(Integer id, String name, String threshold, Integer scaleId, Integer learningGoalId) {
         super(PlayerObjective.PLAYER_OBJECTIVE);
 
         setId(id);
         setName(name);
         setThreshold(threshold);
-        setGameMissionId(gameMissionId);
         setScaleId(scaleId);
+        setLearningGoalId(learningGoalId);
         resetChangedOnNotNull();
     }
 }

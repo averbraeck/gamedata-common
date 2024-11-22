@@ -18,6 +18,7 @@ import nl.gamedata.data.tables.GroupEvent;
 import nl.gamedata.data.tables.GroupObjective;
 import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
+import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
 import nl.gamedata.data.tables.Player;
@@ -105,6 +106,11 @@ public class Tables {
      * The table <code>gamedata.group_score</code>.
      */
     public static final GroupScore GROUP_SCORE = GroupScore.GROUP_SCORE;
+
+    /**
+     * The table <code>gamedata.learning_goal</code>.
+     */
+    public static final LearningGoal LEARNING_GOAL = LearningGoal.LEARNING_GOAL;
 
     /**
      * The table <code>gamedata.mission_event</code>.

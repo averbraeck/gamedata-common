@@ -63,7 +63,7 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
     /**
      * The column <code>gamedata.player_event.type</code>.
      */
-    public final TableField<PlayerEventRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+    public final TableField<PlayerEventRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(45).nullable(false).defaultValue(DSL.field(DSL.raw("'DEFAULT'"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>gamedata.player_event.key</code>.

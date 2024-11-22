@@ -63,7 +63,7 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
     /**
      * The column <code>gamedata.group_event.type</code>.
      */
-    public final TableField<GroupEventRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+    public final TableField<GroupEventRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(45).nullable(false).defaultValue(DSL.field(DSL.raw("'DEFAULT'"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>gamedata.group_event.key</code>.

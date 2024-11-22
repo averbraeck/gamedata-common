@@ -63,7 +63,7 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
     /**
      * The column <code>gamedata.mission_event.type</code>.
      */
-    public final TableField<MissionEventRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+    public final TableField<MissionEventRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(45).nullable(false).defaultValue(DSL.field(DSL.raw("'DEFAULT'"), SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>gamedata.mission_event.key</code>.

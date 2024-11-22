@@ -70,14 +70,14 @@ public class PlayerObjective extends TableImpl<PlayerObjectiveRecord> {
     public final TableField<PlayerObjectiveRecord, String> THRESHOLD = createField(DSL.name("threshold"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.player_objective.game_mission_id</code>.
-     */
-    public final TableField<PlayerObjectiveRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
      * The column <code>gamedata.player_objective.scale_id</code>.
      */
     public final TableField<PlayerObjectiveRecord, Integer> SCALE_ID = createField(DSL.name("scale_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.player_objective.learning_goal_id</code>.
+     */
+    public final TableField<PlayerObjectiveRecord, Integer> LEARNING_GOAL_ID = createField(DSL.name("learning_goal_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private PlayerObjective(Name alias, Table<PlayerObjectiveRecord> aliased) {
         this(alias, aliased, null);
@@ -119,7 +119,7 @@ public class PlayerObjective extends TableImpl<PlayerObjectiveRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYER_OBJECTIVE_FK_PLAYER_OBJECTIVE_GAME_MISSION1_IDX, Indexes.PLAYER_OBJECTIVE_FK_PLAYER_OBJECTIVE_SCALE1_IDX);
+        return Arrays.asList(Indexes.PLAYER_OBJECTIVE_FK_PLAYER_OBJECTIVE_LEARNING_GOAL1_IDX, Indexes.PLAYER_OBJECTIVE_FK_PLAYER_OBJECTIVE_SCALE1_IDX);
     }
 
     @Override
@@ -139,22 +139,11 @@ public class PlayerObjective extends TableImpl<PlayerObjectiveRecord> {
 
     @Override
     public List<ForeignKey<PlayerObjectiveRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYER_OBJECTIVE_GAME_MISSION1, Keys.FK_PLAYER_OBJECTIVE_SCALE1);
+        return Arrays.asList(Keys.FK_PLAYER_OBJECTIVE_SCALE1, Keys.FK_PLAYER_OBJECTIVE_LEARNING_GOAL1);
     }
 
-    private transient GameMission _gameMission;
     private transient Scale _scale;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.game_mission</code>
-     * table.
-     */
-    public GameMission gameMission() {
-        if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_PLAYER_OBJECTIVE_GAME_MISSION1);
-
-        return _gameMission;
-    }
+    private transient LearningGoal _learningGoal;
 
     /**
      * Get the implicit join path to the <code>gamedata.scale</code> table.
@@ -164,6 +153,17 @@ public class PlayerObjective extends TableImpl<PlayerObjectiveRecord> {
             _scale = new Scale(this, Keys.FK_PLAYER_OBJECTIVE_SCALE1);
 
         return _scale;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.learning_goal</code>
+     * table.
+     */
+    public LearningGoal learningGoal() {
+        if (_learningGoal == null)
+            _learningGoal = new LearningGoal(this, Keys.FK_PLAYER_OBJECTIVE_LEARNING_GOAL1);
+
+        return _learningGoal;
     }
 
     @Override

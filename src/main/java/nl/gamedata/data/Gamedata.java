@@ -21,6 +21,7 @@ import nl.gamedata.data.tables.GroupEvent;
 import nl.gamedata.data.tables.GroupObjective;
 import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
+import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
 import nl.gamedata.data.tables.Player;
@@ -121,6 +122,11 @@ public class Gamedata extends SchemaImpl {
     public final GroupScore GROUP_SCORE = GroupScore.GROUP_SCORE;
 
     /**
+     * The table <code>gamedata.learning_goal</code>.
+     */
+    public final LearningGoal LEARNING_GOAL = LearningGoal.LEARNING_GOAL;
+
+    /**
      * The table <code>gamedata.mission_event</code>.
      */
     public final MissionEvent MISSION_EVENT = MissionEvent.MISSION_EVENT;
@@ -200,6 +206,7 @@ public class Gamedata extends SchemaImpl {
             GroupObjective.GROUP_OBJECTIVE,
             GroupRole.GROUP_ROLE,
             GroupScore.GROUP_SCORE,
+            LearningGoal.LEARNING_GOAL,
             MissionEvent.MISSION_EVENT,
             Organization.ORGANIZATION,
             Player.PLAYER,
