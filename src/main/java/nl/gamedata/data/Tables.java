@@ -4,7 +4,7 @@
 package nl.gamedata.data;
 
 
-import nl.gamedata.data.tables.DashboardSetting;
+import nl.gamedata.data.tables.AccessToken;
 import nl.gamedata.data.tables.Game;
 import nl.gamedata.data.tables.GameAccess;
 import nl.gamedata.data.tables.GameMission;
@@ -26,6 +26,8 @@ import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
 import nl.gamedata.data.tables.PlayerObjective;
 import nl.gamedata.data.tables.PlayerScore;
+import nl.gamedata.data.tables.PrivateDashboard;
+import nl.gamedata.data.tables.PublicDashboard;
 import nl.gamedata.data.tables.Scale;
 import nl.gamedata.data.tables.SessionRole;
 import nl.gamedata.data.tables.User;
@@ -38,9 +40,9 @@ import nl.gamedata.data.tables.User;
 public class Tables {
 
     /**
-     * The table <code>gamedata.dashboard_setting</code>.
+     * The table <code>gamedata.access_token</code>.
      */
-    public static final DashboardSetting DASHBOARD_SETTING = DashboardSetting.DASHBOARD_SETTING;
+    public static final AccessToken ACCESS_TOKEN = AccessToken.ACCESS_TOKEN;
 
     /**
      * The table <code>gamedata.game</code>.
@@ -146,6 +148,16 @@ public class Tables {
      * The table <code>gamedata.player_score</code>.
      */
     public static final PlayerScore PLAYER_SCORE = PlayerScore.PLAYER_SCORE;
+
+    /**
+     * The table <code>gamedata.private_dashboard</code>.
+     */
+    public static final PrivateDashboard PRIVATE_DASHBOARD = PrivateDashboard.PRIVATE_DASHBOARD;
+
+    /**
+     * The table <code>gamedata.public_dashboard</code>.
+     */
+    public static final PublicDashboard PUBLIC_DASHBOARD = PublicDashboard.PUBLIC_DASHBOARD;
 
     /**
      * The table <code>gamedata.scale</code>.

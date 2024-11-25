@@ -9,17 +9,19 @@ import java.util.List;
 import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
+import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
 import nl.gamedata.data.tables.records.ScaleRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
+import org.jooq.Function7;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -82,6 +84,11 @@ public class Scale extends TableImpl<ScaleRecord> {
      */
     public final TableField<ScaleRecord, String> VALUE_SCORES = createField(DSL.name("value_scores"), SQLDataType.VARCHAR(512).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
 
+    /**
+     * The column <code>gamedata.scale.game_id</code>.
+     */
+    public final TableField<ScaleRecord, Integer> GAME_ID = createField(DSL.name("game_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
     private Scale(Name alias, Table<ScaleRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -121,6 +128,11 @@ public class Scale extends TableImpl<ScaleRecord> {
     }
 
     @Override
+    public List<Index> getIndexes() {
+        return Arrays.asList(Indexes.SCALE_FK_SCALE_GAME1_IDX);
+    }
+
+    @Override
     public Identity<ScaleRecord, Integer> getIdentity() {
         return (Identity<ScaleRecord, Integer>) super.getIdentity();
     }
@@ -133,6 +145,23 @@ public class Scale extends TableImpl<ScaleRecord> {
     @Override
     public List<UniqueKey<ScaleRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.KEY_SCALE_ID_UNIQUE, Keys.KEY_SCALE_TYPE_UNIQUE);
+    }
+
+    @Override
+    public List<ForeignKey<ScaleRecord, ?>> getReferences() {
+        return Arrays.asList(Keys.FK_SCALE_GAME1);
+    }
+
+    private transient Game _game;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game</code> table.
+     */
+    public Game game() {
+        if (_game == null)
+            _game = new Game(this, Keys.FK_SCALE_GAME1);
+
+        return _game;
     }
 
     @Override
@@ -175,18 +204,18 @@ public class Scale extends TableImpl<ScaleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, Double, Double, String, String> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Integer, String, Double, Double, String, String, Integer> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function7<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -194,7 +223,7 @@ public class Scale extends TableImpl<ScaleRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

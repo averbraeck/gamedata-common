@@ -72,17 +72,17 @@ public class GameToken extends TableImpl<GameTokenRecord> {
     /**
      * The column <code>gamedata.game_token.data_writer</code>.
      */
-    public final TableField<GameTokenRecord, Byte> DATA_WRITER = createField(DSL.name("data_writer"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
+    public final TableField<GameTokenRecord, Byte> DATA_WRITER = createField(DSL.name("data_writer"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.game_token.result_reader</code>.
      */
-    public final TableField<GameTokenRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
+    public final TableField<GameTokenRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_token.game_access_id</code>.
+     * The column <code>gamedata.game_token.game_id</code>.
      */
-    public final TableField<GameTokenRecord, Integer> GAME_ACCESS_ID = createField(DSL.name("game_access_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<GameTokenRecord, Integer> GAME_ID = createField(DSL.name("game_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GameToken(Name alias, Table<GameTokenRecord> aliased) {
         this(alias, aliased, null);
@@ -124,7 +124,7 @@ public class GameToken extends TableImpl<GameTokenRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAME_TOKEN_FK_GAME_TOKEN_GAME_ACCESS1_IDX);
+        return Arrays.asList(Indexes.GAME_TOKEN_FK_GAME_TOKEN_GAME1_IDX);
     }
 
     @Override
@@ -139,25 +139,24 @@ public class GameToken extends TableImpl<GameTokenRecord> {
 
     @Override
     public List<UniqueKey<GameTokenRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_GAME_TOKEN_ID_UNIQUE, Keys.KEY_GAME_TOKEN_VALUE_UNIQUE);
+        return Arrays.asList(Keys.KEY_GAME_TOKEN_ID_UNIQUE);
     }
 
     @Override
     public List<ForeignKey<GameTokenRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAME_TOKEN_GAME_ACCESS1);
+        return Arrays.asList(Keys.FK_GAME_TOKEN_GAME1);
     }
 
-    private transient GameAccess _gameAccess;
+    private transient Game _game;
 
     /**
-     * Get the implicit join path to the <code>gamedata.game_access</code>
-     * table.
+     * Get the implicit join path to the <code>gamedata.game</code> table.
      */
-    public GameAccess gameAccess() {
-        if (_gameAccess == null)
-            _gameAccess = new GameAccess(this, Keys.FK_GAME_TOKEN_GAME_ACCESS1);
+    public Game game() {
+        if (_game == null)
+            _game = new Game(this, Keys.FK_GAME_TOKEN_GAME1);
 
-        return _gameAccess;
+        return _game;
     }
 
     @Override

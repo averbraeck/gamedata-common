@@ -92,16 +92,16 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
     }
 
     /**
-     * Setter for <code>gamedata.game_token.game_access_id</code>.
+     * Setter for <code>gamedata.game_token.game_id</code>.
      */
-    public void setGameAccessId(Integer value) {
+    public void setGameId(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>gamedata.game_token.game_access_id</code>.
+     * Getter for <code>gamedata.game_token.game_id</code>.
      */
-    public Integer getGameAccessId() {
+    public Integer getGameId() {
         return (Integer) get(5);
     }
 
@@ -155,7 +155,7 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
 
     @Override
     public Field<Integer> field6() {
-        return GameToken.GAME_TOKEN.GAME_ACCESS_ID;
+        return GameToken.GAME_TOKEN.GAME_ID;
     }
 
     @Override
@@ -185,7 +185,7 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
 
     @Override
     public Integer component6() {
-        return getGameAccessId();
+        return getGameId();
     }
 
     @Override
@@ -215,7 +215,7 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
 
     @Override
     public Integer value6() {
-        return getGameAccessId();
+        return getGameId();
     }
 
     @Override
@@ -250,7 +250,7 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
 
     @Override
     public GameTokenRecord value6(Integer value) {
-        setGameAccessId(value);
+        setGameId(value);
         return this;
     }
 
@@ -279,7 +279,7 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
     /**
      * Create a detached, initialised GameTokenRecord
      */
-    public GameTokenRecord(Integer id, String name, String value, Byte dataWriter, Byte resultReader, Integer gameAccessId) {
+    public GameTokenRecord(Integer id, String name, String value, Byte dataWriter, Byte resultReader, Integer gameId) {
         super(GameToken.GAME_TOKEN);
 
         setId(id);
@@ -287,7 +287,7 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
         setValue(value);
         setDataWriter(dataWriter);
         setResultReader(resultReader);
-        setGameAccessId(gameAccessId);
+        setGameId(gameId);
         resetChangedOnNotNull();
     }
 }

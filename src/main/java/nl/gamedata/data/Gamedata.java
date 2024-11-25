@@ -7,7 +7,7 @@ package nl.gamedata.data;
 import java.util.Arrays;
 import java.util.List;
 
-import nl.gamedata.data.tables.DashboardSetting;
+import nl.gamedata.data.tables.AccessToken;
 import nl.gamedata.data.tables.Game;
 import nl.gamedata.data.tables.GameAccess;
 import nl.gamedata.data.tables.GameMission;
@@ -29,6 +29,8 @@ import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
 import nl.gamedata.data.tables.PlayerObjective;
 import nl.gamedata.data.tables.PlayerScore;
+import nl.gamedata.data.tables.PrivateDashboard;
+import nl.gamedata.data.tables.PublicDashboard;
 import nl.gamedata.data.tables.Scale;
 import nl.gamedata.data.tables.SessionRole;
 import nl.gamedata.data.tables.User;
@@ -52,9 +54,9 @@ public class Gamedata extends SchemaImpl {
     public static final Gamedata GAMEDATA = new Gamedata();
 
     /**
-     * The table <code>gamedata.dashboard_setting</code>.
+     * The table <code>gamedata.access_token</code>.
      */
-    public final DashboardSetting DASHBOARD_SETTING = DashboardSetting.DASHBOARD_SETTING;
+    public final AccessToken ACCESS_TOKEN = AccessToken.ACCESS_TOKEN;
 
     /**
      * The table <code>gamedata.game</code>.
@@ -162,6 +164,16 @@ public class Gamedata extends SchemaImpl {
     public final PlayerScore PLAYER_SCORE = PlayerScore.PLAYER_SCORE;
 
     /**
+     * The table <code>gamedata.private_dashboard</code>.
+     */
+    public final PrivateDashboard PRIVATE_DASHBOARD = PrivateDashboard.PRIVATE_DASHBOARD;
+
+    /**
+     * The table <code>gamedata.public_dashboard</code>.
+     */
+    public final PublicDashboard PUBLIC_DASHBOARD = PublicDashboard.PUBLIC_DASHBOARD;
+
+    /**
      * The table <code>gamedata.scale</code>.
      */
     public final Scale SCALE = Scale.SCALE;
@@ -192,7 +204,7 @@ public class Gamedata extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            DashboardSetting.DASHBOARD_SETTING,
+            AccessToken.ACCESS_TOKEN,
             Game.GAME,
             GameAccess.GAME_ACCESS,
             GameMission.GAME_MISSION,
@@ -214,6 +226,8 @@ public class Gamedata extends SchemaImpl {
             PlayerEvent.PLAYER_EVENT,
             PlayerObjective.PLAYER_OBJECTIVE,
             PlayerScore.PLAYER_SCORE,
+            PrivateDashboard.PRIVATE_DASHBOARD,
+            PublicDashboard.PUBLIC_DASHBOARD,
             Scale.SCALE,
             SessionRole.SESSION_ROLE,
             User.USER
