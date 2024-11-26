@@ -78,16 +78,16 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
     }
 
     /**
-     * Setter for <code>gamedata.session_role.user_id</code>.
+     * Setter for <code>gamedata.session_role.organization_role_id</code>.
      */
-    public void setUserId(Integer value) {
+    public void setOrganizationRoleId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>gamedata.session_role.user_id</code>.
+     * Getter for <code>gamedata.session_role.organization_role_id</code>.
      */
-    public Integer getUserId() {
+    public Integer getOrganizationRoleId() {
         return (Integer) get(4);
     }
 
@@ -136,7 +136,7 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
 
     @Override
     public Field<Integer> field5() {
-        return SessionRole.SESSION_ROLE.USER_ID;
+        return SessionRole.SESSION_ROLE.ORGANIZATION_ROLE_ID;
     }
 
     @Override
@@ -161,7 +161,7 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
 
     @Override
     public Integer component5() {
-        return getUserId();
+        return getOrganizationRoleId();
     }
 
     @Override
@@ -186,7 +186,7 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
 
     @Override
     public Integer value5() {
-        return getUserId();
+        return getOrganizationRoleId();
     }
 
     @Override
@@ -215,7 +215,7 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
 
     @Override
     public SessionRoleRecord value5(Integer value) {
-        setUserId(value);
+        setOrganizationRoleId(value);
         return this;
     }
 
@@ -243,14 +243,14 @@ public class SessionRoleRecord extends UpdatableRecordImpl<SessionRoleRecord> im
     /**
      * Create a detached, initialised SessionRoleRecord
      */
-    public SessionRoleRecord(Integer id, Byte sessionAdmin, Byte resultReader, Integer gameSessionId, Integer userId) {
+    public SessionRoleRecord(Integer id, Byte sessionAdmin, Byte resultReader, Integer gameSessionId, Integer organizationRoleId) {
         super(SessionRole.SESSION_ROLE);
 
         setId(id);
         setSessionAdmin(sessionAdmin);
         setResultReader(resultReader);
         setGameSessionId(gameSessionId);
-        setUserId(userId);
+        setOrganizationRoleId(organizationRoleId);
         resetChangedOnNotNull();
     }
 }

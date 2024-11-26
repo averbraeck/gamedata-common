@@ -75,9 +75,9 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
     public final TableField<SessionRoleRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.session_role.user_id</code>.
+     * The column <code>gamedata.session_role.organization_role_id</code>.
      */
-    public final TableField<SessionRoleRecord, Integer> USER_ID = createField(DSL.name("user_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<SessionRoleRecord, Integer> ORGANIZATION_ROLE_ID = createField(DSL.name("organization_role_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private SessionRole(Name alias, Table<SessionRoleRecord> aliased) {
         this(alias, aliased, null);
@@ -119,7 +119,7 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.SESSION_ROLE_FK_SESSION_ROLE_GAME_SESSION1_IDX, Indexes.SESSION_ROLE_FK_SESSION_ROLE_USER1_IDX);
+        return Arrays.asList(Indexes.SESSION_ROLE_FK_SESSION_ROLE_GAME_SESSION1_IDX, Indexes.SESSION_ROLE_FK_SESSION_ROLE_ORGANIZATION_ROLE1_IDX);
     }
 
     @Override
@@ -139,11 +139,11 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
 
     @Override
     public List<ForeignKey<SessionRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_SESSION_ROLE_GAME_SESSION1, Keys.FK_SESSION_ROLE_USER1);
+        return Arrays.asList(Keys.FK_SESSION_ROLE_GAME_SESSION1, Keys.FK_SESSION_ROLE_ORGANIZATION_ROLE1);
     }
 
     private transient GameSession _gameSession;
-    private transient User _user;
+    private transient OrganizationRole _organizationRole;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_session</code>
@@ -157,13 +157,14 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
     }
 
     /**
-     * Get the implicit join path to the <code>gamedata.user</code> table.
+     * Get the implicit join path to the <code>gamedata.organization_role</code>
+     * table.
      */
-    public User user() {
-        if (_user == null)
-            _user = new User(this, Keys.FK_SESSION_ROLE_USER1);
+    public OrganizationRole organizationRole() {
+        if (_organizationRole == null)
+            _organizationRole = new OrganizationRole(this, Keys.FK_SESSION_ROLE_ORGANIZATION_ROLE1);
 
-        return _user;
+        return _organizationRole;
     }
 
     @Override
