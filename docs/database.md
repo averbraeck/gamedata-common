@@ -6,7 +6,7 @@ The gamedata database is implemented in mysql / mariadb as a relational SQL data
 
 The database design looks as follows:
 
-![](20241125_Gamedata.png)
+![](20241126_Gamedata.png)
 
 
 ## Tables
