@@ -65,9 +65,9 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
     public final TableField<SessionRoleRecord, Byte> SESSION_ADMIN = createField(DSL.name("session_admin"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>gamedata.session_role.result_reader</code>.
+     * The column <code>gamedata.session_role.session_viewer</code>.
      */
-    public final TableField<SessionRoleRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
+    public final TableField<SessionRoleRecord, Byte> SESSION_VIEWER = createField(DSL.name("session_viewer"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.session_role.game_session_id</code>.

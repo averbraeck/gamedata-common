@@ -64,30 +64,30 @@ public class AccessTokenRecord extends UpdatableRecordImpl<AccessTokenRecord> im
     }
 
     /**
-     * Setter for <code>gamedata.access_token.data_writer</code>.
+     * Setter for <code>gamedata.access_token.writer</code>.
      */
-    public void setDataWriter(Byte value) {
+    public void setWriter(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>gamedata.access_token.data_writer</code>.
+     * Getter for <code>gamedata.access_token.writer</code>.
      */
-    public Byte getDataWriter() {
+    public Byte getWriter() {
         return (Byte) get(3);
     }
 
     /**
-     * Setter for <code>gamedata.access_token.result_reader</code>.
+     * Setter for <code>gamedata.access_token.reader</code>.
      */
-    public void setResultReader(Byte value) {
+    public void setReader(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>gamedata.access_token.result_reader</code>.
+     * Getter for <code>gamedata.access_token.reader</code>.
      */
-    public Byte getResultReader() {
+    public Byte getReader() {
         return (Byte) get(4);
     }
 
@@ -145,12 +145,12 @@ public class AccessTokenRecord extends UpdatableRecordImpl<AccessTokenRecord> im
 
     @Override
     public Field<Byte> field4() {
-        return AccessToken.ACCESS_TOKEN.DATA_WRITER;
+        return AccessToken.ACCESS_TOKEN.WRITER;
     }
 
     @Override
     public Field<Byte> field5() {
-        return AccessToken.ACCESS_TOKEN.RESULT_READER;
+        return AccessToken.ACCESS_TOKEN.READER;
     }
 
     @Override
@@ -175,12 +175,12 @@ public class AccessTokenRecord extends UpdatableRecordImpl<AccessTokenRecord> im
 
     @Override
     public Byte component4() {
-        return getDataWriter();
+        return getWriter();
     }
 
     @Override
     public Byte component5() {
-        return getResultReader();
+        return getReader();
     }
 
     @Override
@@ -205,12 +205,12 @@ public class AccessTokenRecord extends UpdatableRecordImpl<AccessTokenRecord> im
 
     @Override
     public Byte value4() {
-        return getDataWriter();
+        return getWriter();
     }
 
     @Override
     public Byte value5() {
-        return getResultReader();
+        return getReader();
     }
 
     @Override
@@ -238,13 +238,13 @@ public class AccessTokenRecord extends UpdatableRecordImpl<AccessTokenRecord> im
 
     @Override
     public AccessTokenRecord value4(Byte value) {
-        setDataWriter(value);
+        setWriter(value);
         return this;
     }
 
     @Override
     public AccessTokenRecord value5(Byte value) {
-        setResultReader(value);
+        setReader(value);
         return this;
     }
 
@@ -279,14 +279,14 @@ public class AccessTokenRecord extends UpdatableRecordImpl<AccessTokenRecord> im
     /**
      * Create a detached, initialised AccessTokenRecord
      */
-    public AccessTokenRecord(Integer id, String name, String value, Byte dataWriter, Byte resultReader, Integer gameAccessId) {
+    public AccessTokenRecord(Integer id, String name, String value, Byte writer, Byte reader, Integer gameAccessId) {
         super(AccessToken.ACCESS_TOKEN);
 
         setId(id);
         setName(name);
         setValue(value);
-        setDataWriter(dataWriter);
-        setResultReader(resultReader);
+        setWriter(writer);
+        setReader(reader);
         setGameAccessId(gameAccessId);
         resetChangedOnNotNull();
     }

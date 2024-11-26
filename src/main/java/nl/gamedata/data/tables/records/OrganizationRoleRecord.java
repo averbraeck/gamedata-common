@@ -64,16 +64,16 @@ public class OrganizationRoleRecord extends UpdatableRecordImpl<OrganizationRole
     }
 
     /**
-     * Setter for <code>gamedata.organization_role.result_reader</code>.
+     * Setter for <code>gamedata.organization_role.session_viewer</code>.
      */
-    public void setResultReader(Byte value) {
+    public void setSessionViewer(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>gamedata.organization_role.result_reader</code>.
+     * Getter for <code>gamedata.organization_role.session_viewer</code>.
      */
-    public Byte getResultReader() {
+    public Byte getSessionViewer() {
         return (Byte) get(3);
     }
 
@@ -145,7 +145,7 @@ public class OrganizationRoleRecord extends UpdatableRecordImpl<OrganizationRole
 
     @Override
     public Field<Byte> field4() {
-        return OrganizationRole.ORGANIZATION_ROLE.RESULT_READER;
+        return OrganizationRole.ORGANIZATION_ROLE.SESSION_VIEWER;
     }
 
     @Override
@@ -175,7 +175,7 @@ public class OrganizationRoleRecord extends UpdatableRecordImpl<OrganizationRole
 
     @Override
     public Byte component4() {
-        return getResultReader();
+        return getSessionViewer();
     }
 
     @Override
@@ -205,7 +205,7 @@ public class OrganizationRoleRecord extends UpdatableRecordImpl<OrganizationRole
 
     @Override
     public Byte value4() {
-        return getResultReader();
+        return getSessionViewer();
     }
 
     @Override
@@ -238,7 +238,7 @@ public class OrganizationRoleRecord extends UpdatableRecordImpl<OrganizationRole
 
     @Override
     public OrganizationRoleRecord value4(Byte value) {
-        setResultReader(value);
+        setSessionViewer(value);
         return this;
     }
 
@@ -279,13 +279,13 @@ public class OrganizationRoleRecord extends UpdatableRecordImpl<OrganizationRole
     /**
      * Create a detached, initialised OrganizationRoleRecord
      */
-    public OrganizationRoleRecord(Integer id, Byte organizationAdmin, Byte sessionAdmin, Byte resultReader, Integer userId, Integer organizationId) {
+    public OrganizationRoleRecord(Integer id, Byte organizationAdmin, Byte sessionAdmin, Byte sessionViewer, Integer userId, Integer organizationId) {
         super(OrganizationRole.ORGANIZATION_ROLE);
 
         setId(id);
         setOrganizationAdmin(organizationAdmin);
         setSessionAdmin(sessionAdmin);
-        setResultReader(resultReader);
+        setSessionViewer(sessionViewer);
         setUserId(userId);
         setOrganizationId(organizationId);
         resetChangedOnNotNull();

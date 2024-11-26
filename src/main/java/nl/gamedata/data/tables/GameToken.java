@@ -70,14 +70,14 @@ public class GameToken extends TableImpl<GameTokenRecord> {
     public final TableField<GameTokenRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_token.data_writer</code>.
+     * The column <code>gamedata.game_token.writer</code>.
      */
-    public final TableField<GameTokenRecord, Byte> DATA_WRITER = createField(DSL.name("data_writer"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<GameTokenRecord, Byte> WRITER = createField(DSL.name("writer"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_token.result_reader</code>.
+     * The column <code>gamedata.game_token.reader</code>.
      */
-    public final TableField<GameTokenRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<GameTokenRecord, Byte> READER = createField(DSL.name("reader"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.game_token.game_id</code>.

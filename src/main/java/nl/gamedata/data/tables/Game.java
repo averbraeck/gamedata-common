@@ -14,12 +14,12 @@ import nl.gamedata.data.tables.records.GameRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
+import org.jooq.Function6;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -58,6 +58,11 @@ public class Game extends TableImpl<GameRecord> {
     public final TableField<GameRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
+     * The column <code>gamedata.game.code</code>.
+     */
+    public final TableField<GameRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(20).nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.game.name</code>.
      */
     public final TableField<GameRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
@@ -65,12 +70,17 @@ public class Game extends TableImpl<GameRecord> {
     /**
      * The column <code>gamedata.game.description</code>.
      */
-    public final TableField<GameRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.VARCHAR(255).nullable(false), this, "");
+    public final TableField<GameRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.game.token_forced</code>.
      */
     public final TableField<GameRecord, Byte> TOKEN_FORCED = createField(DSL.name("token_forced"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>gamedata.game.logo</code>.
+     */
+    public final TableField<GameRecord, String> LOGO = createField(DSL.name("logo"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
 
     private Game(Name alias, Table<GameRecord> aliased) {
         this(alias, aliased, null);
@@ -122,7 +132,7 @@ public class Game extends TableImpl<GameRecord> {
 
     @Override
     public List<UniqueKey<GameRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_GAME_ID_UNIQUE, Keys.KEY_GAME_NAME_UNIQUE);
+        return Arrays.asList(Keys.KEY_GAME_ID_UNIQUE, Keys.KEY_GAME_CODE_UNIQUE);
     }
 
     @Override
@@ -165,18 +175,18 @@ public class Game extends TableImpl<GameRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, Byte> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row6<Integer, String, String, String, Byte, String> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super Byte, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function6<? super Integer, ? super String, ? super String, ? super String, ? super Byte, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -184,7 +194,7 @@ public class Game extends TableImpl<GameRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super Byte, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super String, ? super String, ? super String, ? super Byte, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

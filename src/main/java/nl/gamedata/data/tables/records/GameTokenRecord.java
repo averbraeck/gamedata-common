@@ -64,30 +64,30 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
     }
 
     /**
-     * Setter for <code>gamedata.game_token.data_writer</code>.
+     * Setter for <code>gamedata.game_token.writer</code>.
      */
-    public void setDataWriter(Byte value) {
+    public void setWriter(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>gamedata.game_token.data_writer</code>.
+     * Getter for <code>gamedata.game_token.writer</code>.
      */
-    public Byte getDataWriter() {
+    public Byte getWriter() {
         return (Byte) get(3);
     }
 
     /**
-     * Setter for <code>gamedata.game_token.result_reader</code>.
+     * Setter for <code>gamedata.game_token.reader</code>.
      */
-    public void setResultReader(Byte value) {
+    public void setReader(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>gamedata.game_token.result_reader</code>.
+     * Getter for <code>gamedata.game_token.reader</code>.
      */
-    public Byte getResultReader() {
+    public Byte getReader() {
         return (Byte) get(4);
     }
 
@@ -145,12 +145,12 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
 
     @Override
     public Field<Byte> field4() {
-        return GameToken.GAME_TOKEN.DATA_WRITER;
+        return GameToken.GAME_TOKEN.WRITER;
     }
 
     @Override
     public Field<Byte> field5() {
-        return GameToken.GAME_TOKEN.RESULT_READER;
+        return GameToken.GAME_TOKEN.READER;
     }
 
     @Override
@@ -175,12 +175,12 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
 
     @Override
     public Byte component4() {
-        return getDataWriter();
+        return getWriter();
     }
 
     @Override
     public Byte component5() {
-        return getResultReader();
+        return getReader();
     }
 
     @Override
@@ -205,12 +205,12 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
 
     @Override
     public Byte value4() {
-        return getDataWriter();
+        return getWriter();
     }
 
     @Override
     public Byte value5() {
-        return getResultReader();
+        return getReader();
     }
 
     @Override
@@ -238,13 +238,13 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
 
     @Override
     public GameTokenRecord value4(Byte value) {
-        setDataWriter(value);
+        setWriter(value);
         return this;
     }
 
     @Override
     public GameTokenRecord value5(Byte value) {
-        setResultReader(value);
+        setReader(value);
         return this;
     }
 
@@ -279,14 +279,14 @@ public class GameTokenRecord extends UpdatableRecordImpl<GameTokenRecord> implem
     /**
      * Create a detached, initialised GameTokenRecord
      */
-    public GameTokenRecord(Integer id, String name, String value, Byte dataWriter, Byte resultReader, Integer gameId) {
+    public GameTokenRecord(Integer id, String name, String value, Byte writer, Byte reader, Integer gameId) {
         super(GameToken.GAME_TOKEN);
 
         setId(id);
         setName(name);
         setValue(value);
-        setDataWriter(dataWriter);
-        setResultReader(resultReader);
+        setWriter(writer);
+        setReader(reader);
         setGameId(gameId);
         resetChangedOnNotNull();
     }

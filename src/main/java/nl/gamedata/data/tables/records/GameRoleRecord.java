@@ -50,16 +50,16 @@ public class GameRoleRecord extends UpdatableRecordImpl<GameRoleRecord> implemen
     }
 
     /**
-     * Setter for <code>gamedata.game_role.result_reader</code>.
+     * Setter for <code>gamedata.game_role.game_viewer</code>.
      */
-    public void setResultReader(Byte value) {
+    public void setGameViewer(Byte value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>gamedata.game_role.result_reader</code>.
+     * Getter for <code>gamedata.game_role.game_viewer</code>.
      */
-    public Byte getResultReader() {
+    public Byte getGameViewer() {
         return (Byte) get(2);
     }
 
@@ -126,7 +126,7 @@ public class GameRoleRecord extends UpdatableRecordImpl<GameRoleRecord> implemen
 
     @Override
     public Field<Byte> field3() {
-        return GameRole.GAME_ROLE.RESULT_READER;
+        return GameRole.GAME_ROLE.GAME_VIEWER;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class GameRoleRecord extends UpdatableRecordImpl<GameRoleRecord> implemen
 
     @Override
     public Byte component3() {
-        return getResultReader();
+        return getGameViewer();
     }
 
     @Override
@@ -176,7 +176,7 @@ public class GameRoleRecord extends UpdatableRecordImpl<GameRoleRecord> implemen
 
     @Override
     public Byte value3() {
-        return getResultReader();
+        return getGameViewer();
     }
 
     @Override
@@ -203,7 +203,7 @@ public class GameRoleRecord extends UpdatableRecordImpl<GameRoleRecord> implemen
 
     @Override
     public GameRoleRecord value3(Byte value) {
-        setResultReader(value);
+        setGameViewer(value);
         return this;
     }
 
@@ -243,12 +243,12 @@ public class GameRoleRecord extends UpdatableRecordImpl<GameRoleRecord> implemen
     /**
      * Create a detached, initialised GameRoleRecord
      */
-    public GameRoleRecord(Integer id, Byte gameAdmin, Byte resultReader, Integer userId, Integer gameId) {
+    public GameRoleRecord(Integer id, Byte gameAdmin, Byte gameViewer, Integer userId, Integer gameId) {
         super(GameRole.GAME_ROLE);
 
         setId(id);
         setGameAdmin(gameAdmin);
-        setResultReader(resultReader);
+        setGameViewer(gameViewer);
         setUserId(userId);
         setGameId(gameId);
         resetChangedOnNotNull();

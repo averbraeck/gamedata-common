@@ -65,9 +65,9 @@ public class GameRole extends TableImpl<GameRoleRecord> {
     public final TableField<GameRoleRecord, Byte> GAME_ADMIN = createField(DSL.name("game_admin"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_role.result_reader</code>.
+     * The column <code>gamedata.game_role.game_viewer</code>.
      */
-    public final TableField<GameRoleRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<GameRoleRecord, Byte> GAME_VIEWER = createField(DSL.name("game_viewer"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.game_role.user_id</code>.

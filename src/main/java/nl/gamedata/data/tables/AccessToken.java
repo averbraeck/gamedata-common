@@ -70,14 +70,14 @@ public class AccessToken extends TableImpl<AccessTokenRecord> {
     public final TableField<AccessTokenRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.access_token.data_writer</code>.
+     * The column <code>gamedata.access_token.writer</code>.
      */
-    public final TableField<AccessTokenRecord, Byte> DATA_WRITER = createField(DSL.name("data_writer"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
+    public final TableField<AccessTokenRecord, Byte> WRITER = createField(DSL.name("writer"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
 
     /**
-     * The column <code>gamedata.access_token.result_reader</code>.
+     * The column <code>gamedata.access_token.reader</code>.
      */
-    public final TableField<AccessTokenRecord, Byte> RESULT_READER = createField(DSL.name("result_reader"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
+    public final TableField<AccessTokenRecord, Byte> READER = createField(DSL.name("reader"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.access_token.game_access_id</code>.
