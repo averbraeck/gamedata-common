@@ -20,7 +20,6 @@ import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
-import nl.gamedata.data.tables.OrgGameRole;
 import nl.gamedata.data.tables.Organization;
 import nl.gamedata.data.tables.OrganizationRole;
 import nl.gamedata.data.tables.Player;
@@ -31,7 +30,6 @@ import nl.gamedata.data.tables.PlayerScore;
 import nl.gamedata.data.tables.PrivateDashboard;
 import nl.gamedata.data.tables.PublicDashboard;
 import nl.gamedata.data.tables.Scale;
-import nl.gamedata.data.tables.SessionRole;
 import nl.gamedata.data.tables.User;
 
 
@@ -122,11 +120,6 @@ public class Tables {
     public static final MissionEvent MISSION_EVENT = MissionEvent.MISSION_EVENT;
 
     /**
-     * The table <code>gamedata.org_game_role</code>.
-     */
-    public static final OrgGameRole ORG_GAME_ROLE = OrgGameRole.ORG_GAME_ROLE;
-
-    /**
      * The table <code>gamedata.organization</code>.
      */
     public static final Organization ORGANIZATION = Organization.ORGANIZATION;
@@ -175,11 +168,6 @@ public class Tables {
      * The table <code>gamedata.scale</code>.
      */
     public static final Scale SCALE = Scale.SCALE;
-
-    /**
-     * The table <code>gamedata.session_role</code>.
-     */
-    public static final SessionRole SESSION_ROLE = SessionRole.SESSION_ROLE;
 
     /**
      * The table <code>gamedata.user</code>.

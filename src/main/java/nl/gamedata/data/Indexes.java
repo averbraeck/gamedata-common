@@ -19,7 +19,6 @@ import nl.gamedata.data.tables.GroupRole;
 import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
-import nl.gamedata.data.tables.OrgGameRole;
 import nl.gamedata.data.tables.OrganizationRole;
 import nl.gamedata.data.tables.Player;
 import nl.gamedata.data.tables.PlayerAttempt;
@@ -29,7 +28,6 @@ import nl.gamedata.data.tables.PlayerScore;
 import nl.gamedata.data.tables.PrivateDashboard;
 import nl.gamedata.data.tables.PublicDashboard;
 import nl.gamedata.data.tables.Scale;
-import nl.gamedata.data.tables.SessionRole;
 
 import org.jooq.Index;
 import org.jooq.OrderField;
@@ -69,8 +67,8 @@ public class Indexes {
     public static final Index LEARNING_GOAL_FK_LEARNING_GOAL_GAME_MISSION1_IDX = Internal.createIndex(DSL.name("fk_learning_goal_game_mission1_idx"), LearningGoal.LEARNING_GOAL, new OrderField[] { LearningGoal.LEARNING_GOAL.GAME_MISSION_ID }, false);
     public static final Index MISSION_EVENT_FK_MISSION_EVENT_GAME_MISSION1_IDX = Internal.createIndex(DSL.name("fk_mission_event_game_mission1_idx"), MissionEvent.MISSION_EVENT, new OrderField[] { MissionEvent.MISSION_EVENT.GAME_MISSION_ID }, false);
     public static final Index MISSION_EVENT_FK_MISSION_EVENT_GAME_SESSION1_IDX = Internal.createIndex(DSL.name("fk_mission_event_game_session1_idx"), MissionEvent.MISSION_EVENT, new OrderField[] { MissionEvent.MISSION_EVENT.GAME_SESSION_ID }, false);
-    public static final Index ORG_GAME_ROLE_FK_ORG_GAME_ROLE_GAME_ACCESS1_IDX = Internal.createIndex(DSL.name("fk_org_game_role_game_access1_idx"), OrgGameRole.ORG_GAME_ROLE, new OrderField[] { OrgGameRole.ORG_GAME_ROLE.GAME_ACCESS_ID }, false);
-    public static final Index ORG_GAME_ROLE_FK_ORG_GAME_ROLE_ORGANIZATION_ROLE1_IDX = Internal.createIndex(DSL.name("fk_org_game_role_organization_role1_idx"), OrgGameRole.ORG_GAME_ROLE, new OrderField[] { OrgGameRole.ORG_GAME_ROLE.ORGANIZATION_ROLE_ID }, false);
+    public static final Index ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_GAME_ACCESS1_IDX = Internal.createIndex(DSL.name("fk_organization_role_game_access1_idx"), OrganizationRole.ORGANIZATION_ROLE, new OrderField[] { OrganizationRole.ORGANIZATION_ROLE.SESSION_GAME_ACCESS_ID }, false);
+    public static final Index ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_GAME_SESSION1_IDX = Internal.createIndex(DSL.name("fk_organization_role_game_session1_idx"), OrganizationRole.ORGANIZATION_ROLE, new OrderField[] { OrganizationRole.ORGANIZATION_ROLE.SESSION_GAME_SESSION_ID }, false);
     public static final Index ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_ORGANIZATION1_IDX = Internal.createIndex(DSL.name("fk_organization_role_organization1_idx"), OrganizationRole.ORGANIZATION_ROLE, new OrderField[] { OrganizationRole.ORGANIZATION_ROLE.ORGANIZATION_ID }, false);
     public static final Index ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_USER1_IDX = Internal.createIndex(DSL.name("fk_organization_role_user1_idx"), OrganizationRole.ORGANIZATION_ROLE, new OrderField[] { OrganizationRole.ORGANIZATION_ROLE.USER_ID }, false);
     public static final Index PLAYER_ATTEMPT_FK_PLAYER_ATTEMPT_GAME_MISSION1_IDX = Internal.createIndex(DSL.name("fk_player_attempt_game_mission1_idx"), PlayerAttempt.PLAYER_ATTEMPT, new OrderField[] { PlayerAttempt.PLAYER_ATTEMPT.GAME_MISSION_ID }, false);
@@ -84,8 +82,6 @@ public class Indexes {
     public static final Index PLAYER_SCORE_FK_PLAYER_SCORE_PLAYER_OBJECTIVE1_IDX = Internal.createIndex(DSL.name("fk_player_score_player_objective1_idx"), PlayerScore.PLAYER_SCORE, new OrderField[] { PlayerScore.PLAYER_SCORE.PLAYER_OBJECTIVE_ID }, false);
     public static final Index PLAYER_SCORE_FK_PLAYER_SCORE_SCALE1_IDX = Internal.createIndex(DSL.name("fk_player_score_scale1_idx"), PlayerScore.PLAYER_SCORE, new OrderField[] { PlayerScore.PLAYER_SCORE.SCALE_ID }, false);
     public static final Index SCALE_FK_SCALE_GAME1_IDX = Internal.createIndex(DSL.name("fk_scale_game1_idx"), Scale.SCALE, new OrderField[] { Scale.SCALE.GAME_ID }, false);
-    public static final Index SESSION_ROLE_FK_SESSION_ROLE_GAME_SESSION1_IDX = Internal.createIndex(DSL.name("fk_session_role_game_session1_idx"), SessionRole.SESSION_ROLE, new OrderField[] { SessionRole.SESSION_ROLE.GAME_SESSION_ID }, false);
-    public static final Index SESSION_ROLE_FK_SESSION_ROLE_ORGANIZATION_ROLE1_IDX = Internal.createIndex(DSL.name("fk_session_role_organization_role1_idx"), SessionRole.SESSION_ROLE, new OrderField[] { SessionRole.SESSION_ROLE.ORGANIZATION_ROLE_ID }, false);
     public static final Index GAME_ACCESS_FK_TOKEN_GAME1_IDX = Internal.createIndex(DSL.name("fk_token_game1_idx"), GameAccess.GAME_ACCESS, new OrderField[] { GameAccess.GAME_ACCESS.GAME_ID }, false);
     public static final Index GAME_ACCESS_FK_TOKEN_ORGANIZATION1_IDX = Internal.createIndex(DSL.name("fk_token_organization1_idx"), GameAccess.GAME_ACCESS, new OrderField[] { GameAccess.GAME_ACCESS.ORGANIZATION_ID }, false);
     public static final Index GAME_ROLE_FK_USERROLE_GAME1_IDX = Internal.createIndex(DSL.name("fk_userrole_game1_idx"), GameRole.GAME_ROLE, new OrderField[] { GameRole.GAME_ROLE.GAME_ID }, false);

@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.OrganizationRoleRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
+import org.jooq.Function8;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -84,6 +84,18 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
      */
     public final TableField<OrganizationRoleRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
+    /**
+     * The column
+     * <code>gamedata.organization_role.session_game_access_id</code>.
+     */
+    public final TableField<OrganizationRoleRecord, Integer> SESSION_GAME_ACCESS_ID = createField(DSL.name("session_game_access_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column
+     * <code>gamedata.organization_role.session_game_session_id</code>.
+     */
+    public final TableField<OrganizationRoleRecord, Integer> SESSION_GAME_SESSION_ID = createField(DSL.name("session_game_session_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
+
     private OrganizationRole(Name alias, Table<OrganizationRoleRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -124,7 +136,7 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_ORGANIZATION1_IDX, Indexes.ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_USER1_IDX);
+        return Arrays.asList(Indexes.ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_GAME_ACCESS1_IDX, Indexes.ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_GAME_SESSION1_IDX, Indexes.ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_ORGANIZATION1_IDX, Indexes.ORGANIZATION_ROLE_FK_ORGANIZATION_ROLE_USER1_IDX);
     }
 
     @Override
@@ -144,11 +156,13 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
 
     @Override
     public List<ForeignKey<OrganizationRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_ORGANIZATION_ROLE_USER1, Keys.FK_ORGANIZATION_ROLE_ORGANIZATION1);
+        return Arrays.asList(Keys.FK_ORGANIZATION_ROLE_USER1, Keys.FK_ORGANIZATION_ROLE_ORGANIZATION1, Keys.FK_ORGANIZATION_ROLE_GAME_ACCESS1, Keys.FK_ORGANIZATION_ROLE_GAME_SESSION1);
     }
 
     private transient User _user;
     private transient Organization _organization;
+    private transient GameAccess _gameAccess;
+    private transient GameSession _gameSession;
 
     /**
      * Get the implicit join path to the <code>gamedata.user</code> table.
@@ -169,6 +183,28 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
             _organization = new Organization(this, Keys.FK_ORGANIZATION_ROLE_ORGANIZATION1);
 
         return _organization;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game_access</code>
+     * table.
+     */
+    public GameAccess gameAccess() {
+        if (_gameAccess == null)
+            _gameAccess = new GameAccess(this, Keys.FK_ORGANIZATION_ROLE_GAME_ACCESS1);
+
+        return _gameAccess;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game_session</code>
+     * table.
+     */
+    public GameSession gameSession() {
+        if (_gameSession == null)
+            _gameSession = new GameSession(this, Keys.FK_ORGANIZATION_ROLE_GAME_SESSION1);
+
+        return _gameSession;
     }
 
     @Override
@@ -211,18 +247,18 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, Byte, Byte, Byte, Integer, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row8<Integer, Byte, Byte, Byte, Integer, Integer, Integer, Integer> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function8<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -230,7 +266,7 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function8<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
