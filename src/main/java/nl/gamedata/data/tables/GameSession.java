@@ -17,13 +17,13 @@ import nl.gamedata.data.tables.records.GameSessionRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function12;
+import org.jooq.Function13;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -105,6 +105,11 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * The column <code>gamedata.game_session.token_for_dashboard</code>.
      */
     public final TableField<GameSessionRecord, Byte> TOKEN_FOR_DASHBOARD = createField(DSL.name("token_for_dashboard"), SQLDataType.TINYINT.nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.game_session.archived</code>.
+     */
+    public final TableField<GameSessionRecord, Byte> ARCHIVED = createField(DSL.name("archived"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.game_session.game_version_id</code>.
@@ -244,18 +249,18 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Integer, String, String, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Byte, Integer, Integer> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Integer, String, String, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Byte, Byte, Integer, Integer> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function13<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -263,7 +268,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function13<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
