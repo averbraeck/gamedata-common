@@ -30,6 +30,7 @@ import nl.gamedata.data.tables.PrivateDashboard;
 import nl.gamedata.data.tables.PublicDashboard;
 import nl.gamedata.data.tables.Scale;
 import nl.gamedata.data.tables.User;
+import nl.gamedata.data.tables.UserRole;
 import nl.gamedata.data.tables.records.AccessTokenRecord;
 import nl.gamedata.data.tables.records.GameAccessRecord;
 import nl.gamedata.data.tables.records.GameMissionRecord;
@@ -56,6 +57,7 @@ import nl.gamedata.data.tables.records.PrivateDashboardRecord;
 import nl.gamedata.data.tables.records.PublicDashboardRecord;
 import nl.gamedata.data.tables.records.ScaleRecord;
 import nl.gamedata.data.tables.records.UserRecord;
+import nl.gamedata.data.tables.records.UserRoleRecord;
 
 import org.jooq.ForeignKey;
 import org.jooq.TableField;
@@ -133,6 +135,8 @@ public class Keys {
     public static final UniqueKey<UserRecord> KEY_USER_ID_UNIQUE = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_id_UNIQUE"), new TableField[] { User.USER.ID }, true);
     public static final UniqueKey<UserRecord> KEY_USER_NAME_UNIQUE = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_name_UNIQUE"), new TableField[] { User.USER.NAME }, true);
     public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_PRIMARY"), new TableField[] { User.USER.ID }, true);
+    public static final UniqueKey<UserRoleRecord> KEY_USER_ROLE_ID_UNIQUE = Internal.createUniqueKey(UserRole.USER_ROLE, DSL.name("KEY_user_role_id_UNIQUE"), new TableField[] { UserRole.USER_ROLE.ID }, true);
+    public static final UniqueKey<UserRoleRecord> KEY_USER_ROLE_PRIMARY = Internal.createUniqueKey(UserRole.USER_ROLE, DSL.name("KEY_user_role_PRIMARY"), new TableField[] { UserRole.USER_ROLE.ID }, true);
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -175,4 +179,8 @@ public class Keys {
     public static final ForeignKey<PrivateDashboardRecord, GameMissionRecord> FK_PRIVATE_DASHBOARD_GAME_MISSION1 = Internal.createForeignKey(PrivateDashboard.PRIVATE_DASHBOARD, DSL.name("fk_private_dashboard_game_mission1"), new TableField[] { PrivateDashboard.PRIVATE_DASHBOARD.GAME_MISSION_ID }, Keys.KEY_GAME_MISSION_PRIMARY, new TableField[] { GameMission.GAME_MISSION.ID }, true);
     public static final ForeignKey<PublicDashboardRecord, GameMissionRecord> FK_PUBLIC_DASHBOARD_GAME_MISSION1 = Internal.createForeignKey(PublicDashboard.PUBLIC_DASHBOARD, DSL.name("fk_public_dashboard_game_mission1"), new TableField[] { PublicDashboard.PUBLIC_DASHBOARD.GAME_MISSION_ID }, Keys.KEY_GAME_MISSION_PRIMARY, new TableField[] { GameMission.GAME_MISSION.ID }, true);
     public static final ForeignKey<ScaleRecord, GameRecord> FK_SCALE_GAME1 = Internal.createForeignKey(Scale.SCALE, DSL.name("fk_scale_game1"), new TableField[] { Scale.SCALE.GAME_ID }, Keys.KEY_GAME_PRIMARY, new TableField[] { Game.GAME.ID }, true);
+    public static final ForeignKey<UserRoleRecord, GameAccessRecord> FK_USER_ROLE_GAME_ACCESS1 = Internal.createForeignKey(UserRole.USER_ROLE, DSL.name("fk_user_role_game_access1"), new TableField[] { UserRole.USER_ROLE.SESSION_GAME_ACCESS_ID }, Keys.KEY_GAME_ACCESS_PRIMARY, new TableField[] { GameAccess.GAME_ACCESS.ID }, true);
+    public static final ForeignKey<UserRoleRecord, GameSessionRecord> FK_USER_ROLE_GAME_SESSION1 = Internal.createForeignKey(UserRole.USER_ROLE, DSL.name("fk_user_role_game_session1"), new TableField[] { UserRole.USER_ROLE.SESSION_GAME_SESSION_ID }, Keys.KEY_GAME_SESSION_PRIMARY, new TableField[] { GameSession.GAME_SESSION.ID }, true);
+    public static final ForeignKey<UserRoleRecord, OrganizationRecord> FK_USER_ROLE_ORGANIZATION1 = Internal.createForeignKey(UserRole.USER_ROLE, DSL.name("fk_user_role_organization1"), new TableField[] { UserRole.USER_ROLE.ORGANIZATION_ID }, Keys.KEY_ORGANIZATION_PRIMARY, new TableField[] { Organization.ORGANIZATION.ID }, true);
+    public static final ForeignKey<UserRoleRecord, UserRecord> FK_USER_ROLE_USER1 = Internal.createForeignKey(UserRole.USER_ROLE, DSL.name("fk_user_role_user1"), new TableField[] { UserRole.USER_ROLE.USER_ID }, Keys.KEY_USER_PRIMARY, new TableField[] { User.USER.ID }, true);
 }

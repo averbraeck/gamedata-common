@@ -33,6 +33,7 @@ import nl.gamedata.data.tables.PrivateDashboard;
 import nl.gamedata.data.tables.PublicDashboard;
 import nl.gamedata.data.tables.Scale;
 import nl.gamedata.data.tables.User;
+import nl.gamedata.data.tables.UserRole;
 
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -183,6 +184,11 @@ public class Gamedata extends SchemaImpl {
     public final User USER = User.USER;
 
     /**
+     * The table <code>gamedata.user_role</code>.
+     */
+    public final UserRole USER_ROLE = UserRole.USER_ROLE;
+
+    /**
      * No further instances allowed
      */
     private Gamedata() {
@@ -223,7 +229,8 @@ public class Gamedata extends SchemaImpl {
             PrivateDashboard.PRIVATE_DASHBOARD,
             PublicDashboard.PUBLIC_DASHBOARD,
             Scale.SCALE,
-            User.USER
+            User.USER,
+            UserRole.USER_ROLE
         );
     }
 }

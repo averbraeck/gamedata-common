@@ -27,6 +27,7 @@ import nl.gamedata.data.tables.PlayerScore;
 import nl.gamedata.data.tables.PrivateDashboard;
 import nl.gamedata.data.tables.PublicDashboard;
 import nl.gamedata.data.tables.Scale;
+import nl.gamedata.data.tables.UserRole;
 
 import org.jooq.Index;
 import org.jooq.OrderField;
@@ -81,4 +82,8 @@ public class Indexes {
     public static final Index PRIVATE_DASHBOARD_FK_PRIVATE_DASHBOARD_GAME_MISSION1_IDX = Internal.createIndex(DSL.name("fk_private_dashboard_game_mission1_idx"), PrivateDashboard.PRIVATE_DASHBOARD, new OrderField[] { PrivateDashboard.PRIVATE_DASHBOARD.GAME_MISSION_ID }, false);
     public static final Index PUBLIC_DASHBOARD_FK_PUBLIC_DASHBOARD_GAME_MISSION1_IDX = Internal.createIndex(DSL.name("fk_public_dashboard_game_mission1_idx"), PublicDashboard.PUBLIC_DASHBOARD, new OrderField[] { PublicDashboard.PUBLIC_DASHBOARD.GAME_MISSION_ID }, false);
     public static final Index SCALE_FK_SCALE_GAME1_IDX = Internal.createIndex(DSL.name("fk_scale_game1_idx"), Scale.SCALE, new OrderField[] { Scale.SCALE.GAME_ID }, false);
+    public static final Index USER_ROLE_FK_USER_ROLE_GAME_ACCESS1_IDX = Internal.createIndex(DSL.name("fk_user_role_game_access1_idx"), UserRole.USER_ROLE, new OrderField[] { UserRole.USER_ROLE.SESSION_GAME_ACCESS_ID }, false);
+    public static final Index USER_ROLE_FK_USER_ROLE_GAME_SESSION1_IDX = Internal.createIndex(DSL.name("fk_user_role_game_session1_idx"), UserRole.USER_ROLE, new OrderField[] { UserRole.USER_ROLE.SESSION_GAME_SESSION_ID }, false);
+    public static final Index USER_ROLE_FK_USER_ROLE_ORGANIZATION1_IDX = Internal.createIndex(DSL.name("fk_user_role_organization1_idx"), UserRole.USER_ROLE, new OrderField[] { UserRole.USER_ROLE.ORGANIZATION_ID }, false);
+    public static final Index USER_ROLE_FK_USER_ROLE_USER1_IDX = Internal.createIndex(DSL.name("fk_user_role_user1_idx"), UserRole.USER_ROLE, new OrderField[] { UserRole.USER_ROLE.USER_ID }, false);
 }
