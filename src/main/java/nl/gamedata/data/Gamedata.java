@@ -24,7 +24,6 @@ import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
-import nl.gamedata.data.tables.OrganizationRole;
 import nl.gamedata.data.tables.Player;
 import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
@@ -139,11 +138,6 @@ public class Gamedata extends SchemaImpl {
     public final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
-     * The table <code>gamedata.organization_role</code>.
-     */
-    public final OrganizationRole ORGANIZATION_ROLE = OrganizationRole.ORGANIZATION_ROLE;
-
-    /**
      * The table <code>gamedata.player</code>.
      */
     public final Player PLAYER = Player.PLAYER;
@@ -221,7 +215,6 @@ public class Gamedata extends SchemaImpl {
             LearningGoal.LEARNING_GOAL,
             MissionEvent.MISSION_EVENT,
             Organization.ORGANIZATION,
-            OrganizationRole.ORGANIZATION_ROLE,
             Player.PLAYER,
             PlayerAttempt.PLAYER_ATTEMPT,
             PlayerEvent.PLAYER_EVENT,

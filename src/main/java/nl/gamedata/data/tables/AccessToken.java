@@ -124,7 +124,7 @@ public class AccessToken extends TableImpl<AccessTokenRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.ACCESS_TOKEN_FK_GAME_TOKEN_GAME_ACCESS1_IDX);
+        return Arrays.asList(Indexes.ACCESS_TOKEN_FK_ACCESS_TOKEN_GAME_ACCESS1_IDX);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class AccessToken extends TableImpl<AccessTokenRecord> {
 
     @Override
     public List<ForeignKey<AccessTokenRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAME_TOKEN_GAME_ACCESS1);
+        return Arrays.asList(Keys.FK_ACCESS_TOKEN_GAME_ACCESS1);
     }
 
     private transient GameAccess _gameAccess;
@@ -155,7 +155,7 @@ public class AccessToken extends TableImpl<AccessTokenRecord> {
      */
     public GameAccess gameAccess() {
         if (_gameAccess == null)
-            _gameAccess = new GameAccess(this, Keys.FK_GAME_TOKEN_GAME_ACCESS1);
+            _gameAccess = new GameAccess(this, Keys.FK_ACCESS_TOKEN_GAME_ACCESS1);
 
         return _gameAccess;
     }

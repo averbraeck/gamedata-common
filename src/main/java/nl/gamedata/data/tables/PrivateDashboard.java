@@ -119,7 +119,7 @@ public class PrivateDashboard extends TableImpl<PrivateDashboardRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PRIVATE_DASHBOARD_FK_DASHBOARD_SETTING_GAME_ACCESS1_IDX, Indexes.PRIVATE_DASHBOARD_FK_DASHBOARD_SETTING_GAME_MISSION1_IDX);
+        return Arrays.asList(Indexes.PRIVATE_DASHBOARD_FK_PRIVATE_DASHBOARD_GAME_ACCESS1_IDX, Indexes.PRIVATE_DASHBOARD_FK_PRIVATE_DASHBOARD_GAME_MISSION1_IDX);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class PrivateDashboard extends TableImpl<PrivateDashboardRecord> {
 
     @Override
     public List<ForeignKey<PrivateDashboardRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_DASHBOARD_SETTING_GAME_MISSION1, Keys.FK_DASHBOARD_SETTING_GAME_ACCESS1);
+        return Arrays.asList(Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1, Keys.FK_PRIVATE_DASHBOARD_GAME_ACCESS1);
     }
 
     private transient GameMission _gameMission;
@@ -151,7 +151,7 @@ public class PrivateDashboard extends TableImpl<PrivateDashboardRecord> {
      */
     public GameMission gameMission() {
         if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_DASHBOARD_SETTING_GAME_MISSION1);
+            _gameMission = new GameMission(this, Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1);
 
         return _gameMission;
     }
@@ -162,7 +162,7 @@ public class PrivateDashboard extends TableImpl<PrivateDashboardRecord> {
      */
     public GameAccess gameAccess() {
         if (_gameAccess == null)
-            _gameAccess = new GameAccess(this, Keys.FK_DASHBOARD_SETTING_GAME_ACCESS1);
+            _gameAccess = new GameAccess(this, Keys.FK_PRIVATE_DASHBOARD_GAME_ACCESS1);
 
         return _gameAccess;
     }

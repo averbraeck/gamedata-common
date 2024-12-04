@@ -119,7 +119,7 @@ public class GameRole extends TableImpl<GameRoleRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAME_ROLE_FK_USERROLE_GAME1_IDX, Indexes.GAME_ROLE_FK_USERROLE_USER_IDX);
+        return Arrays.asList(Indexes.GAME_ROLE_FK_GAME_ROLE_GAME1_IDX, Indexes.GAME_ROLE_FK_GAME_ROLE_USER_IDX);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class GameRole extends TableImpl<GameRoleRecord> {
 
     @Override
     public List<ForeignKey<GameRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_USERROLE_USER, Keys.FK_USERROLE_GAME1);
+        return Arrays.asList(Keys.FK_GAME_ROLE_USER, Keys.FK_GAME_ROLE_GAME1);
     }
 
     private transient User _user;
@@ -150,7 +150,7 @@ public class GameRole extends TableImpl<GameRoleRecord> {
      */
     public User user() {
         if (_user == null)
-            _user = new User(this, Keys.FK_USERROLE_USER);
+            _user = new User(this, Keys.FK_GAME_ROLE_USER);
 
         return _user;
     }
@@ -160,7 +160,7 @@ public class GameRole extends TableImpl<GameRoleRecord> {
      */
     public Game game() {
         if (_game == null)
-            _game = new Game(this, Keys.FK_USERROLE_GAME1);
+            _game = new Game(this, Keys.FK_GAME_ROLE_GAME1);
 
         return _game;
     }

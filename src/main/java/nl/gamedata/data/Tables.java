@@ -21,7 +21,6 @@ import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
-import nl.gamedata.data.tables.OrganizationRole;
 import nl.gamedata.data.tables.Player;
 import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
@@ -123,11 +122,6 @@ public class Tables {
      * The table <code>gamedata.organization</code>.
      */
     public static final Organization ORGANIZATION = Organization.ORGANIZATION;
-
-    /**
-     * The table <code>gamedata.organization_role</code>.
-     */
-    public static final OrganizationRole ORGANIZATION_ROLE = OrganizationRole.ORGANIZATION_ROLE;
 
     /**
      * The table <code>gamedata.player</code>.

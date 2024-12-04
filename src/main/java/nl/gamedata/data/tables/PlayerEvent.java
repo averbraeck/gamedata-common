@@ -155,7 +155,7 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYER_EVENT_FK_PLAYER_LOGDATA_PLAYER_ATTEMPT1_IDX);
+        return Arrays.asList(Indexes.PLAYER_EVENT_FK_PLAYER_EVENT_PLAYER_ATTEMPT1_IDX);
     }
 
     @Override
@@ -175,7 +175,7 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
 
     @Override
     public List<ForeignKey<PlayerEventRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYER_LOGDATA_PLAYER_ATTEMPT1);
+        return Arrays.asList(Keys.FK_PLAYER_EVENT_PLAYER_ATTEMPT1);
     }
 
     private transient PlayerAttempt _playerAttempt;
@@ -186,7 +186,7 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
      */
     public PlayerAttempt playerAttempt() {
         if (_playerAttempt == null)
-            _playerAttempt = new PlayerAttempt(this, Keys.FK_PLAYER_LOGDATA_PLAYER_ATTEMPT1);
+            _playerAttempt = new PlayerAttempt(this, Keys.FK_PLAYER_EVENT_PLAYER_ATTEMPT1);
 
         return _playerAttempt;
     }

@@ -114,7 +114,7 @@ public class PublicDashboard extends TableImpl<PublicDashboardRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PUBLIC_DASHBOARD_FK_GAME_DASHBOARD_GAME_MISSION1_IDX);
+        return Arrays.asList(Indexes.PUBLIC_DASHBOARD_FK_PUBLIC_DASHBOARD_GAME_MISSION1_IDX);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class PublicDashboard extends TableImpl<PublicDashboardRecord> {
 
     @Override
     public List<ForeignKey<PublicDashboardRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAME_DASHBOARD_GAME_MISSION1);
+        return Arrays.asList(Keys.FK_PUBLIC_DASHBOARD_GAME_MISSION1);
     }
 
     private transient GameMission _gameMission;
@@ -145,7 +145,7 @@ public class PublicDashboard extends TableImpl<PublicDashboardRecord> {
      */
     public GameMission gameMission() {
         if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_GAME_DASHBOARD_GAME_MISSION1);
+            _gameMission = new GameMission(this, Keys.FK_PUBLIC_DASHBOARD_GAME_MISSION1);
 
         return _gameMission;
     }

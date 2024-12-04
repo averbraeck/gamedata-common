@@ -124,7 +124,7 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAME_ACCESS_FK_TOKEN_GAME1_IDX, Indexes.GAME_ACCESS_FK_TOKEN_ORGANIZATION1_IDX);
+        return Arrays.asList(Indexes.GAME_ACCESS_FK_GAME_ACCESS_GAME1_IDX, Indexes.GAME_ACCESS_FK_GAME_ACCESS_ORGANIZATION1_IDX);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
 
     @Override
     public List<ForeignKey<GameAccessRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_TOKEN_GAME1, Keys.FK_TOKEN_ORGANIZATION1);
+        return Arrays.asList(Keys.FK_GAME_ACCESS_GAME1, Keys.FK_GAME_ACCESS_ORGANIZATION1);
     }
 
     private transient Game _game;
@@ -155,7 +155,7 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
      */
     public Game game() {
         if (_game == null)
-            _game = new Game(this, Keys.FK_TOKEN_GAME1);
+            _game = new Game(this, Keys.FK_GAME_ACCESS_GAME1);
 
         return _game;
     }
@@ -166,7 +166,7 @@ public class GameAccess extends TableImpl<GameAccessRecord> {
      */
     public Organization organization() {
         if (_organization == null)
-            _organization = new Organization(this, Keys.FK_TOKEN_ORGANIZATION1);
+            _organization = new Organization(this, Keys.FK_GAME_ACCESS_ORGANIZATION1);
 
         return _organization;
     }
