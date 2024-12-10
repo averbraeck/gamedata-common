@@ -60,14 +60,14 @@ public class GameRole extends TableImpl<GameRoleRecord> {
     public final TableField<GameRoleRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>gamedata.game_role.game_admin</code>.
+     * The column <code>gamedata.game_role.view</code>.
      */
-    public final TableField<GameRoleRecord, Byte> GAME_ADMIN = createField(DSL.name("game_admin"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<GameRoleRecord, Byte> VIEW = createField(DSL.name("view"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_role.game_viewer</code>.
+     * The column <code>gamedata.game_role.edit</code>.
      */
-    public final TableField<GameRoleRecord, Byte> GAME_VIEWER = createField(DSL.name("game_viewer"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<GameRoleRecord, Byte> EDIT = createField(DSL.name("edit"), SQLDataType.TINYINT.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.game_role.user_id</code>.

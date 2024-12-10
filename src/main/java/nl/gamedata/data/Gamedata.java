@@ -8,8 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.gamedata.data.tables.AccessToken;
+import nl.gamedata.data.tables.Dashboard;
+import nl.gamedata.data.tables.DashboardElement;
+import nl.gamedata.data.tables.DashboardLayout;
+import nl.gamedata.data.tables.DashboardRole;
+import nl.gamedata.data.tables.DashboardSession;
+import nl.gamedata.data.tables.DashboardTemplate;
+import nl.gamedata.data.tables.DashboardToken;
+import nl.gamedata.data.tables.ElementProperty;
 import nl.gamedata.data.tables.Game;
 import nl.gamedata.data.tables.GameAccess;
+import nl.gamedata.data.tables.GameAccessRole;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
@@ -24,16 +33,17 @@ import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
+import nl.gamedata.data.tables.OrganizationRole;
 import nl.gamedata.data.tables.Player;
 import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
 import nl.gamedata.data.tables.PlayerObjective;
 import nl.gamedata.data.tables.PlayerScore;
-import nl.gamedata.data.tables.PrivateDashboard;
-import nl.gamedata.data.tables.PublicDashboard;
+import nl.gamedata.data.tables.PropertyValue;
 import nl.gamedata.data.tables.Scale;
+import nl.gamedata.data.tables.SessionRole;
+import nl.gamedata.data.tables.TemplateElement;
 import nl.gamedata.data.tables.User;
-import nl.gamedata.data.tables.UserRole;
 
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -59,6 +69,46 @@ public class Gamedata extends SchemaImpl {
     public final AccessToken ACCESS_TOKEN = AccessToken.ACCESS_TOKEN;
 
     /**
+     * The table <code>gamedata.dashboard</code>.
+     */
+    public final Dashboard DASHBOARD = Dashboard.DASHBOARD;
+
+    /**
+     * The table <code>gamedata.dashboard_element</code>.
+     */
+    public final DashboardElement DASHBOARD_ELEMENT = DashboardElement.DASHBOARD_ELEMENT;
+
+    /**
+     * The table <code>gamedata.dashboard_layout</code>.
+     */
+    public final DashboardLayout DASHBOARD_LAYOUT = DashboardLayout.DASHBOARD_LAYOUT;
+
+    /**
+     * The table <code>gamedata.dashboard_role</code>.
+     */
+    public final DashboardRole DASHBOARD_ROLE = DashboardRole.DASHBOARD_ROLE;
+
+    /**
+     * The table <code>gamedata.dashboard_session</code>.
+     */
+    public final DashboardSession DASHBOARD_SESSION = DashboardSession.DASHBOARD_SESSION;
+
+    /**
+     * The table <code>gamedata.dashboard_template</code>.
+     */
+    public final DashboardTemplate DASHBOARD_TEMPLATE = DashboardTemplate.DASHBOARD_TEMPLATE;
+
+    /**
+     * The table <code>gamedata.dashboard_token</code>.
+     */
+    public final DashboardToken DASHBOARD_TOKEN = DashboardToken.DASHBOARD_TOKEN;
+
+    /**
+     * The table <code>gamedata.element_property</code>.
+     */
+    public final ElementProperty ELEMENT_PROPERTY = ElementProperty.ELEMENT_PROPERTY;
+
+    /**
      * The table <code>gamedata.game</code>.
      */
     public final Game GAME = Game.GAME;
@@ -67,6 +117,11 @@ public class Gamedata extends SchemaImpl {
      * The table <code>gamedata.game_access</code>.
      */
     public final GameAccess GAME_ACCESS = GameAccess.GAME_ACCESS;
+
+    /**
+     * The table <code>gamedata.game_access_role</code>.
+     */
+    public final GameAccessRole GAME_ACCESS_ROLE = GameAccessRole.GAME_ACCESS_ROLE;
 
     /**
      * The table <code>gamedata.game_mission</code>.
@@ -139,6 +194,11 @@ public class Gamedata extends SchemaImpl {
     public final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
+     * The table <code>gamedata.organization_role</code>.
+     */
+    public final OrganizationRole ORGANIZATION_ROLE = OrganizationRole.ORGANIZATION_ROLE;
+
+    /**
      * The table <code>gamedata.player</code>.
      */
     public final Player PLAYER = Player.PLAYER;
@@ -164,14 +224,9 @@ public class Gamedata extends SchemaImpl {
     public final PlayerScore PLAYER_SCORE = PlayerScore.PLAYER_SCORE;
 
     /**
-     * The table <code>gamedata.private_dashboard</code>.
+     * The table <code>gamedata.property_value</code>.
      */
-    public final PrivateDashboard PRIVATE_DASHBOARD = PrivateDashboard.PRIVATE_DASHBOARD;
-
-    /**
-     * The table <code>gamedata.public_dashboard</code>.
-     */
-    public final PublicDashboard PUBLIC_DASHBOARD = PublicDashboard.PUBLIC_DASHBOARD;
+    public final PropertyValue PROPERTY_VALUE = PropertyValue.PROPERTY_VALUE;
 
     /**
      * The table <code>gamedata.scale</code>.
@@ -179,14 +234,19 @@ public class Gamedata extends SchemaImpl {
     public final Scale SCALE = Scale.SCALE;
 
     /**
+     * The table <code>gamedata.session_role</code>.
+     */
+    public final SessionRole SESSION_ROLE = SessionRole.SESSION_ROLE;
+
+    /**
+     * The table <code>gamedata.template_element</code>.
+     */
+    public final TemplateElement TEMPLATE_ELEMENT = TemplateElement.TEMPLATE_ELEMENT;
+
+    /**
      * The table <code>gamedata.user</code>.
      */
     public final User USER = User.USER;
-
-    /**
-     * The table <code>gamedata.user_role</code>.
-     */
-    public final UserRole USER_ROLE = UserRole.USER_ROLE;
 
     /**
      * No further instances allowed
@@ -205,8 +265,17 @@ public class Gamedata extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.asList(
             AccessToken.ACCESS_TOKEN,
+            Dashboard.DASHBOARD,
+            DashboardElement.DASHBOARD_ELEMENT,
+            DashboardLayout.DASHBOARD_LAYOUT,
+            DashboardRole.DASHBOARD_ROLE,
+            DashboardSession.DASHBOARD_SESSION,
+            DashboardTemplate.DASHBOARD_TEMPLATE,
+            DashboardToken.DASHBOARD_TOKEN,
+            ElementProperty.ELEMENT_PROPERTY,
             Game.GAME,
             GameAccess.GAME_ACCESS,
+            GameAccessRole.GAME_ACCESS_ROLE,
             GameMission.GAME_MISSION,
             GameRole.GAME_ROLE,
             GameSession.GAME_SESSION,
@@ -221,16 +290,17 @@ public class Gamedata extends SchemaImpl {
             LearningGoal.LEARNING_GOAL,
             MissionEvent.MISSION_EVENT,
             Organization.ORGANIZATION,
+            OrganizationRole.ORGANIZATION_ROLE,
             Player.PLAYER,
             PlayerAttempt.PLAYER_ATTEMPT,
             PlayerEvent.PLAYER_EVENT,
             PlayerObjective.PLAYER_OBJECTIVE,
             PlayerScore.PLAYER_SCORE,
-            PrivateDashboard.PRIVATE_DASHBOARD,
-            PublicDashboard.PUBLIC_DASHBOARD,
+            PropertyValue.PROPERTY_VALUE,
             Scale.SCALE,
-            User.USER,
-            UserRole.USER_ROLE
+            SessionRole.SESSION_ROLE,
+            TemplateElement.TEMPLATE_ELEMENT,
+            User.USER
         );
     }
 }

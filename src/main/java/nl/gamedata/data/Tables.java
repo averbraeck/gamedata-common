@@ -5,8 +5,17 @@ package nl.gamedata.data;
 
 
 import nl.gamedata.data.tables.AccessToken;
+import nl.gamedata.data.tables.Dashboard;
+import nl.gamedata.data.tables.DashboardElement;
+import nl.gamedata.data.tables.DashboardLayout;
+import nl.gamedata.data.tables.DashboardRole;
+import nl.gamedata.data.tables.DashboardSession;
+import nl.gamedata.data.tables.DashboardTemplate;
+import nl.gamedata.data.tables.DashboardToken;
+import nl.gamedata.data.tables.ElementProperty;
 import nl.gamedata.data.tables.Game;
 import nl.gamedata.data.tables.GameAccess;
+import nl.gamedata.data.tables.GameAccessRole;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
@@ -21,16 +30,17 @@ import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
+import nl.gamedata.data.tables.OrganizationRole;
 import nl.gamedata.data.tables.Player;
 import nl.gamedata.data.tables.PlayerAttempt;
 import nl.gamedata.data.tables.PlayerEvent;
 import nl.gamedata.data.tables.PlayerObjective;
 import nl.gamedata.data.tables.PlayerScore;
-import nl.gamedata.data.tables.PrivateDashboard;
-import nl.gamedata.data.tables.PublicDashboard;
+import nl.gamedata.data.tables.PropertyValue;
 import nl.gamedata.data.tables.Scale;
+import nl.gamedata.data.tables.SessionRole;
+import nl.gamedata.data.tables.TemplateElement;
 import nl.gamedata.data.tables.User;
-import nl.gamedata.data.tables.UserRole;
 
 
 /**
@@ -45,6 +55,46 @@ public class Tables {
     public static final AccessToken ACCESS_TOKEN = AccessToken.ACCESS_TOKEN;
 
     /**
+     * The table <code>gamedata.dashboard</code>.
+     */
+    public static final Dashboard DASHBOARD = Dashboard.DASHBOARD;
+
+    /**
+     * The table <code>gamedata.dashboard_element</code>.
+     */
+    public static final DashboardElement DASHBOARD_ELEMENT = DashboardElement.DASHBOARD_ELEMENT;
+
+    /**
+     * The table <code>gamedata.dashboard_layout</code>.
+     */
+    public static final DashboardLayout DASHBOARD_LAYOUT = DashboardLayout.DASHBOARD_LAYOUT;
+
+    /**
+     * The table <code>gamedata.dashboard_role</code>.
+     */
+    public static final DashboardRole DASHBOARD_ROLE = DashboardRole.DASHBOARD_ROLE;
+
+    /**
+     * The table <code>gamedata.dashboard_session</code>.
+     */
+    public static final DashboardSession DASHBOARD_SESSION = DashboardSession.DASHBOARD_SESSION;
+
+    /**
+     * The table <code>gamedata.dashboard_template</code>.
+     */
+    public static final DashboardTemplate DASHBOARD_TEMPLATE = DashboardTemplate.DASHBOARD_TEMPLATE;
+
+    /**
+     * The table <code>gamedata.dashboard_token</code>.
+     */
+    public static final DashboardToken DASHBOARD_TOKEN = DashboardToken.DASHBOARD_TOKEN;
+
+    /**
+     * The table <code>gamedata.element_property</code>.
+     */
+    public static final ElementProperty ELEMENT_PROPERTY = ElementProperty.ELEMENT_PROPERTY;
+
+    /**
      * The table <code>gamedata.game</code>.
      */
     public static final Game GAME = Game.GAME;
@@ -53,6 +103,11 @@ public class Tables {
      * The table <code>gamedata.game_access</code>.
      */
     public static final GameAccess GAME_ACCESS = GameAccess.GAME_ACCESS;
+
+    /**
+     * The table <code>gamedata.game_access_role</code>.
+     */
+    public static final GameAccessRole GAME_ACCESS_ROLE = GameAccessRole.GAME_ACCESS_ROLE;
 
     /**
      * The table <code>gamedata.game_mission</code>.
@@ -125,6 +180,11 @@ public class Tables {
     public static final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
+     * The table <code>gamedata.organization_role</code>.
+     */
+    public static final OrganizationRole ORGANIZATION_ROLE = OrganizationRole.ORGANIZATION_ROLE;
+
+    /**
      * The table <code>gamedata.player</code>.
      */
     public static final Player PLAYER = Player.PLAYER;
@@ -150,14 +210,9 @@ public class Tables {
     public static final PlayerScore PLAYER_SCORE = PlayerScore.PLAYER_SCORE;
 
     /**
-     * The table <code>gamedata.private_dashboard</code>.
+     * The table <code>gamedata.property_value</code>.
      */
-    public static final PrivateDashboard PRIVATE_DASHBOARD = PrivateDashboard.PRIVATE_DASHBOARD;
-
-    /**
-     * The table <code>gamedata.public_dashboard</code>.
-     */
-    public static final PublicDashboard PUBLIC_DASHBOARD = PublicDashboard.PUBLIC_DASHBOARD;
+    public static final PropertyValue PROPERTY_VALUE = PropertyValue.PROPERTY_VALUE;
 
     /**
      * The table <code>gamedata.scale</code>.
@@ -165,12 +220,17 @@ public class Tables {
     public static final Scale SCALE = Scale.SCALE;
 
     /**
+     * The table <code>gamedata.session_role</code>.
+     */
+    public static final SessionRole SESSION_ROLE = SessionRole.SESSION_ROLE;
+
+    /**
+     * The table <code>gamedata.template_element</code>.
+     */
+    public static final TemplateElement TEMPLATE_ELEMENT = TemplateElement.TEMPLATE_ELEMENT;
+
+    /**
      * The table <code>gamedata.user</code>.
      */
     public static final User USER = User.USER;
-
-    /**
-     * The table <code>gamedata.user_role</code>.
-     */
-    public static final UserRole USER_ROLE = UserRole.USER_ROLE;
 }
