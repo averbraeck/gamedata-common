@@ -70,7 +70,7 @@ public class Organization extends TableImpl<OrganizationRecord> {
     /**
      * The column <code>gamedata.organization.logo</code>.
      */
-    public final TableField<OrganizationRecord, String> LOGO = createField(DSL.name("logo"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
+    public final TableField<OrganizationRecord, byte[]> LOGO = createField(DSL.name("logo"), SQLDataType.BLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.BLOB)), this, "");
 
     private Organization(Name alias, Table<OrganizationRecord> aliased) {
         this(alias, aliased, null);
@@ -169,14 +169,14 @@ public class Organization extends TableImpl<OrganizationRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, String> fieldsRow() {
+    public Row4<Integer, String, String, byte[]> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super byte[], ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -184,7 +184,7 @@ public class Organization extends TableImpl<OrganizationRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super byte[], ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

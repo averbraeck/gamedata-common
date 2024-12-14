@@ -85,7 +85,7 @@ public class Game extends TableImpl<GameRecord> {
     /**
      * The column <code>gamedata.game.logo</code>.
      */
-    public final TableField<GameRecord, String> LOGO = createField(DSL.name("logo"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
+    public final TableField<GameRecord, byte[]> LOGO = createField(DSL.name("logo"), SQLDataType.BLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.BLOB)), this, "");
 
     private Game(Name alias, Table<GameRecord> aliased) {
         this(alias, aliased, null);
@@ -184,14 +184,14 @@ public class Game extends TableImpl<GameRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, Byte, Byte, String> fieldsRow() {
+    public Row7<Integer, String, String, String, Byte, Byte, byte[]> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function7<? super Integer, ? super String, ? super String, ? super String, ? super Byte, ? super Byte, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function7<? super Integer, ? super String, ? super String, ? super String, ? super Byte, ? super Byte, ? super byte[], ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -199,7 +199,7 @@ public class Game extends TableImpl<GameRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Integer, ? super String, ? super String, ? super String, ? super Byte, ? super Byte, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Integer, ? super String, ? super String, ? super String, ? super Byte, ? super Byte, ? super byte[], ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
