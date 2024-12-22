@@ -54,7 +54,7 @@ An organization editor can access all games that the organization has access to,
 
 | Table | Access | Explanation |
 | ----- | ------ | ----------- |
-| `access_token` | VIEW | View `access_token` records for existing `game_access` records. NONE access to records not linked to the organization and its games. |
+| `access_token` | CREATE | Create, edit and delete `access_token` records for existing `game_access` records. NONE access to records not linked to the organization and its games. |
 | `dashboard` | CREATE | Organization editors can create, edit and delete dashboards for all templates they have access to (including those with VIEW access). NONE access to records not linked to the organization's games. |
 | `dashboard_element` | VIEW | All organization editors can view all existing dashboard elements (these are defined with backend code changes). |
 | `dashboard_layout` | VIEW | All organization editors can view all the existing dashboard layouts (these are defined with backend code changes). |
