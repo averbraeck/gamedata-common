@@ -65,8 +65,8 @@ An organization editor can access all games that the organization has access to,
 | `dashboard_token` | CREATE | Organization editors can create, edit and delete dashboard tokens for all dashboards they have access to. |
 | `element_property` | VIEW | All organization editors can view all the existing element properties (these are defined with backend code changes). |
 | `game` | VIEW | View `game` records for existing `game_access` records. This also gives VIEW access to corresponding records in: `game_version`, `game_mission`, `learning_goal`, `player_objective`, `group_objective`, and `scale` |
-| `game_access`  | NONE | The organization editor cannot access`game_access` records. |
-| `game_access_role` | NONE | The organization editor cannot access`game_access_role` records. |
+| `game_access`  | NONE | The organization editor cannot access `game_access` records. |
+| `game_access_role` | NONE | The organization editor cannot access `game_access_role` records. |
 | `game_mission` | VIEW | View records for games accessible through existing `game_access` records. |
 | `game_role` | NONE | The organization editor cannot access `game_role` records. |
 | `game_session` | CREATE | Create, edit and delete `game_session` records for existing `game_access` records. |
@@ -111,8 +111,8 @@ An organization viewer can access all games that the organization has access to,
 | `dashboard_token` | VIEW | Organization viewers can view dashboard tokens for all dashboards they have access to. |
 | `element_property` | VIEW | All organization viewers can view all the existing element properties (these are defined with backend code changes). |
 | `game` | VIEW | View `game` records for existing `game_access` records. This also gives VIEW access to corresponding records in: `game_version`, `game_mission`, `learning_goal`, `player_objective`, `group_objective`, and `scale` |
-| `game_access`  | NONE | The organization viewer cannot access`game_access` records. |
-| `game_access_role` | NONE | The organization viewer cannot access`game_access_role` records. |
+| `game_access`  | NONE | The organization viewer cannot access `game_access` records. |
+| `game_access_role` | NONE | The organization viewer cannot access `game_access_role` records. |
 | `game_mission` | VIEW | View records for games accessible through existing `game_access` records. |
 | `game_role` | NONE | The organization viewer cannot access `game_role` records. |
 | `game_session` | VIEW | View `game_session` records for existing `game_access` records. |

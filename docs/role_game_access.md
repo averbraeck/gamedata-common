@@ -2,7 +2,7 @@
 
 ## Game Access `edit` role
 
-An `game_acccess` editor is given access to a **single game** for an organization. The user with a game_access edit role can define (create, edit, delete) dashboards and game sessions for that game combined with that organization only. They do not have access to other users, roles, games, or the organization itself. When an `game_access_role` with **edit** rights has been defined for a `user`, the user has the following access to the database tables:
+A `game_acccess` editor is given access to a **single game** for an organization. The user with a game_access edit role can define (create, edit, delete) dashboards and game sessions for that game combined with that organization only. They do not have access to other users, roles, games, or the organization itself. When an `game_access_role` with **edit** rights has been defined for a `user`, the user has the following access to the database tables:
 
 | Table | Access | Explanation |
 | ----- | ------ | ----------- |
@@ -16,8 +16,8 @@ An `game_acccess` editor is given access to a **single game** for an organizatio
 | `dashboard_token` | CREATE | Game access editors can create, edit and delete dashboard tokens for all dashboards they have access to. |
 | `element_property` | VIEW | All game access editors can view all the existing element properties (these are defined with backend code changes). |
 | `game` | VIEW | View `game` records for the `game_access` record to which this user has access. This also gives VIEW access to corresponding records in: `game_version`, `game_mission`, `learning_goal`, `player_objective`, `group_objective`, and `scale` |
-| `game_access`  | NONE | The game access editor cannot access`game_access` records. |
-| `game_access_role` | NONE | The game access editor cannot access`game_access_role` records. |
+| `game_access`  | NONE | The game access editor cannot access `game_access` records. |
+| `game_access_role` | NONE | The game access editor cannot access `game_access_role` records. |
 | `game_mission` | VIEW | View records for games accessible through the `game_access` record to which this user has access. |
 | `game_role` | NONE | The game access editor cannot access `game_role` records. |
 | `game_session` | CREATE | Create, edit and delete `game_session` records for the `game_access` record to which this user has access. |
@@ -62,8 +62,8 @@ A game access viewer can access all games that the organization has access to, a
 | `dashboard_token` | VIEW | Game access viewers can view dashboard tokens for all dashboards they have access to. |
 | `element_property` | VIEW | All game access viewers can view all the existing element properties (these are defined with backend code changes). |
 | `game` | VIEW | View `game` records for the `game_access` record to which this user has access. This also gives VIEW access to corresponding records in: `game_version`, `game_mission`, `learning_goal`, `player_objective`, `group_objective`, and `scale` |
-| `game_access`  | NONE | The game access viewer cannot access`game_access` records. |
-| `game_access_role` | NONE | The game access viewer cannot access`game_access_role` records. |
+| `game_access`  | NONE | The game access viewer cannot access `game_access` records. |
+| `game_access_role` | NONE | The game access viewer cannot access `game_access_role` records. |
 | `game_mission` | VIEW | View records for games accessible through the `game_access` record to which this user has access. |
 | `game_role` | NONE | The game access viewer cannot access `game_role` records. |
 | `game_session` | VIEW | View `game_session` records for the `game_access` record to which this user has access. |
