@@ -108,7 +108,7 @@ An organization viewer can access all games that the organization has access to,
 | `dashboard_role` | NONE | Organization viewers cannot see dashboard roles. |
 | `dashboard_session` | VIEW | Organization viewers can view `dashboard_session` records between all dashboards and game records to which they have access |
 | `dashboard_template` | VIEW | View `dashboard_template` records that have a relation to existing `game_access` records for the `organization`. |
-| `dashboard_token` | VIEW | Organization viewers can create, edit and delete dashboard tokens for all dashboards they have access to. |
+| `dashboard_token` | VIEW | Organization viewers can view dashboard tokens for all dashboards they have access to. |
 | `element_property` | VIEW | All organization viewers can view all the existing element properties (these are defined with backend code changes). |
 | `game` | VIEW | View `game` records for existing `game_access` records. This also gives VIEW access to corresponding records in: `game_version`, `game_mission`, `learning_goal`, `player_objective`, `group_objective`, and `scale` |
 | `game_access`  | NONE | The organization viewer cannot access`game_access` records. |
@@ -133,9 +133,9 @@ An organization viewer can access all games that the organization has access to,
 | `player_event` | VIEW | View data for all `game_session` records belonging to the `game_access` records of the `organization`. |
 | `player_objective` | VIEW | View records for games accessible through existing `game_access` records. |
 | `player_score` | VIEW | View data for all `game_session` records belonging to the `game_access` records of the `organization`. |
-| `property_value` | VIEW | Create, edit and delete `property_value` records for `dashboard_template` records to which the user has CREATE access. |
+| `property_value` | VIEW | View `property_value` records for `dashboard_template` records to which the user has VIEW access. |
 | `scale` | VIEW | View records for games accessible through existing `game_access` records. |
 | `session_role` | NONE | The organization viewer does not have access to users or roles. |
-| `template_element` | VIEW | View| `template_element` records for `dashboard_template` records to which the user has CREATE access. |
-| `user` | NONE | Organization viewers cannot access other users. |
+| `template_element` | VIEW | View `template_element` records for `dashboard_template` records to which the user has VIEW access. |
+| `user` | NONE | Organization viewers cannot access or see other users. |
 
