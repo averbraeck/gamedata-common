@@ -97,7 +97,7 @@ An organization editor can access all games that the organization has access to,
 
 ## <a name="view"></a>Organization `view` role
 
-An organization viewer can access all games that the organization has access to, as well as dashboards and game sessions. No changes to any elementt can be made, though. Organization viewers do not have access to other users or any roles. When an `organization_role` with **view** rights has been defined for a `user`, the user has the following access to the database tables:
+An organization viewer can access all games that the organization has access to, as well as dashboards and game sessions. No changes to any element can be made, though. Organization viewers do not have access to other users or any roles. When an `organization_role` with **view** rights has been defined for a `user`, the user has the following access to the database tables:
 
 | Table | Access | Explanation |
 | ----- | ------ | ----------- |
