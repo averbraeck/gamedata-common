@@ -1,4 +1,4 @@
-# Access to `Organization` tables
+# <a name="admin"></a>Access to `Organization` tables
 
 ## Organization `admin` role
 
@@ -48,7 +48,7 @@ When an `organization_role` with **admin** rights has been defined for a `user`,
 | `user` | CREATE | Organization admins can create **but not edit or delete** new users, and view all existing users in the database. |
 
 
-## Organization `edit` role
+## <a name="edit"></a>Organization `edit` role
 
 An organization editor can access all games that the organization has access to, and define (create, edit, delete) dashboards and game sessions. They do not have access to other users or any roles. If you want to give this access to a single game, provide EDIT rights to the user through the `game_access` table, where access can be provided per game. For even more fine grained access, edit rights can be given for individual dashboards and/or game sessions. When an `organization_role` with **edit** rights has been defined for a `user`, the user has the following access to the database tables:
 
@@ -95,7 +95,7 @@ An organization editor can access all games that the organization has access to,
 |   | VIEW | View `template_element` records for `dashboard_template` records to which the user has VIEW access. |
 | `user` | NONE | Organization editors cannot access other users. |
 
-## Organization `view` role
+## <a name="view"></a>Organization `view` role
 
 An organization viewer can access all games that the organization has access to, as well as dashboards and game sessions. No changes to any elementt can be made, though. Organization viewers do not have access to other users or any roles. When an `organization_role` with **view** rights has been defined for a `user`, the user has the following access to the database tables:
 
