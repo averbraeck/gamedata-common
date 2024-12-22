@@ -1,4 +1,4 @@
-# <a name="admin"></a>Access to `Organization` tables
+# <a name="admin"></a>Organizational roles
 
 ## Organization `admin` role
 
