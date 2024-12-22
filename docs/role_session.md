@@ -65,7 +65,7 @@ A `game_session` viewer is given read access to a **single game session** for an
 | `game_access_role` | NONE | The game session viewer cannot access `game_access_role` records. |
 | `game_mission` | VIEW | View records for games accessible through the `game_session` record to which this user has access. |
 | `game_role` | NONE | The game session viewer cannot access `game_role` records. |
-| `game_session` | VIEW | View the `game_session` record to which this user has access. The user cannot delete the record. |
+| `game_session` | VIEW | View the `game_session` record to which this user has access. |
 | `game_token` | NONE | The game session viewer cannot change or even view `game_token` records. |
 | `game_version` | VIEW | View records for games accessible through the `game_session` record to which this user has access. |
 | `group` | VIEW | View data for the `game_session` record to which this user has access. |
