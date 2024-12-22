@@ -6,7 +6,7 @@ A `game_acccess` editor is given access to a **single game** for an organization
 
 | Table | Access | Explanation |
 | ----- | ------ | ----------- |
-| `access_token` | CREATE | Create, edit and delete `access_token` records for the `game_access` record for which the role has been defined. NONE access to records not linked to the organization and its games. |
+| `access_token` | CREATE | Create, edit and delete `access_token` records for the `game_access` record for which the role has been defined. NONE access to records not linked to the game access record. |
 | `dashboard` | CREATE | Game access editors can create, edit and delete dashboards for all templates they have access to through their combination of game and organization (including those with VIEW access). NONE access to records not linked to the combination of game and organization. |
 | `dashboard_element` | VIEW | All game access editors can view all existing dashboard elements (these are defined with backend code changes). |
 | `dashboard_layout` | VIEW | All game access editors can view all the existing dashboard layouts (these are defined with backend code changes). |
@@ -48,11 +48,11 @@ A `game_acccess` editor is given access to a **single game** for an organization
 
 ## <a name="view"></a>Game Access `view` role
 
-A game access viewer can access all games that the organization has access to, as well as dashboards and game sessions. No changes to any element can be made, though. Game access viewers do not have access to other users or any roles. When an `organization_role` with **view** rights has been defined for a `user`, the user has the following access to the database tables:
+A game access viewer can access all games that the organization has access to, as well as dashboards and game sessions. No changes to any element can be made, though. Game access viewers do not have access to other users or any roles. When a `game_access_role` with **view** rights has been defined for a `user`, the user has the following access to the database tables:
 
 | Table | Access | Explanation |
 | ----- | ------ | ----------- |
-| `access_token` | VIEW | View `access_token` records the `game_access` record to which this user has access. |
+| `access_token` | VIEW | View `access_token` records for the `game_access` record to which this user has access. |
 | `dashboard` | VIEW | Game access viewers can view dashboards for all templates they have access to through their combination of game and organization (including those with VIEW access). NONE access to records not linked to the combination of game and organization. |
 | `dashboard_element` | VIEW | All game access viewers can view all existing dashboard elements (these are defined with backend code changes). |
 | `dashboard_layout` | VIEW | All game access viewers can view all the existing dashboard layouts (these are defined with backend code changes). |
