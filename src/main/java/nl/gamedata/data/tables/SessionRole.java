@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.SessionRoleRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
+import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -62,17 +62,12 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
     /**
      * The column <code>gamedata.session_role.view</code>.
      */
-    public final TableField<SessionRoleRecord, Byte> VIEW = createField(DSL.name("view"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<SessionRoleRecord, Byte> VIEW = createField(DSL.name("view"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.session_role.edit</code>.
      */
-    public final TableField<SessionRoleRecord, Byte> EDIT = createField(DSL.name("edit"), SQLDataType.TINYINT.nullable(false), this, "");
-
-    /**
-     * The column <code>gamedata.session_role.create</code>.
-     */
-    public final TableField<SessionRoleRecord, Byte> CREATE = createField(DSL.name("create"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<SessionRoleRecord, Byte> EDIT = createField(DSL.name("edit"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.session_role.user_id</code>.
@@ -211,18 +206,18 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, Byte, Byte, Byte, Integer, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row5<Integer, Byte, Byte, Integer, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -230,7 +225,7 @@ public class SessionRole extends TableImpl<SessionRoleRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

@@ -117,7 +117,7 @@ public class DashboardLayout extends TableImpl<DashboardLayoutRecord> {
 
     @Override
     public List<UniqueKey<DashboardLayoutRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_DASHBOARD_LAYOUT_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_DASHBOARD_LAYOUT_ID_UNIQUE, Keys.KEY_DASHBOARD_LAYOUT_NAME_UNIQUE);
     }
 
     @Override

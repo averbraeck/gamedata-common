@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.OrganizationRoleRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
+import org.jooq.Function6;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -60,14 +60,19 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
     public final TableField<OrganizationRoleRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
-     * The column <code>gamedata.organization_role.member</code>.
+     * The column <code>gamedata.organization_role.view</code>.
      */
-    public final TableField<OrganizationRoleRecord, Byte> MEMBER = createField(DSL.name("member"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<OrganizationRoleRecord, Byte> VIEW = createField(DSL.name("view"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
+
+    /**
+     * The column <code>gamedata.organization_role.edit</code>.
+     */
+    public final TableField<OrganizationRoleRecord, Byte> EDIT = createField(DSL.name("edit"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.organization_role.admin</code>.
      */
-    public final TableField<OrganizationRoleRecord, Byte> ADMIN = createField(DSL.name("admin"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<OrganizationRoleRecord, Byte> ADMIN = createField(DSL.name("admin"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.organization_role.user_id</code>.
@@ -206,18 +211,18 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, Byte, Byte, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Integer, Byte, Byte, Byte, Integer, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function6<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -225,7 +230,7 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

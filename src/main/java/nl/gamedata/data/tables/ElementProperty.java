@@ -129,7 +129,7 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
 
     @Override
     public List<UniqueKey<ElementPropertyRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_ELEMENT_PROPERTY_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_ELEMENT_PROPERTY_ID_UNIQUE, Keys.KEY_ELEMENT_PROPERTY_NAME_UNIQUE);
     }
 
     @Override

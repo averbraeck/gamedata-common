@@ -117,7 +117,7 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
 
     @Override
     public List<UniqueKey<DashboardElementRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_DASHBOARD_ELEMENT_ID_UNIQUE);
+        return Arrays.asList(Keys.KEY_DASHBOARD_ELEMENT_ID_UNIQUE, Keys.KEY_DASHBOARD_ELEMENT_NAME_UNIQUE);
     }
 
     @Override
