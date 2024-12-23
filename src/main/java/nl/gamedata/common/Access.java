@@ -10,7 +10,10 @@ package nl.gamedata.common;
  */
 public enum Access
 {
-    /** Create access. */
+    /** Admin access. */
+    ADMIN,
+
+    /** Create / delete access. */
     CREATE,
 
     /** Edit access. */
@@ -22,14 +25,19 @@ public enum Access
     /** No access. */
     NONE;
 
+    public boolean admin()
+    {
+        return this.equals(ADMIN);
+    }
+
     public boolean create()
     {
-        return this.equals(CREATE);
+        return this.equals(ADMIN) || this.equals(CREATE);
     }
 
     public boolean edit()
     {
-        return this.equals(CREATE) || this.equals(EDIT);
+        return this.equals(ADMIN) || this.equals(CREATE) || this.equals(EDIT);
     }
 
     public boolean view()
