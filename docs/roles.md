@@ -37,7 +37,7 @@ For each `OrganizationRole`, for each corresponding `Organization` (just 1), for
 
 For each `GameAccessRole`, for the corresponding `GameAccess` (just 1), for the corresponding `Game` (just 1):
 
-- VIEW role for that game (no editing rights on games from a game_access definition).
+- VIEW role for that game (no editing rights on games from a organization_game definition).
 
 For each `SessionRole`, for the corresponding `GameSession` (just 1), for the corresponding `GameVersion` (just 1), for the corresponding `Game` (just 1):
 

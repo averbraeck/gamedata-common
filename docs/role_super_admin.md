@@ -4,7 +4,6 @@ When a `super_admin` role has been defined for a `user`, the user has the follow
 
 | Table | Access | Explanation |
 | ----- | ------ | ----------- |
-| `access_token` | CREATE | Create, edit and delete `access_token` records for all `game_access` records. |
 | `dashboard` | CREATE | Create, edit and delete all dashboards for all templates. |
 | `dashboard_element` | CREATE | Create, edit and delete all dashboard elements (these are defined with backend code changes). |
 | `dashboard_layout` | CREATE | Create, edit and delete all dashboard layouts (these are defined with backend code changes). |
@@ -14,11 +13,10 @@ When a `super_admin` role has been defined for a `user`, the user has the follow
 | `dashboard_token` | CREATE | Create, edit and delete all dashboard tokens for all dashboards. |
 | `element_property` | CREATE | Create, edit and delete all element properties (these are defined with backend code changes). |
 | `game` | CREATE | Create, edit and delete games. Any new game `code` should be unique. |
-| `game_access`  | CREATE | Create, edit and delete all `game_access` records. |
-| `game_access_role` | CREATE | Create, edit and delete all `game_access_role` records. |
-| `game_mission` | CREATE | Create, edit and delete all `game_access` records. |
+| `game_mission` | CREATE | Create, edit and delete all `organization_game` records. |
 | `game_role` | CREATE | Create, edit and delete all `game_role` records. |
 | `game_session` | CREATE | Create, edit and delete all `game_session` records. |
+| `game_session_role` | CREATE | Create, edit and delete all `game_session_role` records. |
 | `game_token` | CREATE | Create, edit and delete all `game_token` records. |
 | `game_version` | CREATE | Create, edit and delete all `game_version` records. |
 | `group` | EDIT | View or edit data for all `group` records. |
@@ -30,6 +28,9 @@ When a `super_admin` role has been defined for a `user`, the user has the follow
 | `learning_goal` | EDIT | View or edit all `learning_goal` records. |
 | `mission_event` | EDIT | View or edit data for all `mission_event` records. |
 | `organization` | CREATE | Create, edit and delete organizations, including `code`. Any new organization `code` should be unique. |
+| `organization_game`  | CREATE | Create, edit and delete all `organization_game` records. |
+| `organization_game_role` | CREATE | Create, edit and delete all `organization_game_role` records. |
+| `organization_game_token` | CREATE | Create, edit and delete `organization_game_token` records for all `organization_game` records. |
 | `organization_role` | CREATE | Create, edit, and delete `organization_role` records for any existing users in the database. |
 | `player` | EDIT | View or edit data for all `player` records. |
 | `player_attempt` | EDIT | View or edit data for all `player_attempt` records. |
@@ -38,7 +39,6 @@ When a `super_admin` role has been defined for a `user`, the user has the follow
 | `player_score` | EDIT | View or edit data for all `player_score` records. |
 | `property_value` | CREATE | Create, edit and delete all `property_value` records. |
 | `scale` | CREATE | Create, edit and delete all records for game-specific scales. |
-| `session_role` | CREATE | Create, edit and delete all `session_role` records. |
 | `template_element` | CREATE | Create, edit and delete `template_element` records. |
 | `user` | CREATE | Create, edit and delete all users in the database. Any new user `name` should be unique. |
 
