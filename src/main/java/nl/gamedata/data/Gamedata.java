@@ -7,7 +7,6 @@ package nl.gamedata.data;
 import java.util.Arrays;
 import java.util.List;
 
-import nl.gamedata.data.tables.AccessToken;
 import nl.gamedata.data.tables.Dashboard;
 import nl.gamedata.data.tables.DashboardElement;
 import nl.gamedata.data.tables.DashboardLayout;
@@ -17,11 +16,10 @@ import nl.gamedata.data.tables.DashboardTemplate;
 import nl.gamedata.data.tables.DashboardToken;
 import nl.gamedata.data.tables.ElementProperty;
 import nl.gamedata.data.tables.Game;
-import nl.gamedata.data.tables.GameAccess;
-import nl.gamedata.data.tables.GameAccessRole;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
+import nl.gamedata.data.tables.GameSessionRole;
 import nl.gamedata.data.tables.GameToken;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
@@ -33,6 +31,9 @@ import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
+import nl.gamedata.data.tables.OrganizationGame;
+import nl.gamedata.data.tables.OrganizationGameRole;
+import nl.gamedata.data.tables.OrganizationGameToken;
 import nl.gamedata.data.tables.OrganizationRole;
 import nl.gamedata.data.tables.Player;
 import nl.gamedata.data.tables.PlayerAttempt;
@@ -41,7 +42,6 @@ import nl.gamedata.data.tables.PlayerObjective;
 import nl.gamedata.data.tables.PlayerScore;
 import nl.gamedata.data.tables.PropertyValue;
 import nl.gamedata.data.tables.Scale;
-import nl.gamedata.data.tables.SessionRole;
 import nl.gamedata.data.tables.TemplateElement;
 import nl.gamedata.data.tables.User;
 
@@ -62,11 +62,6 @@ public class Gamedata extends SchemaImpl {
      * The reference instance of <code>gamedata</code>
      */
     public static final Gamedata GAMEDATA = new Gamedata();
-
-    /**
-     * The table <code>gamedata.access_token</code>.
-     */
-    public final AccessToken ACCESS_TOKEN = AccessToken.ACCESS_TOKEN;
 
     /**
      * The table <code>gamedata.dashboard</code>.
@@ -114,16 +109,6 @@ public class Gamedata extends SchemaImpl {
     public final Game GAME = Game.GAME;
 
     /**
-     * The table <code>gamedata.game_access</code>.
-     */
-    public final GameAccess GAME_ACCESS = GameAccess.GAME_ACCESS;
-
-    /**
-     * The table <code>gamedata.game_access_role</code>.
-     */
-    public final GameAccessRole GAME_ACCESS_ROLE = GameAccessRole.GAME_ACCESS_ROLE;
-
-    /**
      * The table <code>gamedata.game_mission</code>.
      */
     public final GameMission GAME_MISSION = GameMission.GAME_MISSION;
@@ -137,6 +122,11 @@ public class Gamedata extends SchemaImpl {
      * The table <code>gamedata.game_session</code>.
      */
     public final GameSession GAME_SESSION = GameSession.GAME_SESSION;
+
+    /**
+     * The table <code>gamedata.game_session_role</code>.
+     */
+    public final GameSessionRole GAME_SESSION_ROLE = GameSessionRole.GAME_SESSION_ROLE;
 
     /**
      * The table <code>gamedata.game_token</code>.
@@ -194,6 +184,21 @@ public class Gamedata extends SchemaImpl {
     public final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
+     * The table <code>gamedata.organization_game</code>.
+     */
+    public final OrganizationGame ORGANIZATION_GAME = OrganizationGame.ORGANIZATION_GAME;
+
+    /**
+     * The table <code>gamedata.organization_game_role</code>.
+     */
+    public final OrganizationGameRole ORGANIZATION_GAME_ROLE = OrganizationGameRole.ORGANIZATION_GAME_ROLE;
+
+    /**
+     * The table <code>gamedata.organization_game_token</code>.
+     */
+    public final OrganizationGameToken ORGANIZATION_GAME_TOKEN = OrganizationGameToken.ORGANIZATION_GAME_TOKEN;
+
+    /**
      * The table <code>gamedata.organization_role</code>.
      */
     public final OrganizationRole ORGANIZATION_ROLE = OrganizationRole.ORGANIZATION_ROLE;
@@ -234,11 +239,6 @@ public class Gamedata extends SchemaImpl {
     public final Scale SCALE = Scale.SCALE;
 
     /**
-     * The table <code>gamedata.session_role</code>.
-     */
-    public final SessionRole SESSION_ROLE = SessionRole.SESSION_ROLE;
-
-    /**
      * The table <code>gamedata.template_element</code>.
      */
     public final TemplateElement TEMPLATE_ELEMENT = TemplateElement.TEMPLATE_ELEMENT;
@@ -264,7 +264,6 @@ public class Gamedata extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            AccessToken.ACCESS_TOKEN,
             Dashboard.DASHBOARD,
             DashboardElement.DASHBOARD_ELEMENT,
             DashboardLayout.DASHBOARD_LAYOUT,
@@ -274,11 +273,10 @@ public class Gamedata extends SchemaImpl {
             DashboardToken.DASHBOARD_TOKEN,
             ElementProperty.ELEMENT_PROPERTY,
             Game.GAME,
-            GameAccess.GAME_ACCESS,
-            GameAccessRole.GAME_ACCESS_ROLE,
             GameMission.GAME_MISSION,
             GameRole.GAME_ROLE,
             GameSession.GAME_SESSION,
+            GameSessionRole.GAME_SESSION_ROLE,
             GameToken.GAME_TOKEN,
             GameVersion.GAME_VERSION,
             Group.GROUP,
@@ -290,6 +288,9 @@ public class Gamedata extends SchemaImpl {
             LearningGoal.LEARNING_GOAL,
             MissionEvent.MISSION_EVENT,
             Organization.ORGANIZATION,
+            OrganizationGame.ORGANIZATION_GAME,
+            OrganizationGameRole.ORGANIZATION_GAME_ROLE,
+            OrganizationGameToken.ORGANIZATION_GAME_TOKEN,
             OrganizationRole.ORGANIZATION_ROLE,
             Player.PLAYER,
             PlayerAttempt.PLAYER_ATTEMPT,
@@ -298,7 +299,6 @@ public class Gamedata extends SchemaImpl {
             PlayerScore.PLAYER_SCORE,
             PropertyValue.PROPERTY_VALUE,
             Scale.SCALE,
-            SessionRole.SESSION_ROLE,
             TemplateElement.TEMPLATE_ELEMENT,
             User.USER
         );

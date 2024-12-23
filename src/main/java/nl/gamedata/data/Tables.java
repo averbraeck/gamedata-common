@@ -4,7 +4,6 @@
 package nl.gamedata.data;
 
 
-import nl.gamedata.data.tables.AccessToken;
 import nl.gamedata.data.tables.Dashboard;
 import nl.gamedata.data.tables.DashboardElement;
 import nl.gamedata.data.tables.DashboardLayout;
@@ -14,11 +13,10 @@ import nl.gamedata.data.tables.DashboardTemplate;
 import nl.gamedata.data.tables.DashboardToken;
 import nl.gamedata.data.tables.ElementProperty;
 import nl.gamedata.data.tables.Game;
-import nl.gamedata.data.tables.GameAccess;
-import nl.gamedata.data.tables.GameAccessRole;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
 import nl.gamedata.data.tables.GameSession;
+import nl.gamedata.data.tables.GameSessionRole;
 import nl.gamedata.data.tables.GameToken;
 import nl.gamedata.data.tables.GameVersion;
 import nl.gamedata.data.tables.Group;
@@ -30,6 +28,9 @@ import nl.gamedata.data.tables.GroupScore;
 import nl.gamedata.data.tables.LearningGoal;
 import nl.gamedata.data.tables.MissionEvent;
 import nl.gamedata.data.tables.Organization;
+import nl.gamedata.data.tables.OrganizationGame;
+import nl.gamedata.data.tables.OrganizationGameRole;
+import nl.gamedata.data.tables.OrganizationGameToken;
 import nl.gamedata.data.tables.OrganizationRole;
 import nl.gamedata.data.tables.Player;
 import nl.gamedata.data.tables.PlayerAttempt;
@@ -38,7 +39,6 @@ import nl.gamedata.data.tables.PlayerObjective;
 import nl.gamedata.data.tables.PlayerScore;
 import nl.gamedata.data.tables.PropertyValue;
 import nl.gamedata.data.tables.Scale;
-import nl.gamedata.data.tables.SessionRole;
 import nl.gamedata.data.tables.TemplateElement;
 import nl.gamedata.data.tables.User;
 
@@ -48,11 +48,6 @@ import nl.gamedata.data.tables.User;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
-
-    /**
-     * The table <code>gamedata.access_token</code>.
-     */
-    public static final AccessToken ACCESS_TOKEN = AccessToken.ACCESS_TOKEN;
 
     /**
      * The table <code>gamedata.dashboard</code>.
@@ -100,16 +95,6 @@ public class Tables {
     public static final Game GAME = Game.GAME;
 
     /**
-     * The table <code>gamedata.game_access</code>.
-     */
-    public static final GameAccess GAME_ACCESS = GameAccess.GAME_ACCESS;
-
-    /**
-     * The table <code>gamedata.game_access_role</code>.
-     */
-    public static final GameAccessRole GAME_ACCESS_ROLE = GameAccessRole.GAME_ACCESS_ROLE;
-
-    /**
      * The table <code>gamedata.game_mission</code>.
      */
     public static final GameMission GAME_MISSION = GameMission.GAME_MISSION;
@@ -123,6 +108,11 @@ public class Tables {
      * The table <code>gamedata.game_session</code>.
      */
     public static final GameSession GAME_SESSION = GameSession.GAME_SESSION;
+
+    /**
+     * The table <code>gamedata.game_session_role</code>.
+     */
+    public static final GameSessionRole GAME_SESSION_ROLE = GameSessionRole.GAME_SESSION_ROLE;
 
     /**
      * The table <code>gamedata.game_token</code>.
@@ -180,6 +170,21 @@ public class Tables {
     public static final Organization ORGANIZATION = Organization.ORGANIZATION;
 
     /**
+     * The table <code>gamedata.organization_game</code>.
+     */
+    public static final OrganizationGame ORGANIZATION_GAME = OrganizationGame.ORGANIZATION_GAME;
+
+    /**
+     * The table <code>gamedata.organization_game_role</code>.
+     */
+    public static final OrganizationGameRole ORGANIZATION_GAME_ROLE = OrganizationGameRole.ORGANIZATION_GAME_ROLE;
+
+    /**
+     * The table <code>gamedata.organization_game_token</code>.
+     */
+    public static final OrganizationGameToken ORGANIZATION_GAME_TOKEN = OrganizationGameToken.ORGANIZATION_GAME_TOKEN;
+
+    /**
      * The table <code>gamedata.organization_role</code>.
      */
     public static final OrganizationRole ORGANIZATION_ROLE = OrganizationRole.ORGANIZATION_ROLE;
@@ -218,11 +223,6 @@ public class Tables {
      * The table <code>gamedata.scale</code>.
      */
     public static final Scale SCALE = Scale.SCALE;
-
-    /**
-     * The table <code>gamedata.session_role</code>.
-     */
-    public static final SessionRole SESSION_ROLE = SessionRole.SESSION_ROLE;
 
     /**
      * The table <code>gamedata.template_element</code>.

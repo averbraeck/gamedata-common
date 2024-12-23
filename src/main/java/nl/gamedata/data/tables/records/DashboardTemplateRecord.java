@@ -106,16 +106,16 @@ public class DashboardTemplateRecord extends UpdatableRecordImpl<DashboardTempla
     }
 
     /**
-     * Setter for <code>gamedata.dashboard_template.game_access_id</code>.
+     * Setter for <code>gamedata.dashboard_template.organization_game_id</code>.
      */
-    public void setGameAccessId(Integer value) {
+    public void setOrganizationGameId(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>gamedata.dashboard_template.game_access_id</code>.
+     * Getter for <code>gamedata.dashboard_template.organization_game_id</code>.
      */
-    public Integer getGameAccessId() {
+    public Integer getOrganizationGameId() {
         return (Integer) get(6);
     }
 
@@ -188,7 +188,7 @@ public class DashboardTemplateRecord extends UpdatableRecordImpl<DashboardTempla
 
     @Override
     public Field<Integer> field7() {
-        return DashboardTemplate.DASHBOARD_TEMPLATE.GAME_ACCESS_ID;
+        return DashboardTemplate.DASHBOARD_TEMPLATE.ORGANIZATION_GAME_ID;
     }
 
     @Override
@@ -228,7 +228,7 @@ public class DashboardTemplateRecord extends UpdatableRecordImpl<DashboardTempla
 
     @Override
     public Integer component7() {
-        return getGameAccessId();
+        return getOrganizationGameId();
     }
 
     @Override
@@ -268,7 +268,7 @@ public class DashboardTemplateRecord extends UpdatableRecordImpl<DashboardTempla
 
     @Override
     public Integer value7() {
-        return getGameAccessId();
+        return getOrganizationGameId();
     }
 
     @Override
@@ -314,7 +314,7 @@ public class DashboardTemplateRecord extends UpdatableRecordImpl<DashboardTempla
 
     @Override
     public DashboardTemplateRecord value7(Integer value) {
-        setGameAccessId(value);
+        setOrganizationGameId(value);
         return this;
     }
 
@@ -351,7 +351,7 @@ public class DashboardTemplateRecord extends UpdatableRecordImpl<DashboardTempla
     /**
      * Create a detached, initialised DashboardTemplateRecord
      */
-    public DashboardTemplateRecord(Integer id, String name, String description, Byte private_, Integer gameVersionId, Integer gameMissionId, Integer gameAccessId, Integer dashboardLayoutId) {
+    public DashboardTemplateRecord(Integer id, String name, String description, Byte private_, Integer gameVersionId, Integer gameMissionId, Integer organizationGameId, Integer dashboardLayoutId) {
         super(DashboardTemplate.DASHBOARD_TEMPLATE);
 
         setId(id);
@@ -360,7 +360,7 @@ public class DashboardTemplateRecord extends UpdatableRecordImpl<DashboardTempla
         setPrivate(private_);
         setGameVersionId(gameVersionId);
         setGameMissionId(gameMissionId);
-        setGameAccessId(gameAccessId);
+        setOrganizationGameId(organizationGameId);
         setDashboardLayoutId(dashboardLayoutId);
         resetChangedOnNotNull();
     }

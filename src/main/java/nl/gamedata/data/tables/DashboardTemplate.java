@@ -85,9 +85,9 @@ public class DashboardTemplate extends TableImpl<DashboardTemplateRecord> {
     public final TableField<DashboardTemplateRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>gamedata.dashboard_template.game_access_id</code>.
+     * The column <code>gamedata.dashboard_template.organization_game_id</code>.
      */
-    public final TableField<DashboardTemplateRecord, Integer> GAME_ACCESS_ID = createField(DSL.name("game_access_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
+    public final TableField<DashboardTemplateRecord, Integer> ORGANIZATION_GAME_ID = createField(DSL.name("organization_game_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>gamedata.dashboard_template.dashboard_layout_id</code>.
@@ -136,7 +136,7 @@ public class DashboardTemplate extends TableImpl<DashboardTemplateRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.DASHBOARD_TEMPLATE_FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1_IDX, Indexes.DASHBOARD_TEMPLATE_FK_DASHBOARD_TEMPLATE_GAME_VERSION1_IDX, Indexes.DASHBOARD_TEMPLATE_FK_PRIVATE_DASHBOARD_GAME_ACCESS1_IDX, Indexes.DASHBOARD_TEMPLATE_FK_PRIVATE_DASHBOARD_GAME_MISSION1_IDX);
+        return Arrays.asList(Indexes.DASHBOARD_TEMPLATE_FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1_IDX, Indexes.DASHBOARD_TEMPLATE_FK_DASHBOARD_TEMPLATE_GAME_VERSION1_IDX, Indexes.DASHBOARD_TEMPLATE_FK_DASHBOARD_TEMPLATE_ORGANIZATION_GAME1_IDX, Indexes.DASHBOARD_TEMPLATE_FK_PRIVATE_DASHBOARD_GAME_MISSION1_IDX);
     }
 
     @Override
@@ -156,12 +156,12 @@ public class DashboardTemplate extends TableImpl<DashboardTemplateRecord> {
 
     @Override
     public List<ForeignKey<DashboardTemplateRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_DASHBOARD_TEMPLATE_GAME_VERSION1, Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1, Keys.FK_PRIVATE_DASHBOARD_GAME_ACCESS1, Keys.FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1);
+        return Arrays.asList(Keys.FK_DASHBOARD_TEMPLATE_GAME_VERSION1, Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1, Keys.FK_DASHBOARD_TEMPLATE_ORGANIZATION_GAME1, Keys.FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1);
     }
 
     private transient GameVersion _gameVersion;
     private transient GameMission _gameMission;
-    private transient GameAccess _gameAccess;
+    private transient OrganizationGame _organizationGame;
     private transient DashboardLayout _dashboardLayout;
 
     /**
@@ -187,14 +187,14 @@ public class DashboardTemplate extends TableImpl<DashboardTemplateRecord> {
     }
 
     /**
-     * Get the implicit join path to the <code>gamedata.game_access</code>
+     * Get the implicit join path to the <code>gamedata.organization_game</code>
      * table.
      */
-    public GameAccess gameAccess() {
-        if (_gameAccess == null)
-            _gameAccess = new GameAccess(this, Keys.FK_PRIVATE_DASHBOARD_GAME_ACCESS1);
+    public OrganizationGame organizationGame() {
+        if (_organizationGame == null)
+            _organizationGame = new OrganizationGame(this, Keys.FK_DASHBOARD_TEMPLATE_ORGANIZATION_GAME1);
 
-        return _gameAccess;
+        return _organizationGame;
     }
 
     /**
