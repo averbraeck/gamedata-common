@@ -86,5 +86,5 @@ A `dashboard` viewer is given read access to a **single dashboard**. No changes 
 | `property_value` | VIEW | View `property_value` records for `dashboard_template` records to which the user has access. |
 | `scale` | VIEW | View records for games accessible through the `dashboard_template` record to which this user has access. |
 | `session_role` | NONE | The dashboard viewer does not have access to users or roles. |
-| `template_element` | VIEW | Create, edit and delete `template_element` records for `dashboard_template` records to which the user has access. |
+| `template_element` | VIEW | View `template_element` records for `dashboard_template` records to which the user has access. |
 | `user` | NONE | Dashboard viewers cannot access other users. 
