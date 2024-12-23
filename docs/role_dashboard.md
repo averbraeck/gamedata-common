@@ -47,7 +47,7 @@ A `dashboard` editor is given access to a **single dashboard**. They do not have
 
 ## <a name="view"></a>Dashboard `view` role
 
-A `dashboard` viewer is given read access to a **single dashboard**. No changes to any element can be made, though. Dashboard viewers do not have access to other users or roles, nor to sessions or game play data. When an `dashboard_role` with **view** rights has been defined for a `user`, the user has the following access to the database tables:
+A `dashboard` viewer is given read access to a **single dashboard**. No changes to any element can be made, though. Dashboard viewers do not have access to other users or roles, nor to sessions or game play data. When a `dashboard_role` with **view** rights has been defined for a `user`, the user has the following access to the database tables:
 
 | Table | Access | Explanation |
 | ----- | ------ | ----------- |
