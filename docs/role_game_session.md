@@ -32,7 +32,7 @@ A `game_session` editor is given access to a **single game session** for an orga
 | `organization` | NONE | Game session editors do not have access to the organization's information. |
 | `organization_game`  | NONE | The game session editor cannot access `organization_game` records. |
 | `organization_game_role` | NONE | The game session editor cannot access `organization_game_role` records. |
-| `organization_game_token` | NONE | Game session editors cannot see access tokens. |
+| `organization_game_token` | NONE | Game session editors cannot see `organization_game_token` records. |
 | `organization_role` | NONE | Game session editors cannot view `organization_role` records. |
 | `player` | VIEW | View data for the `game_session` record to which this user has access. |
 | `player_attempt` | VIEW | View data for the `game_session` record to which this user has access. |
@@ -77,7 +77,7 @@ A `game_session` viewer is given read access to a **single game session** for an
 | `organization` | NONE | Game session viewers do not have access to the organization's information. |
 | `organization_game`  | NONE | The game session viewer cannot access `organization_game` records. |
 | `organization_game_role` | NONE | The game session viewer cannot access `organization_game_role` records. |
-| `organization_game_token` | NONE | Game session viewers cannot see access tokens. |
+| `organization_game_token` | NONE | Game session viewers cannot see `organization_game_token` records. |
 | `organization_role` | NONE | Game session viewers cannot view `organization_role` records. |
 | `player` | VIEW | View data for the `game_session` record to which this user has access. |
 | `player_attempt` | VIEW | View data for the `game_session` record to which this user has access. |

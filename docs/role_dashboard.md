@@ -32,7 +32,7 @@ A `dashboard` editor is given access to a **single dashboard**. They do not have
 | `organization` | NONE | Dashboard editors do not have access to the organization's information. |
 | `organization_game`  | NONE | The dashboard editor cannot access `organization_game` records. |
 | `organization_game_role` | NONE | The dashboard editor cannot access `organization_game_role` records. |
-| `organization_game_token` | NONE | Dashboard editors cannot see access tokens. |
+| `organization_game_token` | NONE | Dashboard editors cannot see `organization_game_token` records. |
 | `organization_role` | NONE | Dashboard editors cannot view `organization_role` records. |
 | `player` | NONE | A dashboard editor does not have access to `player` records. |
 | `player_attempt` | NONE | A dashboard editor does not have access to `player_attempt` records. |
@@ -77,7 +77,7 @@ A `dashboard` viewer is given read access to a **single dashboard**. No changes 
 | `organization` | NONE | Dashboard viewers do not have access to the organization's information. |
 | `organization_game`  | NONE | The dashboard viewer cannot access `organization_game` records. |
 | `organization_game_role` | NONE | The dashboard viewer cannot access `organization_game_role` records. |
-| `organization_game_token` | NONE | Dashboard viewers cannot see access tokens. |
+| `organization_game_token` | NONE | Dashboard viewers cannot see `organization_game_token` records. |
 | `organization_role` | NONE | Dashboard viewers cannot view `organization_role` records. |
 | `player` | NONE | A dashboard viewer does not have access to `player` records. |
 | `player_attempt` | NONE | A dashboard viewer does not have access to `player_attempt` records. |
