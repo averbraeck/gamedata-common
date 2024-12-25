@@ -65,7 +65,7 @@ public class User extends TableImpl<UserRecord> {
     /**
      * The column <code>gamedata.user.email</code>.
      */
-    public final TableField<UserRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(255).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.VARCHAR)), this, "");
+    public final TableField<UserRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.VARCHAR(255).nullable(false), this, "");
 
     /**
      * The column <code>gamedata.user.password</code>.

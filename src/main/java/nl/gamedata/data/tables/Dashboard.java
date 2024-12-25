@@ -62,7 +62,7 @@ public class Dashboard extends TableImpl<DashboardRecord> {
     /**
      * The column <code>gamedata.dashboard.query</code>.
      */
-    public final TableField<DashboardRecord, String> QUERY = createField(DSL.name("query"), SQLDataType.CLOB.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.CLOB)), this, "");
+    public final TableField<DashboardRecord, String> QUERY = createField(DSL.name("query"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.dashboard.dashboard_template_id</code>.
