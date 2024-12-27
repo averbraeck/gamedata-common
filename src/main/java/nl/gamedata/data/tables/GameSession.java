@@ -117,9 +117,9 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     public final TableField<GameSessionRecord, Integer> GAME_VERSION_ID = createField(DSL.name("game_version_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.game_session.organization_game_id</code>.
+     * The column <code>gamedata.game_session.organization_id</code>.
      */
-    public final TableField<GameSessionRecord, Integer> ORGANIZATION_GAME_ID = createField(DSL.name("organization_game_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<GameSessionRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GameSession(Name alias, Table<GameSessionRecord> aliased) {
         this(alias, aliased, null);
@@ -161,7 +161,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GAME_SESSION_FK_GAME_SESSION_GAME_VERSION1_IDX, Indexes.GAME_SESSION_FK_GAME_SESSION_ORGANIZATION_GAME1_IDX);
+        return Arrays.asList(Indexes.GAME_SESSION_FK_GAME_SESSION_GAME_VERSION1_IDX, Indexes.GAME_SESSION_FK_GAME_SESSION_ORGANIZATION1_IDX);
     }
 
     @Override
@@ -181,11 +181,11 @@ public class GameSession extends TableImpl<GameSessionRecord> {
 
     @Override
     public List<ForeignKey<GameSessionRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAME_SESSION_GAME_VERSION1, Keys.FK_GAME_SESSION_ORGANIZATION_GAME1);
+        return Arrays.asList(Keys.FK_GAME_SESSION_GAME_VERSION1, Keys.FK_GAME_SESSION_ORGANIZATION1);
     }
 
     private transient GameVersion _gameVersion;
-    private transient OrganizationGame _organizationGame;
+    private transient Organization _organization;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_version</code>
@@ -199,14 +199,14 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     }
 
     /**
-     * Get the implicit join path to the <code>gamedata.organization_game</code>
+     * Get the implicit join path to the <code>gamedata.organization</code>
      * table.
      */
-    public OrganizationGame organizationGame() {
-        if (_organizationGame == null)
-            _organizationGame = new OrganizationGame(this, Keys.FK_GAME_SESSION_ORGANIZATION_GAME1);
+    public Organization organization() {
+        if (_organization == null)
+            _organization = new Organization(this, Keys.FK_GAME_SESSION_ORGANIZATION1);
 
-        return _organizationGame;
+        return _organization;
     }
 
     @Override
