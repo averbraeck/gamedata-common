@@ -2,7 +2,7 @@
 
 Access has been defined through roles. Each user can have multiple roles, defined in five role tables and one attribute within user:
 
-![](20241223_User.png)
+![](20241227_User.png)
 
 The following rights exist:
 - `user.super_admin`: complete rights; defined in the `user` table. See [role super-admin](role_super_admin.md)
