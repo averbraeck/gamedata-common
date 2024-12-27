@@ -6,7 +6,7 @@ The gamedata database is implemented in mysql / mariadb as a relational SQL data
 
 The database design looks as follows:
 
-![](20241223_Gamedata.png)
+![](20241227_Gamedata.png)
 
 
 ## Tables
@@ -24,7 +24,7 @@ The database has the following administrative tables that can be edited through 
 `GameToken`: An game can secure read access and/or write access to the game through a token. Multiple tokens can be defined. A token is a string that replaces a username/password to upload data into the gamedata platform. Tokens can be deleted, after which they cannot be used anymore to provide data to the platform. Tokens prevent the open sending of usernames and passwords over the network, and are much more fine-grained than the users for the platform.
 * `GameVersion`: A version of a `Game`. A version can indicate a `Game` in another language, a `Game` with other features, or sometimes a `Game` deployed for another `Organization`, e.g., using branding.
 * `GameMission`: Missions are separate parts of a `GameVersion` that can be finished, and for which an 'end score' can be calculated. In some cases, rounds of a game are missions, in other cases, rounds do not have separate scores that are to be shown on a leaderboard. When defining a game, administrators do not have restrictions in defining one or several missions for a game. A mission serves as a 'reporting unit' for a game.
-* `GameSession`: sessions are occasions where one or more players who belong to a `OrganizationGame` (the access of an `Organization` to a `Game`), in groups or individually, play a certain `Game` where the results are stored in the platform for that `Game` and that `Organization`. The `GameSession` has a token as one of its fields, which is comparable to a pin code to provide quick access to the session where the data needs to be stored. 
+* `GameSession`: sessions are occasions where one or more players who belong to a `Organization`, in groups or individually, play a certain version of a `Game` where the results are stored in the platform for that `GameVersion` and that `Organization`. The `GameSession` has a token as one of its fields, which is comparable to a pin code to provide quick access to the session where the data needs to be stored. 
 * `GameSessionRole`: A role that a `User` with a role in an `Organization` can play for a specific `GameSession` of that `Organization`, e.g., maintaining the `GameSession` or having permission to look at the scores for that `GameSession`. This is more fine-grained than having a `OrganizationGameRole`, where a `User` would get access to all sessions for that game within the organization.
 * `Scale`: a scale on which a score, or a KPI (Key Performance Indicator) is stored, e.g., 0-100 %; 0-5 stars; A through F, 1 to 10, the number of seconds it took to complete a mission on the interval (0, 3600], etc. A `Scale` is defined per `Game`, so that the `GameAdmin` can maintain the scales for the `Game` they administer.
 * `LearningGoal`: a learning goal for a mission, which can have attached player and group objectives. A game mission gan have multiple learning goals.
