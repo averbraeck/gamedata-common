@@ -2,6 +2,10 @@ package nl.gamedata.common;
 
 import javax.sql.DataSource;
 
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
+
 /**
  * CommonData contains the root class for the persistent data objects in the backend per session.
  * <p>
@@ -12,12 +16,14 @@ import javax.sql.DataSource;
  */
 public class CommonData
 {
-
     /**
      * the SQL datasource representing the database's connection pool.<br>
      * the datasource is shared among the servlets and stored as a ServletContext attribute.
      */
     protected DataSource dataSource;
+
+    /** The DSL Context for reuse. Lazy loading. */
+    private DSLContext dsl = null;
 
     public DataSource getDataSource()
     {
@@ -29,4 +35,12 @@ public class CommonData
         this.dataSource = dataSource;
     }
 
+    public DSLContext getDSL()
+    {
+        if (this.dsl == null)
+        {
+            this.dsl = DSL.using(getDataSource(), SQLDialect.MYSQL);
+        }
+        return this.dsl;
+    }
 }

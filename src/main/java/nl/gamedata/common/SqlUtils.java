@@ -1,12 +1,7 @@
 package nl.gamedata.common;
 
-import javax.sql.DataSource;
-
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.impl.DSL;
 
 import nl.gamedata.data.Tables;
 import nl.gamedata.data.tables.records.UserRecord;
@@ -24,28 +19,19 @@ public class SqlUtils
 
     public static UserRecord readUserFromUserId(final CommonData data, final int userId)
     {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.USER).where(Tables.USER.ID.eq(userId)).fetchAny();
+        return data.getDSL().selectFrom(Tables.USER).where(Tables.USER.ID.eq(userId)).fetchAny();
     }
 
     public static UserRecord readUserFromUsername(final CommonData data, final String username)
     {
-        DSLContext dslContext = DSL.using(data.getDataSource(), SQLDialect.MYSQL);
-        return dslContext.selectFrom(Tables.USER).where(Tables.USER.NAME.eq(username)).fetchAny();
-    }
-
-    public static <R extends org.jooq.UpdatableRecord<R>> R readRecordFromId(final CommonData data, final Table<R> table,
-            final int recordId)
-    {
-        return readRecordFromId(data.getDataSource(), table, recordId);
+        return data.getDSL().selectFrom(Tables.USER).where(Tables.USER.NAME.eq(username)).fetchAny();
     }
 
     @SuppressWarnings("unchecked")
-    public static <R extends org.jooq.UpdatableRecord<R>> R readRecordFromId(final DataSource dataSource, final Table<R> table,
+    public static <R extends org.jooq.UpdatableRecord<R>> R readRecordFromId(final CommonData data, final Table<R> table,
             final int recordId)
     {
-        DSLContext dslContext = DSL.using(dataSource, SQLDialect.MYSQL);
-        return dslContext.selectFrom(table).where(((TableField<R, Integer>) table.field("id")).eq(recordId)).fetchOne();
+        return data.getDSL().selectFrom(table).where(((TableField<R, Integer>) table.field("id")).eq(recordId)).fetchOne();
     }
 
 }
