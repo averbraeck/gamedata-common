@@ -14,12 +14,12 @@ import nl.gamedata.data.tables.records.DashboardElementRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function3;
+import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -58,14 +58,19 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
     public final TableField<DashboardElementRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
+     * The column <code>gamedata.dashboard_element.code</code>.
+     */
+    public final TableField<DashboardElementRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.dashboard_element.name</code>.
      */
     public final TableField<DashboardElementRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
-     * The column <code>gamedata.dashboard_element.descriiption</code>.
+     * The column <code>gamedata.dashboard_element.description</code>.
      */
-    public final TableField<DashboardElementRecord, String> DESCRIIPTION = createField(DSL.name("descriiption"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DashboardElementRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB.nullable(false), this, "");
 
     private DashboardElement(Name alias, Table<DashboardElementRecord> aliased) {
         this(alias, aliased, null);
@@ -117,7 +122,7 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
 
     @Override
     public List<UniqueKey<DashboardElementRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_DASHBOARD_ELEMENT_ID_UNIQUE, Keys.KEY_DASHBOARD_ELEMENT_NAME_UNIQUE);
+        return Arrays.asList(Keys.KEY_DASHBOARD_ELEMENT_ID_UNIQUE, Keys.KEY_DASHBOARD_ELEMENT_CODE_UNIQUE);
     }
 
     @Override
@@ -160,18 +165,18 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, String> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Integer, String, String, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function3<? super Integer, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -179,7 +184,7 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super Integer, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

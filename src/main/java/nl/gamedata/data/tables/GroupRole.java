@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.GroupRoleRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function3;
+import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -69,6 +69,11 @@ public class GroupRole extends TableImpl<GroupRoleRecord> {
      */
     public final TableField<GroupRoleRecord, Integer> GROUP_ID = createField(DSL.name("group_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
+    /**
+     * The column <code>gamedata.group_role.player_id</code>.
+     */
+    public final TableField<GroupRoleRecord, Integer> PLAYER_ID = createField(DSL.name("player_id"), SQLDataType.INTEGER.nullable(false), this, "");
+
     private GroupRole(Name alias, Table<GroupRoleRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -109,7 +114,7 @@ public class GroupRole extends TableImpl<GroupRoleRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.GROUP_ROLE_FK_GROUP_ROLE_GROUP1_IDX);
+        return Arrays.asList(Indexes.GROUP_ROLE_FK_GROUP_ROLE_GROUP1_IDX, Indexes.GROUP_ROLE_FK_GROUP_ROLE_PLAYER1_IDX);
     }
 
     @Override
@@ -129,10 +134,11 @@ public class GroupRole extends TableImpl<GroupRoleRecord> {
 
     @Override
     public List<ForeignKey<GroupRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GROUP_ROLE_GROUP1);
+        return Arrays.asList(Keys.FK_GROUP_ROLE_GROUP1, Keys.FK_GROUP_ROLE_PLAYER1);
     }
 
     private transient Group _group;
+    private transient Player _player;
 
     /**
      * Get the implicit join path to the <code>gamedata.group</code> table.
@@ -142,6 +148,16 @@ public class GroupRole extends TableImpl<GroupRoleRecord> {
             _group = new Group(this, Keys.FK_GROUP_ROLE_GROUP1);
 
         return _group;
+    }
+
+    /**
+     * Get the implicit join path to the <code>gamedata.player</code> table.
+     */
+    public Player player() {
+        if (_player == null)
+            _player = new Player(this, Keys.FK_GROUP_ROLE_PLAYER1);
+
+        return _player;
     }
 
     @Override
@@ -184,18 +200,18 @@ public class GroupRole extends TableImpl<GroupRoleRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Integer, String, Integer> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Integer, String, Integer, Integer> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function3<? super Integer, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -203,7 +219,7 @@ public class GroupRole extends TableImpl<GroupRoleRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super Integer, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

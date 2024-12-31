@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.ElementPropertyRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
+import org.jooq.Function6;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -60,9 +60,19 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
     public final TableField<ElementPropertyRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
+     * The column <code>gamedata.element_property.code</code>.
+     */
+    public final TableField<ElementPropertyRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.element_property.name</code>.
      */
     public final TableField<ElementPropertyRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.element_property.description</code>.
+     */
+    public final TableField<ElementPropertyRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>gamedata.element_property.type</code>.
@@ -129,7 +139,7 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
 
     @Override
     public List<UniqueKey<ElementPropertyRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_ELEMENT_PROPERTY_ID_UNIQUE, Keys.KEY_ELEMENT_PROPERTY_NAME_UNIQUE);
+        return Arrays.asList(Keys.KEY_ELEMENT_PROPERTY_ID_UNIQUE, Keys.KEY_ELEMENT_PROPERTY_CODE_UNIQUE);
     }
 
     @Override
@@ -190,18 +200,18 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<Integer, String, String, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row6<Integer, String, String, String, String, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function6<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -209,7 +219,7 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

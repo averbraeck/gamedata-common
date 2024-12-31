@@ -16,13 +16,13 @@ import nl.gamedata.data.tables.records.PlayerScoreRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function15;
+import org.jooq.Function14;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row15;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -84,11 +84,6 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
      * The column <code>gamedata.player_score.timestamp</code>.
      */
     public final TableField<PlayerScoreRecord, LocalDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.LOCALDATETIME(0).nullable(false).defaultValue(DSL.field(DSL.raw("current_timestamp()"), SQLDataType.LOCALDATETIME)), this, "");
-
-    /**
-     * The column <code>gamedata.player_score.mission_attempt</code>.
-     */
-    public final TableField<PlayerScoreRecord, Integer> MISSION_ATTEMPT = createField(DSL.name("mission_attempt"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>gamedata.player_score.final_score</code>.
@@ -269,18 +264,18 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Integer, String, Double, Double, String, LocalDateTime, Integer, Byte, String, String, String, String, Integer, Integer, Integer> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row14<Integer, String, Double, Double, String, LocalDateTime, Byte, String, String, String, String, Integer, Integer, Integer> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function15<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -288,7 +283,7 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function15<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Integer, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

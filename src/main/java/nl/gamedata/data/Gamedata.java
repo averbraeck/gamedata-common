@@ -15,6 +15,7 @@ import nl.gamedata.data.tables.DashboardSession;
 import nl.gamedata.data.tables.DashboardTemplate;
 import nl.gamedata.data.tables.DashboardToken;
 import nl.gamedata.data.tables.ElementProperty;
+import nl.gamedata.data.tables.Error;
 import nl.gamedata.data.tables.Game;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
@@ -102,6 +103,11 @@ public class Gamedata extends SchemaImpl {
      * The table <code>gamedata.element_property</code>.
      */
     public final ElementProperty ELEMENT_PROPERTY = ElementProperty.ELEMENT_PROPERTY;
+
+    /**
+     * The table <code>gamedata.error</code>.
+     */
+    public final Error ERROR = Error.ERROR;
 
     /**
      * The table <code>gamedata.game</code>.
@@ -272,6 +278,7 @@ public class Gamedata extends SchemaImpl {
             DashboardTemplate.DASHBOARD_TEMPLATE,
             DashboardToken.DASHBOARD_TOKEN,
             ElementProperty.ELEMENT_PROPERTY,
+            Error.ERROR,
             Game.GAME,
             GameMission.GAME_MISSION,
             GameRole.GAME_ROLE,

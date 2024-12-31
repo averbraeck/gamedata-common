@@ -15,13 +15,13 @@ import nl.gamedata.data.tables.records.PlayerRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
+import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -74,11 +74,6 @@ public class Player extends TableImpl<PlayerRecord> {
      */
     public final TableField<PlayerRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
-    /**
-     * The column <code>gamedata.player.group_role_id</code>.
-     */
-    public final TableField<PlayerRecord, Integer> GROUP_ROLE_ID = createField(DSL.name("group_role_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
-
     private Player(Name alias, Table<PlayerRecord> aliased) {
         this(alias, aliased, null);
     }
@@ -119,7 +114,7 @@ public class Player extends TableImpl<PlayerRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.asList(Indexes.PLAYER_FK_PLAYER_GAME_SESSION1_IDX, Indexes.PLAYER_FK_PLAYER_GROUP_ROLE1_IDX);
+        return Arrays.asList(Indexes.PLAYER_FK_PLAYER_GAME_SESSION1_IDX);
     }
 
     @Override
@@ -139,11 +134,10 @@ public class Player extends TableImpl<PlayerRecord> {
 
     @Override
     public List<ForeignKey<PlayerRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYER_GAME_SESSION1, Keys.FK_PLAYER_GROUP_ROLE1);
+        return Arrays.asList(Keys.FK_PLAYER_GAME_SESSION1);
     }
 
     private transient GameSession _gameSession;
-    private transient GroupRole _groupRole;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_session</code>
@@ -154,16 +148,6 @@ public class Player extends TableImpl<PlayerRecord> {
             _gameSession = new GameSession(this, Keys.FK_PLAYER_GAME_SESSION1);
 
         return _gameSession;
-    }
-
-    /**
-     * Get the implicit join path to the <code>gamedata.group_role</code> table.
-     */
-    public GroupRole groupRole() {
-        if (_groupRole == null)
-            _groupRole = new GroupRole(this, Keys.FK_PLAYER_GROUP_ROLE1);
-
-        return _groupRole;
     }
 
     @Override
@@ -206,18 +190,18 @@ public class Player extends TableImpl<PlayerRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, String, String, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row4<Integer, String, String, Integer> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -225,7 +209,7 @@ public class Player extends TableImpl<PlayerRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }

@@ -12,6 +12,7 @@ import nl.gamedata.data.tables.DashboardSession;
 import nl.gamedata.data.tables.DashboardTemplate;
 import nl.gamedata.data.tables.DashboardToken;
 import nl.gamedata.data.tables.ElementProperty;
+import nl.gamedata.data.tables.Error;
 import nl.gamedata.data.tables.Game;
 import nl.gamedata.data.tables.GameMission;
 import nl.gamedata.data.tables.GameRole;
@@ -88,6 +89,11 @@ public class Tables {
      * The table <code>gamedata.element_property</code>.
      */
     public static final ElementProperty ELEMENT_PROPERTY = ElementProperty.ELEMENT_PROPERTY;
+
+    /**
+     * The table <code>gamedata.error</code>.
+     */
+    public static final Error ERROR = Error.ERROR;
 
     /**
      * The table <code>gamedata.game</code>.

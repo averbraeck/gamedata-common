@@ -17,13 +17,13 @@ import nl.gamedata.data.tables.records.GameSessionRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function13;
+import org.jooq.Function15;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row13;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -72,6 +72,11 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     public final TableField<GameSessionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(45).nullable(false), this, "");
 
     /**
+     * The column <code>gamedata.game_session.description</code>.
+     */
+    public final TableField<GameSessionRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
      * The column <code>gamedata.game_session.session_token</code>.
      */
     public final TableField<GameSessionRecord, String> SESSION_TOKEN = createField(DSL.name("session_token"), SQLDataType.VARCHAR(45).nullable(false), this, "");
@@ -100,6 +105,11 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * The column <code>gamedata.game_session.valid_until</code>.
      */
     public final TableField<GameSessionRecord, LocalDateTime> VALID_UNTIL = createField(DSL.name("valid_until"), SQLDataType.LOCALDATETIME(0).defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.LOCALDATETIME)), this, "");
+
+    /**
+     * The column <code>gamedata.game_session.token_forced</code>.
+     */
+    public final TableField<GameSessionRecord, Byte> TOKEN_FORCED = createField(DSL.name("token_forced"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("1"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.game_session.token_for_dashboard</code>.
@@ -249,18 +259,18 @@ public class GameSession extends TableImpl<GameSessionRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Integer, String, String, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Byte, Byte, Integer, Integer> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row15<Integer, String, String, String, String, String, LocalDate, Byte, LocalDateTime, LocalDateTime, Byte, Byte, Byte, Integer, Integer> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function13<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function15<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -268,7 +278,7 @@ public class GameSession extends TableImpl<GameSessionRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function13<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function15<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super String, ? super LocalDate, ? super Byte, ? super LocalDateTime, ? super LocalDateTime, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
