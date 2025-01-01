@@ -15,12 +15,12 @@ import nl.gamedata.data.tables.records.ErrorRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function9;
+import org.jooq.Function11;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Records;
-import org.jooq.Row9;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -62,6 +62,16 @@ public class Error extends TableImpl<ErrorRecord> {
      * The column <code>gamedata.error.timestamp</code>.
      */
     public final TableField<ErrorRecord, LocalDateTime> TIMESTAMP = createField(DSL.name("timestamp"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.error.error_type</code>.
+     */
+    public final TableField<ErrorRecord, String> ERROR_TYPE = createField(DSL.name("error_type"), SQLDataType.VARCHAR(16).nullable(false), this, "");
+
+    /**
+     * The column <code>gamedata.error.record_stored</code>.
+     */
+    public final TableField<ErrorRecord, Byte> RECORD_STORED = createField(DSL.name("record_stored"), SQLDataType.TINYINT.nullable(false).defaultValue(DSL.field(DSL.raw("0"), SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>gamedata.error.message</code>.
@@ -191,18 +201,18 @@ public class Error extends TableImpl<ErrorRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<Integer, LocalDateTime, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row11<Integer, LocalDateTime, String, Byte, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 
     /**
      * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
      */
-    public <U> SelectField<U> mapping(Function9<? super Integer, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Function11<? super Integer, ? super LocalDateTime, ? super String, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
         return convertFrom(Records.mapping(from));
     }
 
@@ -210,7 +220,7 @@ public class Error extends TableImpl<ErrorRecord> {
      * Convenience mapping calling {@link SelectField#convertFrom(Class,
      * Function)}.
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
+    public <U> SelectField<U> mapping(Class<U> toType, Function11<? super Integer, ? super LocalDateTime, ? super String, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? super String, ? extends U> from) {
         return convertFrom(toType, Records.mapping(from));
     }
 }
