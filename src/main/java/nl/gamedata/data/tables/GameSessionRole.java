@@ -5,25 +5,31 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GameSession.GameSessionPath;
+import nl.gamedata.data.tables.User.UserPath;
 import nl.gamedata.data.tables.records.GameSessionRoleRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -80,11 +86,11 @@ public class GameSessionRole extends TableImpl<GameSessionRoleRecord> {
     public final TableField<GameSessionRoleRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GameSessionRole(Name alias, Table<GameSessionRoleRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private GameSessionRole(Name alias, Table<GameSessionRoleRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private GameSessionRole(Name alias, Table<GameSessionRoleRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -108,8 +114,37 @@ public class GameSessionRole extends TableImpl<GameSessionRoleRecord> {
         this(DSL.name("game_session_role"), null);
     }
 
-    public <O extends Record> GameSessionRole(Table<O> child, ForeignKey<O, GameSessionRoleRecord> key) {
-        super(child, key, GAME_SESSION_ROLE);
+    public <O extends Record> GameSessionRole(Table<O> path, ForeignKey<O, GameSessionRoleRecord> childPath, InverseForeignKey<O, GameSessionRoleRecord> parentPath) {
+        super(path, childPath, parentPath, GAME_SESSION_ROLE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class GameSessionRolePath extends GameSessionRole implements Path<GameSessionRoleRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> GameSessionRolePath(Table<O> path, ForeignKey<O, GameSessionRoleRecord> childPath, InverseForeignKey<O, GameSessionRoleRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private GameSessionRolePath(Name alias, Table<GameSessionRoleRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public GameSessionRolePath as(String alias) {
+            return new GameSessionRolePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public GameSessionRolePath as(Name alias) {
+            return new GameSessionRolePath(alias, this);
+        }
+
+        @Override
+        public GameSessionRolePath as(Table<?> alias) {
+            return new GameSessionRolePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -139,31 +174,32 @@ public class GameSessionRole extends TableImpl<GameSessionRoleRecord> {
 
     @Override
     public List<ForeignKey<GameSessionRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GAME_SESSION_ROLE_USER1, Keys.FK_GAME_SESSION_ROLE_GAME_SESSION1);
+        return Arrays.asList(Keys.FK_GAME_SESSION_ROLE_GAME_SESSION1, Keys.FK_GAME_SESSION_ROLE_USER1);
     }
 
-    private transient User _user;
-    private transient GameSession _gameSession;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.user</code> table.
-     */
-    public User user() {
-        if (_user == null)
-            _user = new User(this, Keys.FK_GAME_SESSION_ROLE_USER1);
-
-        return _user;
-    }
+    private transient GameSessionPath _gameSession;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_session</code>
      * table.
      */
-    public GameSession gameSession() {
+    public GameSessionPath gameSession() {
         if (_gameSession == null)
-            _gameSession = new GameSession(this, Keys.FK_GAME_SESSION_ROLE_GAME_SESSION1);
+            _gameSession = new GameSessionPath(this, Keys.FK_GAME_SESSION_ROLE_GAME_SESSION1, null);
 
         return _gameSession;
+    }
+
+    private transient UserPath _user;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.user</code> table.
+     */
+    public UserPath user() {
+        if (_user == null)
+            _user = new UserPath(this, Keys.FK_GAME_SESSION_ROLE_USER1, null);
+
+        return _user;
     }
 
     @Override
@@ -205,27 +241,87 @@ public class GameSessionRole extends TableImpl<GameSessionRoleRecord> {
         return new GameSessionRole(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row5<Integer, Byte, Byte, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public GameSessionRole where(Condition condition) {
+        return new GameSessionRole(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public GameSessionRole where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public GameSessionRole where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameSessionRole where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameSessionRole where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameSessionRole where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameSessionRole where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameSessionRole where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameSessionRole whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameSessionRole whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

@@ -5,25 +5,34 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.Game.GamePath;
+import nl.gamedata.data.tables.GroupObjective.GroupObjectivePath;
+import nl.gamedata.data.tables.GroupScore.GroupScorePath;
+import nl.gamedata.data.tables.PlayerObjective.PlayerObjectivePath;
+import nl.gamedata.data.tables.PlayerScore.PlayerScorePath;
 import nl.gamedata.data.tables.records.ScaleRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function7;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row7;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -90,11 +99,11 @@ public class Scale extends TableImpl<ScaleRecord> {
     public final TableField<ScaleRecord, Integer> GAME_ID = createField(DSL.name("game_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Scale(Name alias, Table<ScaleRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private Scale(Name alias, Table<ScaleRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private Scale(Name alias, Table<ScaleRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -118,8 +127,37 @@ public class Scale extends TableImpl<ScaleRecord> {
         this(DSL.name("scale"), null);
     }
 
-    public <O extends Record> Scale(Table<O> child, ForeignKey<O, ScaleRecord> key) {
-        super(child, key, SCALE);
+    public <O extends Record> Scale(Table<O> path, ForeignKey<O, ScaleRecord> childPath, InverseForeignKey<O, ScaleRecord> parentPath) {
+        super(path, childPath, parentPath, SCALE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class ScalePath extends Scale implements Path<ScaleRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> ScalePath(Table<O> path, ForeignKey<O, ScaleRecord> childPath, InverseForeignKey<O, ScaleRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private ScalePath(Name alias, Table<ScaleRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public ScalePath as(String alias) {
+            return new ScalePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public ScalePath as(Name alias) {
+            return new ScalePath(alias, this);
+        }
+
+        @Override
+        public ScalePath as(Table<?> alias) {
+            return new ScalePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -152,16 +190,68 @@ public class Scale extends TableImpl<ScaleRecord> {
         return Arrays.asList(Keys.FK_SCALE_GAME1);
     }
 
-    private transient Game _game;
+    private transient GamePath _game;
 
     /**
      * Get the implicit join path to the <code>gamedata.game</code> table.
      */
-    public Game game() {
+    public GamePath game() {
         if (_game == null)
-            _game = new Game(this, Keys.FK_SCALE_GAME1);
+            _game = new GamePath(this, Keys.FK_SCALE_GAME1, null);
 
         return _game;
+    }
+
+    private transient GroupObjectivePath _groupObjective;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_objective</code> table
+     */
+    public GroupObjectivePath groupObjective() {
+        if (_groupObjective == null)
+            _groupObjective = new GroupObjectivePath(this, null, Keys.FK_GROUP_OBJECTIVE_SCALE1.getInverseKey());
+
+        return _groupObjective;
+    }
+
+    private transient GroupScorePath _groupScore;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_score</code> table
+     */
+    public GroupScorePath groupScore() {
+        if (_groupScore == null)
+            _groupScore = new GroupScorePath(this, null, Keys.FK_GROUP_SCORE_SCALE1.getInverseKey());
+
+        return _groupScore;
+    }
+
+    private transient PlayerObjectivePath _playerObjective;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.player_objective</code> table
+     */
+    public PlayerObjectivePath playerObjective() {
+        if (_playerObjective == null)
+            _playerObjective = new PlayerObjectivePath(this, null, Keys.FK_PLAYER_OBJECTIVE_SCALE1.getInverseKey());
+
+        return _playerObjective;
+    }
+
+    private transient PlayerScorePath _playerScore;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.player_score</code> table
+     */
+    public PlayerScorePath playerScore() {
+        if (_playerScore == null)
+            _playerScore = new PlayerScorePath(this, null, Keys.FK_PLAYER_SCORE_SCALE1.getInverseKey());
+
+        return _playerScore;
     }
 
     @Override
@@ -203,27 +293,87 @@ public class Scale extends TableImpl<ScaleRecord> {
         return new Scale(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row7 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row7<Integer, String, Double, Double, String, String, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Scale where(Condition condition) {
+        return new Scale(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function7<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public Scale where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public Scale where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Scale where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Scale where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Scale where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Scale where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Scale where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Scale whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Scale whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

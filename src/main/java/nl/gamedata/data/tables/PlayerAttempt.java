@@ -5,25 +5,33 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GameMission.GameMissionPath;
+import nl.gamedata.data.tables.Player.PlayerPath;
+import nl.gamedata.data.tables.PlayerEvent.PlayerEventPath;
+import nl.gamedata.data.tables.PlayerScore.PlayerScorePath;
 import nl.gamedata.data.tables.records.PlayerAttemptRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -80,11 +88,11 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
     public final TableField<PlayerAttemptRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private PlayerAttempt(Name alias, Table<PlayerAttemptRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private PlayerAttempt(Name alias, Table<PlayerAttemptRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private PlayerAttempt(Name alias, Table<PlayerAttemptRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -108,8 +116,37 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
         this(DSL.name("player_attempt"), null);
     }
 
-    public <O extends Record> PlayerAttempt(Table<O> child, ForeignKey<O, PlayerAttemptRecord> key) {
-        super(child, key, PLAYER_ATTEMPT);
+    public <O extends Record> PlayerAttempt(Table<O> path, ForeignKey<O, PlayerAttemptRecord> childPath, InverseForeignKey<O, PlayerAttemptRecord> parentPath) {
+        super(path, childPath, parentPath, PLAYER_ATTEMPT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class PlayerAttemptPath extends PlayerAttempt implements Path<PlayerAttemptRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> PlayerAttemptPath(Table<O> path, ForeignKey<O, PlayerAttemptRecord> childPath, InverseForeignKey<O, PlayerAttemptRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private PlayerAttemptPath(Name alias, Table<PlayerAttemptRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public PlayerAttemptPath as(String alias) {
+            return new PlayerAttemptPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public PlayerAttemptPath as(Name alias) {
+            return new PlayerAttemptPath(alias, this);
+        }
+
+        @Override
+        public PlayerAttemptPath as(Table<?> alias) {
+            return new PlayerAttemptPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -139,31 +176,58 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
 
     @Override
     public List<ForeignKey<PlayerAttemptRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_PLAYER_ATTEMPT_PLAYER1, Keys.FK_PLAYER_ATTEMPT_GAME_MISSION1);
+        return Arrays.asList(Keys.FK_PLAYER_ATTEMPT_GAME_MISSION1, Keys.FK_PLAYER_ATTEMPT_PLAYER1);
     }
 
-    private transient Player _player;
-    private transient GameMission _gameMission;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.player</code> table.
-     */
-    public Player player() {
-        if (_player == null)
-            _player = new Player(this, Keys.FK_PLAYER_ATTEMPT_PLAYER1);
-
-        return _player;
-    }
+    private transient GameMissionPath _gameMission;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_mission</code>
      * table.
      */
-    public GameMission gameMission() {
+    public GameMissionPath gameMission() {
         if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_PLAYER_ATTEMPT_GAME_MISSION1);
+            _gameMission = new GameMissionPath(this, Keys.FK_PLAYER_ATTEMPT_GAME_MISSION1, null);
 
         return _gameMission;
+    }
+
+    private transient PlayerPath _player;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.player</code> table.
+     */
+    public PlayerPath player() {
+        if (_player == null)
+            _player = new PlayerPath(this, Keys.FK_PLAYER_ATTEMPT_PLAYER1, null);
+
+        return _player;
+    }
+
+    private transient PlayerEventPath _playerEvent;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.player_event</code> table
+     */
+    public PlayerEventPath playerEvent() {
+        if (_playerEvent == null)
+            _playerEvent = new PlayerEventPath(this, null, Keys.FK_PLAYER_EVENT_PLAYER_ATTEMPT1.getInverseKey());
+
+        return _playerEvent;
+    }
+
+    private transient PlayerScorePath _playerScore;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.player_score</code> table
+     */
+    public PlayerScorePath playerScore() {
+        if (_playerScore == null)
+            _playerScore = new PlayerScorePath(this, null, Keys.FK_PLAYER_SCORE_PLAYER_ATTEMPT1.getInverseKey());
+
+        return _playerScore;
     }
 
     @Override
@@ -205,27 +269,87 @@ public class PlayerAttempt extends TableImpl<PlayerAttemptRecord> {
         return new PlayerAttempt(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row5<Integer, Integer, String, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public PlayerAttempt where(Condition condition) {
+        return new PlayerAttempt(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public PlayerAttempt where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public PlayerAttempt where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerAttempt where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerAttempt where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerAttempt where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerAttempt where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerAttempt where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerAttempt whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerAttempt whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

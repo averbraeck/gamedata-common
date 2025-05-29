@@ -5,25 +5,33 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GameMission.GameMissionPath;
+import nl.gamedata.data.tables.Group.GroupPath;
+import nl.gamedata.data.tables.GroupEvent.GroupEventPath;
+import nl.gamedata.data.tables.GroupScore.GroupScorePath;
 import nl.gamedata.data.tables.records.GroupAttemptRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -80,11 +88,11 @@ public class GroupAttempt extends TableImpl<GroupAttemptRecord> {
     public final TableField<GroupAttemptRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GroupAttempt(Name alias, Table<GroupAttemptRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private GroupAttempt(Name alias, Table<GroupAttemptRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private GroupAttempt(Name alias, Table<GroupAttemptRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -108,8 +116,37 @@ public class GroupAttempt extends TableImpl<GroupAttemptRecord> {
         this(DSL.name("group_attempt"), null);
     }
 
-    public <O extends Record> GroupAttempt(Table<O> child, ForeignKey<O, GroupAttemptRecord> key) {
-        super(child, key, GROUP_ATTEMPT);
+    public <O extends Record> GroupAttempt(Table<O> path, ForeignKey<O, GroupAttemptRecord> childPath, InverseForeignKey<O, GroupAttemptRecord> parentPath) {
+        super(path, childPath, parentPath, GROUP_ATTEMPT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class GroupAttemptPath extends GroupAttempt implements Path<GroupAttemptRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> GroupAttemptPath(Table<O> path, ForeignKey<O, GroupAttemptRecord> childPath, InverseForeignKey<O, GroupAttemptRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private GroupAttemptPath(Name alias, Table<GroupAttemptRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public GroupAttemptPath as(String alias) {
+            return new GroupAttemptPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public GroupAttemptPath as(Name alias) {
+            return new GroupAttemptPath(alias, this);
+        }
+
+        @Override
+        public GroupAttemptPath as(Table<?> alias) {
+            return new GroupAttemptPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -139,31 +176,58 @@ public class GroupAttempt extends TableImpl<GroupAttemptRecord> {
 
     @Override
     public List<ForeignKey<GroupAttemptRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GROUP_ATTEMPT_GROUP1, Keys.FK_GROUP_ATTEMPT_GAME_MISSION1);
+        return Arrays.asList(Keys.FK_GROUP_ATTEMPT_GAME_MISSION1, Keys.FK_GROUP_ATTEMPT_GROUP1);
     }
 
-    private transient Group _group;
-    private transient GameMission _gameMission;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.group</code> table.
-     */
-    public Group group() {
-        if (_group == null)
-            _group = new Group(this, Keys.FK_GROUP_ATTEMPT_GROUP1);
-
-        return _group;
-    }
+    private transient GameMissionPath _gameMission;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_mission</code>
      * table.
      */
-    public GameMission gameMission() {
+    public GameMissionPath gameMission() {
         if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_GROUP_ATTEMPT_GAME_MISSION1);
+            _gameMission = new GameMissionPath(this, Keys.FK_GROUP_ATTEMPT_GAME_MISSION1, null);
 
         return _gameMission;
+    }
+
+    private transient GroupPath _group;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.group</code> table.
+     */
+    public GroupPath group() {
+        if (_group == null)
+            _group = new GroupPath(this, Keys.FK_GROUP_ATTEMPT_GROUP1, null);
+
+        return _group;
+    }
+
+    private transient GroupEventPath _groupEvent;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_event</code> table
+     */
+    public GroupEventPath groupEvent() {
+        if (_groupEvent == null)
+            _groupEvent = new GroupEventPath(this, null, Keys.FK_GROUP_EVENT_GROUP_ATTEMPT1.getInverseKey());
+
+        return _groupEvent;
+    }
+
+    private transient GroupScorePath _groupScore;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_score</code> table
+     */
+    public GroupScorePath groupScore() {
+        if (_groupScore == null)
+            _groupScore = new GroupScorePath(this, null, Keys.FK_GROUP_SCORE_GROUP_ATTEMPT1.getInverseKey());
+
+        return _groupScore;
     }
 
     @Override
@@ -205,27 +269,87 @@ public class GroupAttempt extends TableImpl<GroupAttemptRecord> {
         return new GroupAttempt(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row5<Integer, Integer, String, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public GroupAttempt where(Condition condition) {
+        return new GroupAttempt(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public GroupAttempt where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public GroupAttempt where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupAttempt where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupAttempt where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupAttempt where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupAttempt where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupAttempt where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupAttempt whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupAttempt whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

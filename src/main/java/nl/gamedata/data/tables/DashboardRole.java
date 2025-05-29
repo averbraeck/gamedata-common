@@ -5,25 +5,31 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.DashboardTemplate.DashboardTemplatePath;
+import nl.gamedata.data.tables.User.UserPath;
 import nl.gamedata.data.tables.records.DashboardRoleRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -80,11 +86,11 @@ public class DashboardRole extends TableImpl<DashboardRoleRecord> {
     public final TableField<DashboardRoleRecord, Integer> DASHBOARD_TEMPLATE_ID = createField(DSL.name("dashboard_template_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private DashboardRole(Name alias, Table<DashboardRoleRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private DashboardRole(Name alias, Table<DashboardRoleRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private DashboardRole(Name alias, Table<DashboardRoleRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -108,8 +114,37 @@ public class DashboardRole extends TableImpl<DashboardRoleRecord> {
         this(DSL.name("dashboard_role"), null);
     }
 
-    public <O extends Record> DashboardRole(Table<O> child, ForeignKey<O, DashboardRoleRecord> key) {
-        super(child, key, DASHBOARD_ROLE);
+    public <O extends Record> DashboardRole(Table<O> path, ForeignKey<O, DashboardRoleRecord> childPath, InverseForeignKey<O, DashboardRoleRecord> parentPath) {
+        super(path, childPath, parentPath, DASHBOARD_ROLE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class DashboardRolePath extends DashboardRole implements Path<DashboardRoleRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> DashboardRolePath(Table<O> path, ForeignKey<O, DashboardRoleRecord> childPath, InverseForeignKey<O, DashboardRoleRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private DashboardRolePath(Name alias, Table<DashboardRoleRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public DashboardRolePath as(String alias) {
+            return new DashboardRolePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public DashboardRolePath as(Name alias) {
+            return new DashboardRolePath(alias, this);
+        }
+
+        @Override
+        public DashboardRolePath as(Table<?> alias) {
+            return new DashboardRolePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -139,31 +174,32 @@ public class DashboardRole extends TableImpl<DashboardRoleRecord> {
 
     @Override
     public List<ForeignKey<DashboardRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_DASHBOARD_ROLE_USER1, Keys.FK_DASHBOARD_ROLE_DASHBOARD_TEMPLATE1);
+        return Arrays.asList(Keys.FK_DASHBOARD_ROLE_DASHBOARD_TEMPLATE1, Keys.FK_DASHBOARD_ROLE_USER1);
     }
 
-    private transient User _user;
-    private transient DashboardTemplate _dashboardTemplate;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.user</code> table.
-     */
-    public User user() {
-        if (_user == null)
-            _user = new User(this, Keys.FK_DASHBOARD_ROLE_USER1);
-
-        return _user;
-    }
+    private transient DashboardTemplatePath _dashboardTemplate;
 
     /**
      * Get the implicit join path to the
      * <code>gamedata.dashboard_template</code> table.
      */
-    public DashboardTemplate dashboardTemplate() {
+    public DashboardTemplatePath dashboardTemplate() {
         if (_dashboardTemplate == null)
-            _dashboardTemplate = new DashboardTemplate(this, Keys.FK_DASHBOARD_ROLE_DASHBOARD_TEMPLATE1);
+            _dashboardTemplate = new DashboardTemplatePath(this, Keys.FK_DASHBOARD_ROLE_DASHBOARD_TEMPLATE1, null);
 
         return _dashboardTemplate;
+    }
+
+    private transient UserPath _user;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.user</code> table.
+     */
+    public UserPath user() {
+        if (_user == null)
+            _user = new UserPath(this, Keys.FK_DASHBOARD_ROLE_USER1, null);
+
+        return _user;
     }
 
     @Override
@@ -205,27 +241,87 @@ public class DashboardRole extends TableImpl<DashboardRoleRecord> {
         return new DashboardRole(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row5<Integer, Byte, Byte, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public DashboardRole where(Condition condition) {
+        return new DashboardRole(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public DashboardRole where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public DashboardRole where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardRole where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardRole where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardRole where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardRole where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardRole where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardRole whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardRole whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

@@ -6,25 +6,30 @@ package nl.gamedata.data.tables;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GroupAttempt.GroupAttemptPath;
 import nl.gamedata.data.tables.records.GroupEventRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function11;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row11;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -111,11 +116,11 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
     public final TableField<GroupEventRecord, Integer> GROUP_ATTEMPT_ID = createField(DSL.name("group_attempt_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GroupEvent(Name alias, Table<GroupEventRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private GroupEvent(Name alias, Table<GroupEventRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private GroupEvent(Name alias, Table<GroupEventRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -139,8 +144,37 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
         this(DSL.name("group_event"), null);
     }
 
-    public <O extends Record> GroupEvent(Table<O> child, ForeignKey<O, GroupEventRecord> key) {
-        super(child, key, GROUP_EVENT);
+    public <O extends Record> GroupEvent(Table<O> path, ForeignKey<O, GroupEventRecord> childPath, InverseForeignKey<O, GroupEventRecord> parentPath) {
+        super(path, childPath, parentPath, GROUP_EVENT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class GroupEventPath extends GroupEvent implements Path<GroupEventRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> GroupEventPath(Table<O> path, ForeignKey<O, GroupEventRecord> childPath, InverseForeignKey<O, GroupEventRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private GroupEventPath(Name alias, Table<GroupEventRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public GroupEventPath as(String alias) {
+            return new GroupEventPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public GroupEventPath as(Name alias) {
+            return new GroupEventPath(alias, this);
+        }
+
+        @Override
+        public GroupEventPath as(Table<?> alias) {
+            return new GroupEventPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -173,15 +207,15 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
         return Arrays.asList(Keys.FK_GROUP_EVENT_GROUP_ATTEMPT1);
     }
 
-    private transient GroupAttempt _groupAttempt;
+    private transient GroupAttemptPath _groupAttempt;
 
     /**
      * Get the implicit join path to the <code>gamedata.group_attempt</code>
      * table.
      */
-    public GroupAttempt groupAttempt() {
+    public GroupAttemptPath groupAttempt() {
         if (_groupAttempt == null)
-            _groupAttempt = new GroupAttempt(this, Keys.FK_GROUP_EVENT_GROUP_ATTEMPT1);
+            _groupAttempt = new GroupAttemptPath(this, Keys.FK_GROUP_EVENT_GROUP_ATTEMPT1, null);
 
         return _groupAttempt;
     }
@@ -225,27 +259,87 @@ public class GroupEvent extends TableImpl<GroupEventRecord> {
         return new GroupEvent(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row11 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row11<Integer, String, String, String, LocalDateTime, String, String, String, String, Byte, Integer> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public GroupEvent where(Condition condition) {
+        return new GroupEvent(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function11<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public GroupEvent where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function11<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public GroupEvent where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupEvent where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupEvent where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupEvent where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupEvent where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupEvent where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupEvent whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupEvent whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

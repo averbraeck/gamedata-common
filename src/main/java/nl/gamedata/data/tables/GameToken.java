@@ -5,25 +5,30 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.Game.GamePath;
 import nl.gamedata.data.tables.records.GameTokenRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -85,11 +90,11 @@ public class GameToken extends TableImpl<GameTokenRecord> {
     public final TableField<GameTokenRecord, Integer> GAME_ID = createField(DSL.name("game_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GameToken(Name alias, Table<GameTokenRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private GameToken(Name alias, Table<GameTokenRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private GameToken(Name alias, Table<GameTokenRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -113,8 +118,37 @@ public class GameToken extends TableImpl<GameTokenRecord> {
         this(DSL.name("game_token"), null);
     }
 
-    public <O extends Record> GameToken(Table<O> child, ForeignKey<O, GameTokenRecord> key) {
-        super(child, key, GAME_TOKEN);
+    public <O extends Record> GameToken(Table<O> path, ForeignKey<O, GameTokenRecord> childPath, InverseForeignKey<O, GameTokenRecord> parentPath) {
+        super(path, childPath, parentPath, GAME_TOKEN);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class GameTokenPath extends GameToken implements Path<GameTokenRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> GameTokenPath(Table<O> path, ForeignKey<O, GameTokenRecord> childPath, InverseForeignKey<O, GameTokenRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private GameTokenPath(Name alias, Table<GameTokenRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public GameTokenPath as(String alias) {
+            return new GameTokenPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public GameTokenPath as(Name alias) {
+            return new GameTokenPath(alias, this);
+        }
+
+        @Override
+        public GameTokenPath as(Table<?> alias) {
+            return new GameTokenPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -147,14 +181,14 @@ public class GameToken extends TableImpl<GameTokenRecord> {
         return Arrays.asList(Keys.FK_GAME_TOKEN_GAME1);
     }
 
-    private transient Game _game;
+    private transient GamePath _game;
 
     /**
      * Get the implicit join path to the <code>gamedata.game</code> table.
      */
-    public Game game() {
+    public GamePath game() {
         if (_game == null)
-            _game = new Game(this, Keys.FK_GAME_TOKEN_GAME1);
+            _game = new GamePath(this, Keys.FK_GAME_TOKEN_GAME1, null);
 
         return _game;
     }
@@ -198,27 +232,87 @@ public class GameToken extends TableImpl<GameTokenRecord> {
         return new GameToken(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row6 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row6<Integer, String, String, Byte, Byte, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public GameToken where(Condition condition) {
+        return new GameToken(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super String, ? super String, ? super Byte, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public GameToken where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super String, ? super String, ? super Byte, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public GameToken where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameToken where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameToken where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameToken where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameToken where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameToken where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameToken whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameToken whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

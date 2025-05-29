@@ -6,25 +6,30 @@ package nl.gamedata.data.tables;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.PlayerAttempt.PlayerAttemptPath;
 import nl.gamedata.data.tables.records.PlayerEventRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function11;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row11;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -111,11 +116,11 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
     public final TableField<PlayerEventRecord, Integer> PLAYER_ATTEMPT_ID = createField(DSL.name("player_attempt_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private PlayerEvent(Name alias, Table<PlayerEventRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private PlayerEvent(Name alias, Table<PlayerEventRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private PlayerEvent(Name alias, Table<PlayerEventRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -139,8 +144,37 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
         this(DSL.name("player_event"), null);
     }
 
-    public <O extends Record> PlayerEvent(Table<O> child, ForeignKey<O, PlayerEventRecord> key) {
-        super(child, key, PLAYER_EVENT);
+    public <O extends Record> PlayerEvent(Table<O> path, ForeignKey<O, PlayerEventRecord> childPath, InverseForeignKey<O, PlayerEventRecord> parentPath) {
+        super(path, childPath, parentPath, PLAYER_EVENT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class PlayerEventPath extends PlayerEvent implements Path<PlayerEventRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> PlayerEventPath(Table<O> path, ForeignKey<O, PlayerEventRecord> childPath, InverseForeignKey<O, PlayerEventRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private PlayerEventPath(Name alias, Table<PlayerEventRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public PlayerEventPath as(String alias) {
+            return new PlayerEventPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public PlayerEventPath as(Name alias) {
+            return new PlayerEventPath(alias, this);
+        }
+
+        @Override
+        public PlayerEventPath as(Table<?> alias) {
+            return new PlayerEventPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -173,15 +207,15 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
         return Arrays.asList(Keys.FK_PLAYER_EVENT_PLAYER_ATTEMPT1);
     }
 
-    private transient PlayerAttempt _playerAttempt;
+    private transient PlayerAttemptPath _playerAttempt;
 
     /**
      * Get the implicit join path to the <code>gamedata.player_attempt</code>
      * table.
      */
-    public PlayerAttempt playerAttempt() {
+    public PlayerAttemptPath playerAttempt() {
         if (_playerAttempt == null)
-            _playerAttempt = new PlayerAttempt(this, Keys.FK_PLAYER_EVENT_PLAYER_ATTEMPT1);
+            _playerAttempt = new PlayerAttemptPath(this, Keys.FK_PLAYER_EVENT_PLAYER_ATTEMPT1, null);
 
         return _playerAttempt;
     }
@@ -225,27 +259,87 @@ public class PlayerEvent extends TableImpl<PlayerEventRecord> {
         return new PlayerEvent(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row11 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row11<Integer, String, String, String, LocalDateTime, String, String, String, String, Byte, Integer> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public PlayerEvent where(Condition condition) {
+        return new PlayerEvent(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function11<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public PlayerEvent where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function11<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public PlayerEvent where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerEvent where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerEvent where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerEvent where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerEvent where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerEvent where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerEvent whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerEvent whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

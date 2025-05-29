@@ -5,25 +5,32 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.DashboardElement.DashboardElementPath;
+import nl.gamedata.data.tables.DashboardTemplate.DashboardTemplatePath;
+import nl.gamedata.data.tables.PropertyValue.PropertyValuePath;
 import nl.gamedata.data.tables.records.TemplateElementRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function3;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row3;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -70,11 +77,11 @@ public class TemplateElement extends TableImpl<TemplateElementRecord> {
     public final TableField<TemplateElementRecord, Integer> DASHBOARD_TEMPLATE_ID = createField(DSL.name("dashboard_template_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private TemplateElement(Name alias, Table<TemplateElementRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private TemplateElement(Name alias, Table<TemplateElementRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private TemplateElement(Name alias, Table<TemplateElementRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -98,8 +105,37 @@ public class TemplateElement extends TableImpl<TemplateElementRecord> {
         this(DSL.name("template_element"), null);
     }
 
-    public <O extends Record> TemplateElement(Table<O> child, ForeignKey<O, TemplateElementRecord> key) {
-        super(child, key, TEMPLATE_ELEMENT);
+    public <O extends Record> TemplateElement(Table<O> path, ForeignKey<O, TemplateElementRecord> childPath, InverseForeignKey<O, TemplateElementRecord> parentPath) {
+        super(path, childPath, parentPath, TEMPLATE_ELEMENT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class TemplateElementPath extends TemplateElement implements Path<TemplateElementRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> TemplateElementPath(Table<O> path, ForeignKey<O, TemplateElementRecord> childPath, InverseForeignKey<O, TemplateElementRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private TemplateElementPath(Name alias, Table<TemplateElementRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public TemplateElementPath as(String alias) {
+            return new TemplateElementPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public TemplateElementPath as(Name alias) {
+            return new TemplateElementPath(alias, this);
+        }
+
+        @Override
+        public TemplateElementPath as(Table<?> alias) {
+            return new TemplateElementPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -132,29 +168,43 @@ public class TemplateElement extends TableImpl<TemplateElementRecord> {
         return Arrays.asList(Keys.FK_TEMPLATE_ELEMENT_DASHBOARD_ELEMENT1, Keys.FK_TEMPLATE_ELEMENT_DASHBOARD_TEMPLATE1);
     }
 
-    private transient DashboardElement _dashboardElement;
-    private transient DashboardTemplate _dashboardTemplate;
+    private transient DashboardElementPath _dashboardElement;
 
     /**
      * Get the implicit join path to the <code>gamedata.dashboard_element</code>
      * table.
      */
-    public DashboardElement dashboardElement() {
+    public DashboardElementPath dashboardElement() {
         if (_dashboardElement == null)
-            _dashboardElement = new DashboardElement(this, Keys.FK_TEMPLATE_ELEMENT_DASHBOARD_ELEMENT1);
+            _dashboardElement = new DashboardElementPath(this, Keys.FK_TEMPLATE_ELEMENT_DASHBOARD_ELEMENT1, null);
 
         return _dashboardElement;
     }
+
+    private transient DashboardTemplatePath _dashboardTemplate;
 
     /**
      * Get the implicit join path to the
      * <code>gamedata.dashboard_template</code> table.
      */
-    public DashboardTemplate dashboardTemplate() {
+    public DashboardTemplatePath dashboardTemplate() {
         if (_dashboardTemplate == null)
-            _dashboardTemplate = new DashboardTemplate(this, Keys.FK_TEMPLATE_ELEMENT_DASHBOARD_TEMPLATE1);
+            _dashboardTemplate = new DashboardTemplatePath(this, Keys.FK_TEMPLATE_ELEMENT_DASHBOARD_TEMPLATE1, null);
 
         return _dashboardTemplate;
+    }
+
+    private transient PropertyValuePath _propertyValue;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.property_value</code> table
+     */
+    public PropertyValuePath propertyValue() {
+        if (_propertyValue == null)
+            _propertyValue = new PropertyValuePath(this, null, Keys.FK_PROPERTY_VALUE_TEMPLATE_ELEMENT1.getInverseKey());
+
+        return _propertyValue;
     }
 
     @Override
@@ -196,27 +246,87 @@ public class TemplateElement extends TableImpl<TemplateElementRecord> {
         return new TemplateElement(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row3 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row3<Integer, Integer, Integer> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public TemplateElement where(Condition condition) {
+        return new TemplateElement(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function3<? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public TemplateElement where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public TemplateElement where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public TemplateElement where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public TemplateElement where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public TemplateElement where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public TemplateElement where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public TemplateElement where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public TemplateElement whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public TemplateElement whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

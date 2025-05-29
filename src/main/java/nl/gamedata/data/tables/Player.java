@@ -5,25 +5,32 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GameSession.GameSessionPath;
+import nl.gamedata.data.tables.GroupRole.GroupRolePath;
+import nl.gamedata.data.tables.PlayerAttempt.PlayerAttemptPath;
 import nl.gamedata.data.tables.records.PlayerRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -75,11 +82,11 @@ public class Player extends TableImpl<PlayerRecord> {
     public final TableField<PlayerRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Player(Name alias, Table<PlayerRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private Player(Name alias, Table<PlayerRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private Player(Name alias, Table<PlayerRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -103,8 +110,37 @@ public class Player extends TableImpl<PlayerRecord> {
         this(DSL.name("player"), null);
     }
 
-    public <O extends Record> Player(Table<O> child, ForeignKey<O, PlayerRecord> key) {
-        super(child, key, PLAYER);
+    public <O extends Record> Player(Table<O> path, ForeignKey<O, PlayerRecord> childPath, InverseForeignKey<O, PlayerRecord> parentPath) {
+        super(path, childPath, parentPath, PLAYER);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class PlayerPath extends Player implements Path<PlayerRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> PlayerPath(Table<O> path, ForeignKey<O, PlayerRecord> childPath, InverseForeignKey<O, PlayerRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private PlayerPath(Name alias, Table<PlayerRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public PlayerPath as(String alias) {
+            return new PlayerPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public PlayerPath as(Name alias) {
+            return new PlayerPath(alias, this);
+        }
+
+        @Override
+        public PlayerPath as(Table<?> alias) {
+            return new PlayerPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -137,17 +173,43 @@ public class Player extends TableImpl<PlayerRecord> {
         return Arrays.asList(Keys.FK_PLAYER_GAME_SESSION1);
     }
 
-    private transient GameSession _gameSession;
+    private transient GameSessionPath _gameSession;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_session</code>
      * table.
      */
-    public GameSession gameSession() {
+    public GameSessionPath gameSession() {
         if (_gameSession == null)
-            _gameSession = new GameSession(this, Keys.FK_PLAYER_GAME_SESSION1);
+            _gameSession = new GameSessionPath(this, Keys.FK_PLAYER_GAME_SESSION1, null);
 
         return _gameSession;
+    }
+
+    private transient GroupRolePath _groupRole;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_role</code> table
+     */
+    public GroupRolePath groupRole() {
+        if (_groupRole == null)
+            _groupRole = new GroupRolePath(this, null, Keys.FK_GROUP_ROLE_PLAYER1.getInverseKey());
+
+        return _groupRole;
+    }
+
+    private transient PlayerAttemptPath _playerAttempt;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.player_attempt</code> table
+     */
+    public PlayerAttemptPath playerAttempt() {
+        if (_playerAttempt == null)
+            _playerAttempt = new PlayerAttemptPath(this, null, Keys.FK_PLAYER_ATTEMPT_PLAYER1.getInverseKey());
+
+        return _playerAttempt;
     }
 
     @Override
@@ -189,27 +251,87 @@ public class Player extends TableImpl<PlayerRecord> {
         return new Player(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row4 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row4<Integer, String, String, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Player where(Condition condition) {
+        return new Player(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public Player where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public Player where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Player where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Player where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Player where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Player where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Player where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Player whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Player whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

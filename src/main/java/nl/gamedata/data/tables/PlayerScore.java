@@ -6,25 +6,32 @@ package nl.gamedata.data.tables;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.PlayerAttempt.PlayerAttemptPath;
+import nl.gamedata.data.tables.PlayerObjective.PlayerObjectivePath;
+import nl.gamedata.data.tables.Scale.ScalePath;
 import nl.gamedata.data.tables.records.PlayerScoreRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function14;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row14;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -126,11 +133,11 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
     public final TableField<PlayerScoreRecord, Integer> SCALE_ID = createField(DSL.name("scale_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
 
     private PlayerScore(Name alias, Table<PlayerScoreRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private PlayerScore(Name alias, Table<PlayerScoreRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private PlayerScore(Name alias, Table<PlayerScoreRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -154,8 +161,37 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
         this(DSL.name("player_score"), null);
     }
 
-    public <O extends Record> PlayerScore(Table<O> child, ForeignKey<O, PlayerScoreRecord> key) {
-        super(child, key, PLAYER_SCORE);
+    public <O extends Record> PlayerScore(Table<O> path, ForeignKey<O, PlayerScoreRecord> childPath, InverseForeignKey<O, PlayerScoreRecord> parentPath) {
+        super(path, childPath, parentPath, PLAYER_SCORE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class PlayerScorePath extends PlayerScore implements Path<PlayerScoreRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> PlayerScorePath(Table<O> path, ForeignKey<O, PlayerScoreRecord> childPath, InverseForeignKey<O, PlayerScoreRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private PlayerScorePath(Name alias, Table<PlayerScoreRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public PlayerScorePath as(String alias) {
+            return new PlayerScorePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public PlayerScorePath as(Name alias) {
+            return new PlayerScorePath(alias, this);
+        }
+
+        @Override
+        public PlayerScorePath as(Table<?> alias) {
+            return new PlayerScorePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -188,38 +224,40 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
         return Arrays.asList(Keys.FK_PLAYER_SCORE_PLAYER_ATTEMPT1, Keys.FK_PLAYER_SCORE_PLAYER_OBJECTIVE1, Keys.FK_PLAYER_SCORE_SCALE1);
     }
 
-    private transient PlayerAttempt _playerAttempt;
-    private transient PlayerObjective _playerObjective;
-    private transient Scale _scale;
+    private transient PlayerAttemptPath _playerAttempt;
 
     /**
      * Get the implicit join path to the <code>gamedata.player_attempt</code>
      * table.
      */
-    public PlayerAttempt playerAttempt() {
+    public PlayerAttemptPath playerAttempt() {
         if (_playerAttempt == null)
-            _playerAttempt = new PlayerAttempt(this, Keys.FK_PLAYER_SCORE_PLAYER_ATTEMPT1);
+            _playerAttempt = new PlayerAttemptPath(this, Keys.FK_PLAYER_SCORE_PLAYER_ATTEMPT1, null);
 
         return _playerAttempt;
     }
+
+    private transient PlayerObjectivePath _playerObjective;
 
     /**
      * Get the implicit join path to the <code>gamedata.player_objective</code>
      * table.
      */
-    public PlayerObjective playerObjective() {
+    public PlayerObjectivePath playerObjective() {
         if (_playerObjective == null)
-            _playerObjective = new PlayerObjective(this, Keys.FK_PLAYER_SCORE_PLAYER_OBJECTIVE1);
+            _playerObjective = new PlayerObjectivePath(this, Keys.FK_PLAYER_SCORE_PLAYER_OBJECTIVE1, null);
 
         return _playerObjective;
     }
 
+    private transient ScalePath _scale;
+
     /**
      * Get the implicit join path to the <code>gamedata.scale</code> table.
      */
-    public Scale scale() {
+    public ScalePath scale() {
         if (_scale == null)
-            _scale = new Scale(this, Keys.FK_PLAYER_SCORE_SCALE1);
+            _scale = new ScalePath(this, Keys.FK_PLAYER_SCORE_SCALE1, null);
 
         return _scale;
     }
@@ -263,27 +301,87 @@ public class PlayerScore extends TableImpl<PlayerScoreRecord> {
         return new PlayerScore(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row14 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row14<Integer, String, Double, Double, String, LocalDateTime, Byte, String, String, String, String, Integer, Integer, Integer> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public PlayerScore where(Condition condition) {
+        return new PlayerScore(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public PlayerScore where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public PlayerScore where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerScore where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerScore where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerScore where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerScore where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PlayerScore where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerScore whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PlayerScore whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

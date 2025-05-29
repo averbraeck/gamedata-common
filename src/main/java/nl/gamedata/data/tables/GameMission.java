@@ -5,25 +5,35 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.DashboardTemplate.DashboardTemplatePath;
+import nl.gamedata.data.tables.GameVersion.GameVersionPath;
+import nl.gamedata.data.tables.GroupAttempt.GroupAttemptPath;
+import nl.gamedata.data.tables.LearningGoal.LearningGoalPath;
+import nl.gamedata.data.tables.MissionEvent.MissionEventPath;
+import nl.gamedata.data.tables.PlayerAttempt.PlayerAttemptPath;
 import nl.gamedata.data.tables.records.GameMissionRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -80,11 +90,11 @@ public class GameMission extends TableImpl<GameMissionRecord> {
     public final TableField<GameMissionRecord, Integer> GAME_VERSION_ID = createField(DSL.name("game_version_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GameMission(Name alias, Table<GameMissionRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private GameMission(Name alias, Table<GameMissionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private GameMission(Name alias, Table<GameMissionRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -108,8 +118,37 @@ public class GameMission extends TableImpl<GameMissionRecord> {
         this(DSL.name("game_mission"), null);
     }
 
-    public <O extends Record> GameMission(Table<O> child, ForeignKey<O, GameMissionRecord> key) {
-        super(child, key, GAME_MISSION);
+    public <O extends Record> GameMission(Table<O> path, ForeignKey<O, GameMissionRecord> childPath, InverseForeignKey<O, GameMissionRecord> parentPath) {
+        super(path, childPath, parentPath, GAME_MISSION);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class GameMissionPath extends GameMission implements Path<GameMissionRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> GameMissionPath(Table<O> path, ForeignKey<O, GameMissionRecord> childPath, InverseForeignKey<O, GameMissionRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private GameMissionPath(Name alias, Table<GameMissionRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public GameMissionPath as(String alias) {
+            return new GameMissionPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public GameMissionPath as(Name alias) {
+            return new GameMissionPath(alias, this);
+        }
+
+        @Override
+        public GameMissionPath as(Table<?> alias) {
+            return new GameMissionPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -142,17 +181,82 @@ public class GameMission extends TableImpl<GameMissionRecord> {
         return Arrays.asList(Keys.FK_GAME_MISSION_GAME_VERSION1);
     }
 
-    private transient GameVersion _gameVersion;
+    private transient GameVersionPath _gameVersion;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_version</code>
      * table.
      */
-    public GameVersion gameVersion() {
+    public GameVersionPath gameVersion() {
         if (_gameVersion == null)
-            _gameVersion = new GameVersion(this, Keys.FK_GAME_MISSION_GAME_VERSION1);
+            _gameVersion = new GameVersionPath(this, Keys.FK_GAME_MISSION_GAME_VERSION1, null);
 
         return _gameVersion;
+    }
+
+    private transient GroupAttemptPath _groupAttempt;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_attempt</code> table
+     */
+    public GroupAttemptPath groupAttempt() {
+        if (_groupAttempt == null)
+            _groupAttempt = new GroupAttemptPath(this, null, Keys.FK_GROUP_ATTEMPT_GAME_MISSION1.getInverseKey());
+
+        return _groupAttempt;
+    }
+
+    private transient LearningGoalPath _learningGoal;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.learning_goal</code> table
+     */
+    public LearningGoalPath learningGoal() {
+        if (_learningGoal == null)
+            _learningGoal = new LearningGoalPath(this, null, Keys.FK_LEARNING_GOAL_GAME_MISSION1.getInverseKey());
+
+        return _learningGoal;
+    }
+
+    private transient MissionEventPath _missionEvent;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.mission_event</code> table
+     */
+    public MissionEventPath missionEvent() {
+        if (_missionEvent == null)
+            _missionEvent = new MissionEventPath(this, null, Keys.FK_MISSION_EVENT_GAME_MISSION1.getInverseKey());
+
+        return _missionEvent;
+    }
+
+    private transient PlayerAttemptPath _playerAttempt;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.player_attempt</code> table
+     */
+    public PlayerAttemptPath playerAttempt() {
+        if (_playerAttempt == null)
+            _playerAttempt = new PlayerAttemptPath(this, null, Keys.FK_PLAYER_ATTEMPT_GAME_MISSION1.getInverseKey());
+
+        return _playerAttempt;
+    }
+
+    private transient DashboardTemplatePath _dashboardTemplate;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.dashboard_template</code> table
+     */
+    public DashboardTemplatePath dashboardTemplate() {
+        if (_dashboardTemplate == null)
+            _dashboardTemplate = new DashboardTemplatePath(this, null, Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1.getInverseKey());
+
+        return _dashboardTemplate;
     }
 
     @Override
@@ -194,27 +298,87 @@ public class GameMission extends TableImpl<GameMissionRecord> {
         return new GameMission(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row5<Integer, String, String, String, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public GameMission where(Condition condition) {
+        return new GameMission(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public GameMission where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public GameMission where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameMission where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameMission where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameMission where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameMission where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GameMission where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameMission whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GameMission whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

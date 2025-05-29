@@ -5,25 +5,32 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GameSession.GameSessionPath;
+import nl.gamedata.data.tables.GroupAttempt.GroupAttemptPath;
+import nl.gamedata.data.tables.GroupRole.GroupRolePath;
 import nl.gamedata.data.tables.records.GroupRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function3;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row3;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -70,11 +77,11 @@ public class Group extends TableImpl<GroupRecord> {
     public final TableField<GroupRecord, Integer> GAME_SESSION_ID = createField(DSL.name("game_session_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private Group(Name alias, Table<GroupRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private Group(Name alias, Table<GroupRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private Group(Name alias, Table<GroupRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -98,8 +105,37 @@ public class Group extends TableImpl<GroupRecord> {
         this(DSL.name("group"), null);
     }
 
-    public <O extends Record> Group(Table<O> child, ForeignKey<O, GroupRecord> key) {
-        super(child, key, GROUP);
+    public <O extends Record> Group(Table<O> path, ForeignKey<O, GroupRecord> childPath, InverseForeignKey<O, GroupRecord> parentPath) {
+        super(path, childPath, parentPath, GROUP);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class GroupPath extends Group implements Path<GroupRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> GroupPath(Table<O> path, ForeignKey<O, GroupRecord> childPath, InverseForeignKey<O, GroupRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private GroupPath(Name alias, Table<GroupRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public GroupPath as(String alias) {
+            return new GroupPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public GroupPath as(Name alias) {
+            return new GroupPath(alias, this);
+        }
+
+        @Override
+        public GroupPath as(Table<?> alias) {
+            return new GroupPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -132,17 +168,43 @@ public class Group extends TableImpl<GroupRecord> {
         return Arrays.asList(Keys.FK_GROUP_GAME_SESSION1);
     }
 
-    private transient GameSession _gameSession;
+    private transient GameSessionPath _gameSession;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_session</code>
      * table.
      */
-    public GameSession gameSession() {
+    public GameSessionPath gameSession() {
         if (_gameSession == null)
-            _gameSession = new GameSession(this, Keys.FK_GROUP_GAME_SESSION1);
+            _gameSession = new GameSessionPath(this, Keys.FK_GROUP_GAME_SESSION1, null);
 
         return _gameSession;
+    }
+
+    private transient GroupAttemptPath _groupAttempt;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_attempt</code> table
+     */
+    public GroupAttemptPath groupAttempt() {
+        if (_groupAttempt == null)
+            _groupAttempt = new GroupAttemptPath(this, null, Keys.FK_GROUP_ATTEMPT_GROUP1.getInverseKey());
+
+        return _groupAttempt;
+    }
+
+    private transient GroupRolePath _groupRole;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_role</code> table
+     */
+    public GroupRolePath groupRole() {
+        if (_groupRole == null)
+            _groupRole = new GroupRolePath(this, null, Keys.FK_GROUP_ROLE_GROUP1.getInverseKey());
+
+        return _groupRole;
     }
 
     @Override
@@ -184,27 +246,87 @@ public class Group extends TableImpl<GroupRecord> {
         return new Group(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row3 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row3<Integer, String, Integer> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Group where(Condition condition) {
+        return new Group(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function3<? super Integer, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public Group where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function3<? super Integer, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public Group where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Group where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Group where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Group where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Group where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public Group where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Group whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public Group whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

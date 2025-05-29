@@ -5,25 +5,31 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.OrganizationGame.OrganizationGamePath;
+import nl.gamedata.data.tables.User.UserPath;
 import nl.gamedata.data.tables.records.OrganizationGameRoleRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -81,11 +87,11 @@ public class OrganizationGameRole extends TableImpl<OrganizationGameRoleRecord> 
     public final TableField<OrganizationGameRoleRecord, Integer> ORGANIZATION_GAME_ID = createField(DSL.name("organization_game_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private OrganizationGameRole(Name alias, Table<OrganizationGameRoleRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private OrganizationGameRole(Name alias, Table<OrganizationGameRoleRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private OrganizationGameRole(Name alias, Table<OrganizationGameRoleRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -111,8 +117,37 @@ public class OrganizationGameRole extends TableImpl<OrganizationGameRoleRecord> 
         this(DSL.name("organization_game_role"), null);
     }
 
-    public <O extends Record> OrganizationGameRole(Table<O> child, ForeignKey<O, OrganizationGameRoleRecord> key) {
-        super(child, key, ORGANIZATION_GAME_ROLE);
+    public <O extends Record> OrganizationGameRole(Table<O> path, ForeignKey<O, OrganizationGameRoleRecord> childPath, InverseForeignKey<O, OrganizationGameRoleRecord> parentPath) {
+        super(path, childPath, parentPath, ORGANIZATION_GAME_ROLE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class OrganizationGameRolePath extends OrganizationGameRole implements Path<OrganizationGameRoleRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> OrganizationGameRolePath(Table<O> path, ForeignKey<O, OrganizationGameRoleRecord> childPath, InverseForeignKey<O, OrganizationGameRoleRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private OrganizationGameRolePath(Name alias, Table<OrganizationGameRoleRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public OrganizationGameRolePath as(String alias) {
+            return new OrganizationGameRolePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public OrganizationGameRolePath as(Name alias) {
+            return new OrganizationGameRolePath(alias, this);
+        }
+
+        @Override
+        public OrganizationGameRolePath as(Table<?> alias) {
+            return new OrganizationGameRolePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -142,31 +177,32 @@ public class OrganizationGameRole extends TableImpl<OrganizationGameRoleRecord> 
 
     @Override
     public List<ForeignKey<OrganizationGameRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_USER_ROLE_USER1, Keys.FK_ORGANIZATION_GAME_ROLE_ORGANIZATION_GAME1);
+        return Arrays.asList(Keys.FK_ORGANIZATION_GAME_ROLE_ORGANIZATION_GAME1, Keys.FK_USER_ROLE_USER1);
     }
 
-    private transient User _user;
-    private transient OrganizationGame _organizationGame;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.user</code> table.
-     */
-    public User user() {
-        if (_user == null)
-            _user = new User(this, Keys.FK_USER_ROLE_USER1);
-
-        return _user;
-    }
+    private transient OrganizationGamePath _organizationGame;
 
     /**
      * Get the implicit join path to the <code>gamedata.organization_game</code>
      * table.
      */
-    public OrganizationGame organizationGame() {
+    public OrganizationGamePath organizationGame() {
         if (_organizationGame == null)
-            _organizationGame = new OrganizationGame(this, Keys.FK_ORGANIZATION_GAME_ROLE_ORGANIZATION_GAME1);
+            _organizationGame = new OrganizationGamePath(this, Keys.FK_ORGANIZATION_GAME_ROLE_ORGANIZATION_GAME1, null);
 
         return _organizationGame;
+    }
+
+    private transient UserPath _user;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.user</code> table.
+     */
+    public UserPath user() {
+        if (_user == null)
+            _user = new UserPath(this, Keys.FK_USER_ROLE_USER1, null);
+
+        return _user;
     }
 
     @Override
@@ -208,27 +244,87 @@ public class OrganizationGameRole extends TableImpl<OrganizationGameRoleRecord> 
         return new OrganizationGameRole(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row5<Integer, Byte, Byte, Integer, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public OrganizationGameRole where(Condition condition) {
+        return new OrganizationGameRole(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public OrganizationGameRole where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public OrganizationGameRole where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationGameRole where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationGameRole where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationGameRole where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationGameRole where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationGameRole where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationGameRole whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationGameRole whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

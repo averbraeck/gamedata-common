@@ -5,25 +5,32 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GameMission.GameMissionPath;
+import nl.gamedata.data.tables.GroupObjective.GroupObjectivePath;
+import nl.gamedata.data.tables.PlayerObjective.PlayerObjectivePath;
 import nl.gamedata.data.tables.records.LearningGoalRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -80,11 +87,11 @@ public class LearningGoal extends TableImpl<LearningGoalRecord> {
     public final TableField<LearningGoalRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private LearningGoal(Name alias, Table<LearningGoalRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private LearningGoal(Name alias, Table<LearningGoalRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private LearningGoal(Name alias, Table<LearningGoalRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -108,8 +115,37 @@ public class LearningGoal extends TableImpl<LearningGoalRecord> {
         this(DSL.name("learning_goal"), null);
     }
 
-    public <O extends Record> LearningGoal(Table<O> child, ForeignKey<O, LearningGoalRecord> key) {
-        super(child, key, LEARNING_GOAL);
+    public <O extends Record> LearningGoal(Table<O> path, ForeignKey<O, LearningGoalRecord> childPath, InverseForeignKey<O, LearningGoalRecord> parentPath) {
+        super(path, childPath, parentPath, LEARNING_GOAL);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class LearningGoalPath extends LearningGoal implements Path<LearningGoalRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> LearningGoalPath(Table<O> path, ForeignKey<O, LearningGoalRecord> childPath, InverseForeignKey<O, LearningGoalRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private LearningGoalPath(Name alias, Table<LearningGoalRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public LearningGoalPath as(String alias) {
+            return new LearningGoalPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public LearningGoalPath as(Name alias) {
+            return new LearningGoalPath(alias, this);
+        }
+
+        @Override
+        public LearningGoalPath as(Table<?> alias) {
+            return new LearningGoalPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -142,17 +178,43 @@ public class LearningGoal extends TableImpl<LearningGoalRecord> {
         return Arrays.asList(Keys.FK_LEARNING_GOAL_GAME_MISSION1);
     }
 
-    private transient GameMission _gameMission;
+    private transient GameMissionPath _gameMission;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_mission</code>
      * table.
      */
-    public GameMission gameMission() {
+    public GameMissionPath gameMission() {
         if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_LEARNING_GOAL_GAME_MISSION1);
+            _gameMission = new GameMissionPath(this, Keys.FK_LEARNING_GOAL_GAME_MISSION1, null);
 
         return _gameMission;
+    }
+
+    private transient GroupObjectivePath _groupObjective;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_objective</code> table
+     */
+    public GroupObjectivePath groupObjective() {
+        if (_groupObjective == null)
+            _groupObjective = new GroupObjectivePath(this, null, Keys.FK_GROUP_OBJECTIVE_LEARNING_GOAL1.getInverseKey());
+
+        return _groupObjective;
+    }
+
+    private transient PlayerObjectivePath _playerObjective;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.player_objective</code> table
+     */
+    public PlayerObjectivePath playerObjective() {
+        if (_playerObjective == null)
+            _playerObjective = new PlayerObjectivePath(this, null, Keys.FK_PLAYER_OBJECTIVE_LEARNING_GOAL1.getInverseKey());
+
+        return _playerObjective;
     }
 
     @Override
@@ -194,27 +256,87 @@ public class LearningGoal extends TableImpl<LearningGoalRecord> {
         return new LearningGoal(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row5<Integer, String, String, String, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public LearningGoal where(Condition condition) {
+        return new LearningGoal(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public LearningGoal where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public LearningGoal where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public LearningGoal where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public LearningGoal where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public LearningGoal where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public LearningGoal where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public LearningGoal where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public LearningGoal whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public LearningGoal whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

@@ -6,25 +6,32 @@ package nl.gamedata.data.tables;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GroupAttempt.GroupAttemptPath;
+import nl.gamedata.data.tables.GroupObjective.GroupObjectivePath;
+import nl.gamedata.data.tables.Scale.ScalePath;
 import nl.gamedata.data.tables.records.GroupScoreRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function14;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row14;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -126,11 +133,11 @@ public class GroupScore extends TableImpl<GroupScoreRecord> {
     public final TableField<GroupScoreRecord, Integer> SCALE_ID = createField(DSL.name("scale_id"), SQLDataType.INTEGER.defaultValue(DSL.field(DSL.raw("NULL"), SQLDataType.INTEGER)), this, "");
 
     private GroupScore(Name alias, Table<GroupScoreRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private GroupScore(Name alias, Table<GroupScoreRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private GroupScore(Name alias, Table<GroupScoreRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -154,8 +161,37 @@ public class GroupScore extends TableImpl<GroupScoreRecord> {
         this(DSL.name("group_score"), null);
     }
 
-    public <O extends Record> GroupScore(Table<O> child, ForeignKey<O, GroupScoreRecord> key) {
-        super(child, key, GROUP_SCORE);
+    public <O extends Record> GroupScore(Table<O> path, ForeignKey<O, GroupScoreRecord> childPath, InverseForeignKey<O, GroupScoreRecord> parentPath) {
+        super(path, childPath, parentPath, GROUP_SCORE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class GroupScorePath extends GroupScore implements Path<GroupScoreRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> GroupScorePath(Table<O> path, ForeignKey<O, GroupScoreRecord> childPath, InverseForeignKey<O, GroupScoreRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private GroupScorePath(Name alias, Table<GroupScoreRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public GroupScorePath as(String alias) {
+            return new GroupScorePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public GroupScorePath as(Name alias) {
+            return new GroupScorePath(alias, this);
+        }
+
+        @Override
+        public GroupScorePath as(Table<?> alias) {
+            return new GroupScorePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -185,41 +221,43 @@ public class GroupScore extends TableImpl<GroupScoreRecord> {
 
     @Override
     public List<ForeignKey<GroupScoreRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GROUP_SCORE_GROUP_OBJECTIVE1, Keys.FK_GROUP_SCORE_GROUP_ATTEMPT1, Keys.FK_GROUP_SCORE_SCALE1);
+        return Arrays.asList(Keys.FK_GROUP_SCORE_GROUP_ATTEMPT1, Keys.FK_GROUP_SCORE_GROUP_OBJECTIVE1, Keys.FK_GROUP_SCORE_SCALE1);
     }
 
-    private transient GroupObjective _groupObjective;
-    private transient GroupAttempt _groupAttempt;
-    private transient Scale _scale;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.group_objective</code>
-     * table.
-     */
-    public GroupObjective groupObjective() {
-        if (_groupObjective == null)
-            _groupObjective = new GroupObjective(this, Keys.FK_GROUP_SCORE_GROUP_OBJECTIVE1);
-
-        return _groupObjective;
-    }
+    private transient GroupAttemptPath _groupAttempt;
 
     /**
      * Get the implicit join path to the <code>gamedata.group_attempt</code>
      * table.
      */
-    public GroupAttempt groupAttempt() {
+    public GroupAttemptPath groupAttempt() {
         if (_groupAttempt == null)
-            _groupAttempt = new GroupAttempt(this, Keys.FK_GROUP_SCORE_GROUP_ATTEMPT1);
+            _groupAttempt = new GroupAttemptPath(this, Keys.FK_GROUP_SCORE_GROUP_ATTEMPT1, null);
 
         return _groupAttempt;
     }
 
+    private transient GroupObjectivePath _groupObjective;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.group_objective</code>
+     * table.
+     */
+    public GroupObjectivePath groupObjective() {
+        if (_groupObjective == null)
+            _groupObjective = new GroupObjectivePath(this, Keys.FK_GROUP_SCORE_GROUP_OBJECTIVE1, null);
+
+        return _groupObjective;
+    }
+
+    private transient ScalePath _scale;
+
     /**
      * Get the implicit join path to the <code>gamedata.scale</code> table.
      */
-    public Scale scale() {
+    public ScalePath scale() {
         if (_scale == null)
-            _scale = new Scale(this, Keys.FK_GROUP_SCORE_SCALE1);
+            _scale = new ScalePath(this, Keys.FK_GROUP_SCORE_SCALE1, null);
 
         return _scale;
     }
@@ -263,27 +301,87 @@ public class GroupScore extends TableImpl<GroupScoreRecord> {
         return new GroupScore(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row14 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row14<Integer, String, Double, Double, String, LocalDateTime, Byte, String, String, String, String, Integer, Integer, Integer> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public GroupScore where(Condition condition) {
+        return new GroupScore(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public GroupScore where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function14<? super Integer, ? super String, ? super Double, ? super Double, ? super String, ? super LocalDateTime, ? super Byte, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public GroupScore where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupScore where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupScore where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupScore where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupScore where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupScore where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupScore whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupScore whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

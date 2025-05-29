@@ -5,25 +5,36 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.Dashboard.DashboardPath;
+import nl.gamedata.data.tables.DashboardLayout.DashboardLayoutPath;
+import nl.gamedata.data.tables.DashboardRole.DashboardRolePath;
+import nl.gamedata.data.tables.GameMission.GameMissionPath;
+import nl.gamedata.data.tables.GameVersion.GameVersionPath;
+import nl.gamedata.data.tables.OrganizationGame.OrganizationGamePath;
+import nl.gamedata.data.tables.TemplateElement.TemplateElementPath;
 import nl.gamedata.data.tables.records.DashboardTemplateRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function9;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row9;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -100,11 +111,11 @@ public class DashboardTemplate extends TableImpl<DashboardTemplateRecord> {
     public final TableField<DashboardTemplateRecord, Integer> DASHBOARD_LAYOUT_ID = createField(DSL.name("dashboard_layout_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private DashboardTemplate(Name alias, Table<DashboardTemplateRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private DashboardTemplate(Name alias, Table<DashboardTemplateRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private DashboardTemplate(Name alias, Table<DashboardTemplateRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -130,8 +141,37 @@ public class DashboardTemplate extends TableImpl<DashboardTemplateRecord> {
         this(DSL.name("dashboard_template"), null);
     }
 
-    public <O extends Record> DashboardTemplate(Table<O> child, ForeignKey<O, DashboardTemplateRecord> key) {
-        super(child, key, DASHBOARD_TEMPLATE);
+    public <O extends Record> DashboardTemplate(Table<O> path, ForeignKey<O, DashboardTemplateRecord> childPath, InverseForeignKey<O, DashboardTemplateRecord> parentPath) {
+        super(path, childPath, parentPath, DASHBOARD_TEMPLATE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class DashboardTemplatePath extends DashboardTemplate implements Path<DashboardTemplateRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> DashboardTemplatePath(Table<O> path, ForeignKey<O, DashboardTemplateRecord> childPath, InverseForeignKey<O, DashboardTemplateRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private DashboardTemplatePath(Name alias, Table<DashboardTemplateRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public DashboardTemplatePath as(String alias) {
+            return new DashboardTemplatePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public DashboardTemplatePath as(Name alias) {
+            return new DashboardTemplatePath(alias, this);
+        }
+
+        @Override
+        public DashboardTemplatePath as(Table<?> alias) {
+            return new DashboardTemplatePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -161,56 +201,98 @@ public class DashboardTemplate extends TableImpl<DashboardTemplateRecord> {
 
     @Override
     public List<ForeignKey<DashboardTemplateRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_DASHBOARD_TEMPLATE_GAME_VERSION1, Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1, Keys.FK_DASHBOARD_TEMPLATE_ORGANIZATION_GAME1, Keys.FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1);
+        return Arrays.asList(Keys.FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1, Keys.FK_DASHBOARD_TEMPLATE_GAME_VERSION1, Keys.FK_DASHBOARD_TEMPLATE_ORGANIZATION_GAME1, Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1);
     }
 
-    private transient GameVersion _gameVersion;
-    private transient GameMission _gameMission;
-    private transient OrganizationGame _organizationGame;
-    private transient DashboardLayout _dashboardLayout;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.game_version</code>
-     * table.
-     */
-    public GameVersion gameVersion() {
-        if (_gameVersion == null)
-            _gameVersion = new GameVersion(this, Keys.FK_DASHBOARD_TEMPLATE_GAME_VERSION1);
-
-        return _gameVersion;
-    }
-
-    /**
-     * Get the implicit join path to the <code>gamedata.game_mission</code>
-     * table.
-     */
-    public GameMission gameMission() {
-        if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1);
-
-        return _gameMission;
-    }
-
-    /**
-     * Get the implicit join path to the <code>gamedata.organization_game</code>
-     * table.
-     */
-    public OrganizationGame organizationGame() {
-        if (_organizationGame == null)
-            _organizationGame = new OrganizationGame(this, Keys.FK_DASHBOARD_TEMPLATE_ORGANIZATION_GAME1);
-
-        return _organizationGame;
-    }
+    private transient DashboardLayoutPath _dashboardLayout;
 
     /**
      * Get the implicit join path to the <code>gamedata.dashboard_layout</code>
      * table.
      */
-    public DashboardLayout dashboardLayout() {
+    public DashboardLayoutPath dashboardLayout() {
         if (_dashboardLayout == null)
-            _dashboardLayout = new DashboardLayout(this, Keys.FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1);
+            _dashboardLayout = new DashboardLayoutPath(this, Keys.FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1, null);
 
         return _dashboardLayout;
+    }
+
+    private transient GameVersionPath _gameVersion;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game_version</code>
+     * table.
+     */
+    public GameVersionPath gameVersion() {
+        if (_gameVersion == null)
+            _gameVersion = new GameVersionPath(this, Keys.FK_DASHBOARD_TEMPLATE_GAME_VERSION1, null);
+
+        return _gameVersion;
+    }
+
+    private transient OrganizationGamePath _organizationGame;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.organization_game</code>
+     * table.
+     */
+    public OrganizationGamePath organizationGame() {
+        if (_organizationGame == null)
+            _organizationGame = new OrganizationGamePath(this, Keys.FK_DASHBOARD_TEMPLATE_ORGANIZATION_GAME1, null);
+
+        return _organizationGame;
+    }
+
+    private transient GameMissionPath _gameMission;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game_mission</code>
+     * table.
+     */
+    public GameMissionPath gameMission() {
+        if (_gameMission == null)
+            _gameMission = new GameMissionPath(this, Keys.FK_PRIVATE_DASHBOARD_GAME_MISSION1, null);
+
+        return _gameMission;
+    }
+
+    private transient DashboardPath _dashboard;
+
+    /**
+     * Get the implicit to-many join path to the <code>gamedata.dashboard</code>
+     * table
+     */
+    public DashboardPath dashboard() {
+        if (_dashboard == null)
+            _dashboard = new DashboardPath(this, null, Keys.FK_DASHBOARD_DASHBOARD_TEMPLATE1.getInverseKey());
+
+        return _dashboard;
+    }
+
+    private transient DashboardRolePath _dashboardRole;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.dashboard_role</code> table
+     */
+    public DashboardRolePath dashboardRole() {
+        if (_dashboardRole == null)
+            _dashboardRole = new DashboardRolePath(this, null, Keys.FK_DASHBOARD_ROLE_DASHBOARD_TEMPLATE1.getInverseKey());
+
+        return _dashboardRole;
+    }
+
+    private transient TemplateElementPath _templateElement;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.template_element</code> table
+     */
+    public TemplateElementPath templateElement() {
+        if (_templateElement == null)
+            _templateElement = new TemplateElementPath(this, null, Keys.FK_TEMPLATE_ELEMENT_DASHBOARD_TEMPLATE1.getInverseKey());
+
+        return _templateElement;
     }
 
     @Override
@@ -252,27 +334,87 @@ public class DashboardTemplate extends TableImpl<DashboardTemplateRecord> {
         return new DashboardTemplate(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row9 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row9<Integer, String, String, String, Byte, Integer, Integer, Integer, Integer> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public DashboardTemplate where(Condition condition) {
+        return new DashboardTemplate(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function9<? super Integer, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public DashboardTemplate where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function9<? super Integer, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? super Integer, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public DashboardTemplate where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardTemplate where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardTemplate where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardTemplate where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardTemplate where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardTemplate where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardTemplate whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardTemplate whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

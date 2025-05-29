@@ -5,25 +5,31 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.DashboardElement.DashboardElementPath;
+import nl.gamedata.data.tables.PropertyValue.PropertyValuePath;
 import nl.gamedata.data.tables.records.ElementPropertyRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -85,11 +91,11 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
     public final TableField<ElementPropertyRecord, Integer> DASHBOARD_ELEMENT_ID = createField(DSL.name("dashboard_element_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private ElementProperty(Name alias, Table<ElementPropertyRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private ElementProperty(Name alias, Table<ElementPropertyRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private ElementProperty(Name alias, Table<ElementPropertyRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -113,8 +119,37 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
         this(DSL.name("element_property"), null);
     }
 
-    public <O extends Record> ElementProperty(Table<O> child, ForeignKey<O, ElementPropertyRecord> key) {
-        super(child, key, ELEMENT_PROPERTY);
+    public <O extends Record> ElementProperty(Table<O> path, ForeignKey<O, ElementPropertyRecord> childPath, InverseForeignKey<O, ElementPropertyRecord> parentPath) {
+        super(path, childPath, parentPath, ELEMENT_PROPERTY);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class ElementPropertyPath extends ElementProperty implements Path<ElementPropertyRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> ElementPropertyPath(Table<O> path, ForeignKey<O, ElementPropertyRecord> childPath, InverseForeignKey<O, ElementPropertyRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private ElementPropertyPath(Name alias, Table<ElementPropertyRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public ElementPropertyPath as(String alias) {
+            return new ElementPropertyPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public ElementPropertyPath as(Name alias) {
+            return new ElementPropertyPath(alias, this);
+        }
+
+        @Override
+        public ElementPropertyPath as(Table<?> alias) {
+            return new ElementPropertyPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -139,7 +174,7 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
 
     @Override
     public List<UniqueKey<ElementPropertyRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_ELEMENT_PROPERTY_ID_UNIQUE, Keys.KEY_ELEMENT_PROPERTY_CODE_UNIQUE);
+        return Arrays.asList(Keys.KEY_ELEMENT_PROPERTY_CODE_UNIQUE, Keys.KEY_ELEMENT_PROPERTY_ID_UNIQUE);
     }
 
     @Override
@@ -147,17 +182,30 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
         return Arrays.asList(Keys.FK_ELEMENT_PROPERTY_DASHBOARD_ELEMENT1);
     }
 
-    private transient DashboardElement _dashboardElement;
+    private transient DashboardElementPath _dashboardElement;
 
     /**
      * Get the implicit join path to the <code>gamedata.dashboard_element</code>
      * table.
      */
-    public DashboardElement dashboardElement() {
+    public DashboardElementPath dashboardElement() {
         if (_dashboardElement == null)
-            _dashboardElement = new DashboardElement(this, Keys.FK_ELEMENT_PROPERTY_DASHBOARD_ELEMENT1);
+            _dashboardElement = new DashboardElementPath(this, Keys.FK_ELEMENT_PROPERTY_DASHBOARD_ELEMENT1, null);
 
         return _dashboardElement;
+    }
+
+    private transient PropertyValuePath _propertyValue;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.property_value</code> table
+     */
+    public PropertyValuePath propertyValue() {
+        if (_propertyValue == null)
+            _propertyValue = new PropertyValuePath(this, null, Keys.FK_PROPERTY_VALUE_ELEMENT_PROPERTY1.getInverseKey());
+
+        return _propertyValue;
     }
 
     @Override
@@ -199,27 +247,87 @@ public class ElementProperty extends TableImpl<ElementPropertyRecord> {
         return new ElementProperty(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row6 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row6<Integer, String, String, String, String, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public ElementProperty where(Condition condition) {
+        return new ElementProperty(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public ElementProperty where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public ElementProperty where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public ElementProperty where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public ElementProperty where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public ElementProperty where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public ElementProperty where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public ElementProperty where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public ElementProperty whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public ElementProperty whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

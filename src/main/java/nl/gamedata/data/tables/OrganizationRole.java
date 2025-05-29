@@ -5,25 +5,31 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.Organization.OrganizationPath;
+import nl.gamedata.data.tables.User.UserPath;
 import nl.gamedata.data.tables.records.OrganizationRoleRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -85,11 +91,11 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
     public final TableField<OrganizationRoleRecord, Integer> ORGANIZATION_ID = createField(DSL.name("organization_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private OrganizationRole(Name alias, Table<OrganizationRoleRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private OrganizationRole(Name alias, Table<OrganizationRoleRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private OrganizationRole(Name alias, Table<OrganizationRoleRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -113,8 +119,37 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
         this(DSL.name("organization_role"), null);
     }
 
-    public <O extends Record> OrganizationRole(Table<O> child, ForeignKey<O, OrganizationRoleRecord> key) {
-        super(child, key, ORGANIZATION_ROLE);
+    public <O extends Record> OrganizationRole(Table<O> path, ForeignKey<O, OrganizationRoleRecord> childPath, InverseForeignKey<O, OrganizationRoleRecord> parentPath) {
+        super(path, childPath, parentPath, ORGANIZATION_ROLE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class OrganizationRolePath extends OrganizationRole implements Path<OrganizationRoleRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> OrganizationRolePath(Table<O> path, ForeignKey<O, OrganizationRoleRecord> childPath, InverseForeignKey<O, OrganizationRoleRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private OrganizationRolePath(Name alias, Table<OrganizationRoleRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public OrganizationRolePath as(String alias) {
+            return new OrganizationRolePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public OrganizationRolePath as(Name alias) {
+            return new OrganizationRolePath(alias, this);
+        }
+
+        @Override
+        public OrganizationRolePath as(Table<?> alias) {
+            return new OrganizationRolePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -144,31 +179,32 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
 
     @Override
     public List<ForeignKey<OrganizationRoleRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_ORGANIZATION_ROLE_USER1, Keys.FK_ORGANIZATION_ROLE_ORGANIZATION1);
+        return Arrays.asList(Keys.FK_ORGANIZATION_ROLE_ORGANIZATION1, Keys.FK_ORGANIZATION_ROLE_USER1);
     }
 
-    private transient User _user;
-    private transient Organization _organization;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.user</code> table.
-     */
-    public User user() {
-        if (_user == null)
-            _user = new User(this, Keys.FK_ORGANIZATION_ROLE_USER1);
-
-        return _user;
-    }
+    private transient OrganizationPath _organization;
 
     /**
      * Get the implicit join path to the <code>gamedata.organization</code>
      * table.
      */
-    public Organization organization() {
+    public OrganizationPath organization() {
         if (_organization == null)
-            _organization = new Organization(this, Keys.FK_ORGANIZATION_ROLE_ORGANIZATION1);
+            _organization = new OrganizationPath(this, Keys.FK_ORGANIZATION_ROLE_ORGANIZATION1, null);
 
         return _organization;
+    }
+
+    private transient UserPath _user;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.user</code> table.
+     */
+    public UserPath user() {
+        if (_user == null)
+            _user = new UserPath(this, Keys.FK_ORGANIZATION_ROLE_USER1, null);
+
+        return _user;
     }
 
     @Override
@@ -210,27 +246,87 @@ public class OrganizationRole extends TableImpl<OrganizationRoleRecord> {
         return new OrganizationRole(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row6 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row6<Integer, Byte, Byte, Byte, Integer, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public OrganizationRole where(Condition condition) {
+        return new OrganizationRole(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public OrganizationRole where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super Byte, ? super Byte, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public OrganizationRole where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationRole where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationRole where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationRole where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationRole where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationRole where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationRole whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationRole whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

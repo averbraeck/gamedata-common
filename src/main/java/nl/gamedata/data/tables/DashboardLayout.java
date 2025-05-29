@@ -5,23 +5,28 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.DashboardTemplate.DashboardTemplatePath;
 import nl.gamedata.data.tables.records.DashboardLayoutRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
 import org.jooq.Identity;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -73,11 +78,11 @@ public class DashboardLayout extends TableImpl<DashboardLayoutRecord> {
     public final TableField<DashboardLayoutRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB.nullable(false), this, "");
 
     private DashboardLayout(Name alias, Table<DashboardLayoutRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private DashboardLayout(Name alias, Table<DashboardLayoutRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private DashboardLayout(Name alias, Table<DashboardLayoutRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -101,8 +106,37 @@ public class DashboardLayout extends TableImpl<DashboardLayoutRecord> {
         this(DSL.name("dashboard_layout"), null);
     }
 
-    public <O extends Record> DashboardLayout(Table<O> child, ForeignKey<O, DashboardLayoutRecord> key) {
-        super(child, key, DASHBOARD_LAYOUT);
+    public <O extends Record> DashboardLayout(Table<O> path, ForeignKey<O, DashboardLayoutRecord> childPath, InverseForeignKey<O, DashboardLayoutRecord> parentPath) {
+        super(path, childPath, parentPath, DASHBOARD_LAYOUT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class DashboardLayoutPath extends DashboardLayout implements Path<DashboardLayoutRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> DashboardLayoutPath(Table<O> path, ForeignKey<O, DashboardLayoutRecord> childPath, InverseForeignKey<O, DashboardLayoutRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private DashboardLayoutPath(Name alias, Table<DashboardLayoutRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public DashboardLayoutPath as(String alias) {
+            return new DashboardLayoutPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public DashboardLayoutPath as(Name alias) {
+            return new DashboardLayoutPath(alias, this);
+        }
+
+        @Override
+        public DashboardLayoutPath as(Table<?> alias) {
+            return new DashboardLayoutPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -123,6 +157,19 @@ public class DashboardLayout extends TableImpl<DashboardLayoutRecord> {
     @Override
     public List<UniqueKey<DashboardLayoutRecord>> getUniqueKeys() {
         return Arrays.asList(Keys.KEY_DASHBOARD_LAYOUT_ID_UNIQUE, Keys.KEY_DASHBOARD_LAYOUT_NAME_UNIQUE);
+    }
+
+    private transient DashboardTemplatePath _dashboardTemplate;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.dashboard_template</code> table
+     */
+    public DashboardTemplatePath dashboardTemplate() {
+        if (_dashboardTemplate == null)
+            _dashboardTemplate = new DashboardTemplatePath(this, null, Keys.FK_DASHBOARD_TEMPLATE_DASHBOARD_LAYOUT1.getInverseKey());
+
+        return _dashboardTemplate;
     }
 
     @Override
@@ -164,27 +211,87 @@ public class DashboardLayout extends TableImpl<DashboardLayoutRecord> {
         return new DashboardLayout(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row4 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row4<Integer, String, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public DashboardLayout where(Condition condition) {
+        return new DashboardLayout(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public DashboardLayout where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public DashboardLayout where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardLayout where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardLayout where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardLayout where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardLayout where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardLayout where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardLayout whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardLayout whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

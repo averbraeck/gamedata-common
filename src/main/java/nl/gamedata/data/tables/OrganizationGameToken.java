@@ -5,25 +5,30 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.OrganizationGame.OrganizationGamePath;
 import nl.gamedata.data.tables.records.OrganizationGameTokenRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function6;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row6;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -86,11 +91,11 @@ public class OrganizationGameToken extends TableImpl<OrganizationGameTokenRecord
     public final TableField<OrganizationGameTokenRecord, Integer> ORGANIZATION_GAME_ID = createField(DSL.name("organization_game_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private OrganizationGameToken(Name alias, Table<OrganizationGameTokenRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private OrganizationGameToken(Name alias, Table<OrganizationGameTokenRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private OrganizationGameToken(Name alias, Table<OrganizationGameTokenRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -116,8 +121,37 @@ public class OrganizationGameToken extends TableImpl<OrganizationGameTokenRecord
         this(DSL.name("organization_game_token"), null);
     }
 
-    public <O extends Record> OrganizationGameToken(Table<O> child, ForeignKey<O, OrganizationGameTokenRecord> key) {
-        super(child, key, ORGANIZATION_GAME_TOKEN);
+    public <O extends Record> OrganizationGameToken(Table<O> path, ForeignKey<O, OrganizationGameTokenRecord> childPath, InverseForeignKey<O, OrganizationGameTokenRecord> parentPath) {
+        super(path, childPath, parentPath, ORGANIZATION_GAME_TOKEN);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class OrganizationGameTokenPath extends OrganizationGameToken implements Path<OrganizationGameTokenRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> OrganizationGameTokenPath(Table<O> path, ForeignKey<O, OrganizationGameTokenRecord> childPath, InverseForeignKey<O, OrganizationGameTokenRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private OrganizationGameTokenPath(Name alias, Table<OrganizationGameTokenRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public OrganizationGameTokenPath as(String alias) {
+            return new OrganizationGameTokenPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public OrganizationGameTokenPath as(Name alias) {
+            return new OrganizationGameTokenPath(alias, this);
+        }
+
+        @Override
+        public OrganizationGameTokenPath as(Table<?> alias) {
+            return new OrganizationGameTokenPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -150,15 +184,15 @@ public class OrganizationGameToken extends TableImpl<OrganizationGameTokenRecord
         return Arrays.asList(Keys.FK_ORGANIZATION_GAME_TOKEN_ORGANIZATION_GAME1);
     }
 
-    private transient OrganizationGame _organizationGame;
+    private transient OrganizationGamePath _organizationGame;
 
     /**
      * Get the implicit join path to the <code>gamedata.organization_game</code>
      * table.
      */
-    public OrganizationGame organizationGame() {
+    public OrganizationGamePath organizationGame() {
         if (_organizationGame == null)
-            _organizationGame = new OrganizationGame(this, Keys.FK_ORGANIZATION_GAME_TOKEN_ORGANIZATION_GAME1);
+            _organizationGame = new OrganizationGamePath(this, Keys.FK_ORGANIZATION_GAME_TOKEN_ORGANIZATION_GAME1, null);
 
         return _organizationGame;
     }
@@ -202,27 +236,87 @@ public class OrganizationGameToken extends TableImpl<OrganizationGameTokenRecord
         return new OrganizationGameToken(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row6 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row6<Integer, String, String, Byte, Byte, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public OrganizationGameToken where(Condition condition) {
+        return new OrganizationGameToken(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function6<? super Integer, ? super String, ? super String, ? super Byte, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public OrganizationGameToken where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function6<? super Integer, ? super String, ? super String, ? super Byte, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public OrganizationGameToken where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationGameToken where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationGameToken where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationGameToken where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationGameToken where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public OrganizationGameToken where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationGameToken whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public OrganizationGameToken whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

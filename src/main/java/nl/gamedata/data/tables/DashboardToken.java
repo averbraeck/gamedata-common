@@ -5,25 +5,30 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.Dashboard.DashboardPath;
 import nl.gamedata.data.tables.records.DashboardTokenRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function5;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row5;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -80,11 +85,11 @@ public class DashboardToken extends TableImpl<DashboardTokenRecord> {
     public final TableField<DashboardTokenRecord, Integer> DASHBOARD_ID = createField(DSL.name("dashboard_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private DashboardToken(Name alias, Table<DashboardTokenRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private DashboardToken(Name alias, Table<DashboardTokenRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private DashboardToken(Name alias, Table<DashboardTokenRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -108,8 +113,37 @@ public class DashboardToken extends TableImpl<DashboardTokenRecord> {
         this(DSL.name("dashboard_token"), null);
     }
 
-    public <O extends Record> DashboardToken(Table<O> child, ForeignKey<O, DashboardTokenRecord> key) {
-        super(child, key, DASHBOARD_TOKEN);
+    public <O extends Record> DashboardToken(Table<O> path, ForeignKey<O, DashboardTokenRecord> childPath, InverseForeignKey<O, DashboardTokenRecord> parentPath) {
+        super(path, childPath, parentPath, DASHBOARD_TOKEN);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class DashboardTokenPath extends DashboardToken implements Path<DashboardTokenRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> DashboardTokenPath(Table<O> path, ForeignKey<O, DashboardTokenRecord> childPath, InverseForeignKey<O, DashboardTokenRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private DashboardTokenPath(Name alias, Table<DashboardTokenRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public DashboardTokenPath as(String alias) {
+            return new DashboardTokenPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public DashboardTokenPath as(Name alias) {
+            return new DashboardTokenPath(alias, this);
+        }
+
+        @Override
+        public DashboardTokenPath as(Table<?> alias) {
+            return new DashboardTokenPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -142,14 +176,14 @@ public class DashboardToken extends TableImpl<DashboardTokenRecord> {
         return Arrays.asList(Keys.FK_DASHBOARD_TOKEN_DASHBOARD1);
     }
 
-    private transient Dashboard _dashboard;
+    private transient DashboardPath _dashboard;
 
     /**
      * Get the implicit join path to the <code>gamedata.dashboard</code> table.
      */
-    public Dashboard dashboard() {
+    public DashboardPath dashboard() {
         if (_dashboard == null)
-            _dashboard = new Dashboard(this, Keys.FK_DASHBOARD_TOKEN_DASHBOARD1);
+            _dashboard = new DashboardPath(this, Keys.FK_DASHBOARD_TOKEN_DASHBOARD1, null);
 
         return _dashboard;
     }
@@ -193,27 +227,87 @@ public class DashboardToken extends TableImpl<DashboardTokenRecord> {
         return new DashboardToken(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row5 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row5<Integer, String, String, Byte, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public DashboardToken where(Condition condition) {
+        return new DashboardToken(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function5<? super Integer, ? super String, ? super String, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public DashboardToken where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function5<? super Integer, ? super String, ? super String, ? super Byte, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public DashboardToken where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardToken where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardToken where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardToken where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardToken where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardToken where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardToken whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardToken whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

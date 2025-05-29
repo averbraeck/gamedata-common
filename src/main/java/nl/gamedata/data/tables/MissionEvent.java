@@ -6,25 +6,31 @@ package nl.gamedata.data.tables;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GameMission.GameMissionPath;
+import nl.gamedata.data.tables.GameSession.GameSessionPath;
 import nl.gamedata.data.tables.records.MissionEventRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function12;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row12;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -116,11 +122,11 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
     public final TableField<MissionEventRecord, Integer> GAME_MISSION_ID = createField(DSL.name("game_mission_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private MissionEvent(Name alias, Table<MissionEventRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private MissionEvent(Name alias, Table<MissionEventRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private MissionEvent(Name alias, Table<MissionEventRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -144,8 +150,37 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
         this(DSL.name("mission_event"), null);
     }
 
-    public <O extends Record> MissionEvent(Table<O> child, ForeignKey<O, MissionEventRecord> key) {
-        super(child, key, MISSION_EVENT);
+    public <O extends Record> MissionEvent(Table<O> path, ForeignKey<O, MissionEventRecord> childPath, InverseForeignKey<O, MissionEventRecord> parentPath) {
+        super(path, childPath, parentPath, MISSION_EVENT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class MissionEventPath extends MissionEvent implements Path<MissionEventRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> MissionEventPath(Table<O> path, ForeignKey<O, MissionEventRecord> childPath, InverseForeignKey<O, MissionEventRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private MissionEventPath(Name alias, Table<MissionEventRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public MissionEventPath as(String alias) {
+            return new MissionEventPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public MissionEventPath as(Name alias) {
+            return new MissionEventPath(alias, this);
+        }
+
+        @Override
+        public MissionEventPath as(Table<?> alias) {
+            return new MissionEventPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -175,32 +210,33 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
 
     @Override
     public List<ForeignKey<MissionEventRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_MISSION_EVENT_GAME_SESSION1, Keys.FK_MISSION_EVENT_GAME_MISSION1);
+        return Arrays.asList(Keys.FK_MISSION_EVENT_GAME_MISSION1, Keys.FK_MISSION_EVENT_GAME_SESSION1);
     }
 
-    private transient GameSession _gameSession;
-    private transient GameMission _gameMission;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.game_session</code>
-     * table.
-     */
-    public GameSession gameSession() {
-        if (_gameSession == null)
-            _gameSession = new GameSession(this, Keys.FK_MISSION_EVENT_GAME_SESSION1);
-
-        return _gameSession;
-    }
+    private transient GameMissionPath _gameMission;
 
     /**
      * Get the implicit join path to the <code>gamedata.game_mission</code>
      * table.
      */
-    public GameMission gameMission() {
+    public GameMissionPath gameMission() {
         if (_gameMission == null)
-            _gameMission = new GameMission(this, Keys.FK_MISSION_EVENT_GAME_MISSION1);
+            _gameMission = new GameMissionPath(this, Keys.FK_MISSION_EVENT_GAME_MISSION1, null);
 
         return _gameMission;
+    }
+
+    private transient GameSessionPath _gameSession;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.game_session</code>
+     * table.
+     */
+    public GameSessionPath gameSession() {
+        if (_gameSession == null)
+            _gameSession = new GameSessionPath(this, Keys.FK_MISSION_EVENT_GAME_SESSION1, null);
+
+        return _gameSession;
     }
 
     @Override
@@ -242,27 +278,87 @@ public class MissionEvent extends TableImpl<MissionEventRecord> {
         return new MissionEvent(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row12 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row12<Integer, String, String, String, LocalDateTime, String, String, String, String, Byte, Integer, Integer> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public MissionEvent where(Condition condition) {
+        return new MissionEvent(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function12<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public MissionEvent where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function12<? super Integer, ? super String, ? super String, ? super String, ? super LocalDateTime, ? super String, ? super String, ? super String, ? super String, ? super Byte, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public MissionEvent where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public MissionEvent where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public MissionEvent where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public MissionEvent where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public MissionEvent where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public MissionEvent where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public MissionEvent whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public MissionEvent whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

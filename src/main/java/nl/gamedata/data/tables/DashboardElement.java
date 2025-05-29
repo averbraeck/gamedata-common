@@ -5,23 +5,29 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.ElementProperty.ElementPropertyPath;
+import nl.gamedata.data.tables.TemplateElement.TemplateElementPath;
 import nl.gamedata.data.tables.records.DashboardElementRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
 import org.jooq.Identity;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -73,11 +79,11 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
     public final TableField<DashboardElementRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB.nullable(false), this, "");
 
     private DashboardElement(Name alias, Table<DashboardElementRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private DashboardElement(Name alias, Table<DashboardElementRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private DashboardElement(Name alias, Table<DashboardElementRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -101,8 +107,37 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
         this(DSL.name("dashboard_element"), null);
     }
 
-    public <O extends Record> DashboardElement(Table<O> child, ForeignKey<O, DashboardElementRecord> key) {
-        super(child, key, DASHBOARD_ELEMENT);
+    public <O extends Record> DashboardElement(Table<O> path, ForeignKey<O, DashboardElementRecord> childPath, InverseForeignKey<O, DashboardElementRecord> parentPath) {
+        super(path, childPath, parentPath, DASHBOARD_ELEMENT);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class DashboardElementPath extends DashboardElement implements Path<DashboardElementRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> DashboardElementPath(Table<O> path, ForeignKey<O, DashboardElementRecord> childPath, InverseForeignKey<O, DashboardElementRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private DashboardElementPath(Name alias, Table<DashboardElementRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public DashboardElementPath as(String alias) {
+            return new DashboardElementPath(DSL.name(alias), this);
+        }
+
+        @Override
+        public DashboardElementPath as(Name alias) {
+            return new DashboardElementPath(alias, this);
+        }
+
+        @Override
+        public DashboardElementPath as(Table<?> alias) {
+            return new DashboardElementPath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -122,7 +157,33 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
 
     @Override
     public List<UniqueKey<DashboardElementRecord>> getUniqueKeys() {
-        return Arrays.asList(Keys.KEY_DASHBOARD_ELEMENT_ID_UNIQUE, Keys.KEY_DASHBOARD_ELEMENT_CODE_UNIQUE);
+        return Arrays.asList(Keys.KEY_DASHBOARD_ELEMENT_CODE_UNIQUE, Keys.KEY_DASHBOARD_ELEMENT_ID_UNIQUE);
+    }
+
+    private transient ElementPropertyPath _elementProperty;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.element_property</code> table
+     */
+    public ElementPropertyPath elementProperty() {
+        if (_elementProperty == null)
+            _elementProperty = new ElementPropertyPath(this, null, Keys.FK_ELEMENT_PROPERTY_DASHBOARD_ELEMENT1.getInverseKey());
+
+        return _elementProperty;
+    }
+
+    private transient TemplateElementPath _templateElement;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.template_element</code> table
+     */
+    public TemplateElementPath templateElement() {
+        if (_templateElement == null)
+            _templateElement = new TemplateElementPath(this, null, Keys.FK_TEMPLATE_ELEMENT_DASHBOARD_ELEMENT1.getInverseKey());
+
+        return _templateElement;
     }
 
     @Override
@@ -164,27 +225,87 @@ public class DashboardElement extends TableImpl<DashboardElementRecord> {
         return new DashboardElement(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row4 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row4<Integer, String, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public DashboardElement where(Condition condition) {
+        return new DashboardElement(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public DashboardElement where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super String, ? super String, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public DashboardElement where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardElement where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardElement where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardElement where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardElement where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public DashboardElement where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardElement whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public DashboardElement whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

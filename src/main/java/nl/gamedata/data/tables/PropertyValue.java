@@ -5,25 +5,31 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.ElementProperty.ElementPropertyPath;
+import nl.gamedata.data.tables.TemplateElement.TemplateElementPath;
 import nl.gamedata.data.tables.records.PropertyValueRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function4;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row4;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -75,11 +81,11 @@ public class PropertyValue extends TableImpl<PropertyValueRecord> {
     public final TableField<PropertyValueRecord, Integer> TEMPLATE_ELEMENT_ID = createField(DSL.name("template_element_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private PropertyValue(Name alias, Table<PropertyValueRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private PropertyValue(Name alias, Table<PropertyValueRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private PropertyValue(Name alias, Table<PropertyValueRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -103,8 +109,37 @@ public class PropertyValue extends TableImpl<PropertyValueRecord> {
         this(DSL.name("property_value"), null);
     }
 
-    public <O extends Record> PropertyValue(Table<O> child, ForeignKey<O, PropertyValueRecord> key) {
-        super(child, key, PROPERTY_VALUE);
+    public <O extends Record> PropertyValue(Table<O> path, ForeignKey<O, PropertyValueRecord> childPath, InverseForeignKey<O, PropertyValueRecord> parentPath) {
+        super(path, childPath, parentPath, PROPERTY_VALUE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class PropertyValuePath extends PropertyValue implements Path<PropertyValueRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> PropertyValuePath(Table<O> path, ForeignKey<O, PropertyValueRecord> childPath, InverseForeignKey<O, PropertyValueRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private PropertyValuePath(Name alias, Table<PropertyValueRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public PropertyValuePath as(String alias) {
+            return new PropertyValuePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public PropertyValuePath as(Name alias) {
+            return new PropertyValuePath(alias, this);
+        }
+
+        @Override
+        public PropertyValuePath as(Table<?> alias) {
+            return new PropertyValuePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -137,27 +172,28 @@ public class PropertyValue extends TableImpl<PropertyValueRecord> {
         return Arrays.asList(Keys.FK_PROPERTY_VALUE_ELEMENT_PROPERTY1, Keys.FK_PROPERTY_VALUE_TEMPLATE_ELEMENT1);
     }
 
-    private transient ElementProperty _elementProperty;
-    private transient TemplateElement _templateElement;
+    private transient ElementPropertyPath _elementProperty;
 
     /**
      * Get the implicit join path to the <code>gamedata.element_property</code>
      * table.
      */
-    public ElementProperty elementProperty() {
+    public ElementPropertyPath elementProperty() {
         if (_elementProperty == null)
-            _elementProperty = new ElementProperty(this, Keys.FK_PROPERTY_VALUE_ELEMENT_PROPERTY1);
+            _elementProperty = new ElementPropertyPath(this, Keys.FK_PROPERTY_VALUE_ELEMENT_PROPERTY1, null);
 
         return _elementProperty;
     }
+
+    private transient TemplateElementPath _templateElement;
 
     /**
      * Get the implicit join path to the <code>gamedata.template_element</code>
      * table.
      */
-    public TemplateElement templateElement() {
+    public TemplateElementPath templateElement() {
         if (_templateElement == null)
-            _templateElement = new TemplateElement(this, Keys.FK_PROPERTY_VALUE_TEMPLATE_ELEMENT1);
+            _templateElement = new TemplateElementPath(this, Keys.FK_PROPERTY_VALUE_TEMPLATE_ELEMENT1, null);
 
         return _templateElement;
     }
@@ -201,27 +237,87 @@ public class PropertyValue extends TableImpl<PropertyValueRecord> {
         return new PropertyValue(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row4 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row4<Integer, String, Integer, Integer> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public PropertyValue where(Condition condition) {
+        return new PropertyValue(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function4<? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public PropertyValue where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function4<? super Integer, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public PropertyValue where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PropertyValue where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PropertyValue where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PropertyValue where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PropertyValue where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public PropertyValue where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PropertyValue whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public PropertyValue whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }

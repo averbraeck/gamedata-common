@@ -5,25 +5,32 @@ package nl.gamedata.data.tables;
 
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 
 import nl.gamedata.data.Gamedata;
 import nl.gamedata.data.Indexes;
 import nl.gamedata.data.Keys;
+import nl.gamedata.data.tables.GroupScore.GroupScorePath;
+import nl.gamedata.data.tables.LearningGoal.LearningGoalPath;
+import nl.gamedata.data.tables.Scale.ScalePath;
 import nl.gamedata.data.tables.records.GroupObjectiveRecord;
 
+import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Function7;
 import org.jooq.Identity;
 import org.jooq.Index;
+import org.jooq.InverseForeignKey;
 import org.jooq.Name;
+import org.jooq.Path;
+import org.jooq.PlainSQL;
+import org.jooq.QueryPart;
 import org.jooq.Record;
-import org.jooq.Records;
-import org.jooq.Row7;
+import org.jooq.SQL;
 import org.jooq.Schema;
-import org.jooq.SelectField;
+import org.jooq.Select;
+import org.jooq.Stringly;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
@@ -90,11 +97,11 @@ public class GroupObjective extends TableImpl<GroupObjectiveRecord> {
     public final TableField<GroupObjectiveRecord, Integer> LEARNING_GOAL_ID = createField(DSL.name("learning_goal_id"), SQLDataType.INTEGER.nullable(false), this, "");
 
     private GroupObjective(Name alias, Table<GroupObjectiveRecord> aliased) {
-        this(alias, aliased, null);
+        this(alias, aliased, (Field<?>[]) null, null);
     }
 
-    private GroupObjective(Name alias, Table<GroupObjectiveRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    private GroupObjective(Name alias, Table<GroupObjectiveRecord> aliased, Field<?>[] parameters, Condition where) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table(), where);
     }
 
     /**
@@ -118,8 +125,37 @@ public class GroupObjective extends TableImpl<GroupObjectiveRecord> {
         this(DSL.name("group_objective"), null);
     }
 
-    public <O extends Record> GroupObjective(Table<O> child, ForeignKey<O, GroupObjectiveRecord> key) {
-        super(child, key, GROUP_OBJECTIVE);
+    public <O extends Record> GroupObjective(Table<O> path, ForeignKey<O, GroupObjectiveRecord> childPath, InverseForeignKey<O, GroupObjectiveRecord> parentPath) {
+        super(path, childPath, parentPath, GROUP_OBJECTIVE);
+    }
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    public static class GroupObjectivePath extends GroupObjective implements Path<GroupObjectiveRecord> {
+
+        private static final long serialVersionUID = 1L;
+        public <O extends Record> GroupObjectivePath(Table<O> path, ForeignKey<O, GroupObjectiveRecord> childPath, InverseForeignKey<O, GroupObjectiveRecord> parentPath) {
+            super(path, childPath, parentPath);
+        }
+        private GroupObjectivePath(Name alias, Table<GroupObjectiveRecord> aliased) {
+            super(alias, aliased);
+        }
+
+        @Override
+        public GroupObjectivePath as(String alias) {
+            return new GroupObjectivePath(DSL.name(alias), this);
+        }
+
+        @Override
+        public GroupObjectivePath as(Name alias) {
+            return new GroupObjectivePath(alias, this);
+        }
+
+        @Override
+        public GroupObjectivePath as(Table<?> alias) {
+            return new GroupObjectivePath(alias.getQualifiedName(), this);
+        }
     }
 
     @Override
@@ -149,31 +185,45 @@ public class GroupObjective extends TableImpl<GroupObjectiveRecord> {
 
     @Override
     public List<ForeignKey<GroupObjectiveRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.FK_GROUP_OBJECTIVE_SCALE1, Keys.FK_GROUP_OBJECTIVE_LEARNING_GOAL1);
+        return Arrays.asList(Keys.FK_GROUP_OBJECTIVE_LEARNING_GOAL1, Keys.FK_GROUP_OBJECTIVE_SCALE1);
     }
 
-    private transient Scale _scale;
-    private transient LearningGoal _learningGoal;
-
-    /**
-     * Get the implicit join path to the <code>gamedata.scale</code> table.
-     */
-    public Scale scale() {
-        if (_scale == null)
-            _scale = new Scale(this, Keys.FK_GROUP_OBJECTIVE_SCALE1);
-
-        return _scale;
-    }
+    private transient LearningGoalPath _learningGoal;
 
     /**
      * Get the implicit join path to the <code>gamedata.learning_goal</code>
      * table.
      */
-    public LearningGoal learningGoal() {
+    public LearningGoalPath learningGoal() {
         if (_learningGoal == null)
-            _learningGoal = new LearningGoal(this, Keys.FK_GROUP_OBJECTIVE_LEARNING_GOAL1);
+            _learningGoal = new LearningGoalPath(this, Keys.FK_GROUP_OBJECTIVE_LEARNING_GOAL1, null);
 
         return _learningGoal;
+    }
+
+    private transient ScalePath _scale;
+
+    /**
+     * Get the implicit join path to the <code>gamedata.scale</code> table.
+     */
+    public ScalePath scale() {
+        if (_scale == null)
+            _scale = new ScalePath(this, Keys.FK_GROUP_OBJECTIVE_SCALE1, null);
+
+        return _scale;
+    }
+
+    private transient GroupScorePath _groupScore;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>gamedata.group_score</code> table
+     */
+    public GroupScorePath groupScore() {
+        if (_groupScore == null)
+            _groupScore = new GroupScorePath(this, null, Keys.FK_GROUP_SCORE_GROUP_OBJECTIVE1.getInverseKey());
+
+        return _groupScore;
     }
 
     @Override
@@ -215,27 +265,87 @@ public class GroupObjective extends TableImpl<GroupObjectiveRecord> {
         return new GroupObjective(name.getQualifiedName(), null);
     }
 
-    // -------------------------------------------------------------------------
-    // Row7 type methods
-    // -------------------------------------------------------------------------
-
+    /**
+     * Create an inline derived table from this table
+     */
     @Override
-    public Row7<Integer, String, String, String, String, Integer, Integer> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public GroupObjective where(Condition condition) {
+        return new GroupObjective(getQualifiedName(), aliased() ? this : null, null, condition);
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Function7<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(Records.mapping(from));
+    @Override
+    public GroupObjective where(Collection<? extends Condition> conditions) {
+        return where(DSL.and(conditions));
     }
 
     /**
-     * Convenience mapping calling {@link SelectField#convertFrom(Class,
-     * Function)}.
+     * Create an inline derived table from this table
      */
-    public <U> SelectField<U> mapping(Class<U> toType, Function7<? super Integer, ? super String, ? super String, ? super String, ? super String, ? super Integer, ? super Integer, ? extends U> from) {
-        return convertFrom(toType, Records.mapping(from));
+    @Override
+    public GroupObjective where(Condition... conditions) {
+        return where(DSL.and(conditions));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupObjective where(Field<Boolean> condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupObjective where(SQL condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupObjective where(@Stringly.SQL String condition) {
+        return where(DSL.condition(condition));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupObjective where(@Stringly.SQL String condition, Object... binds) {
+        return where(DSL.condition(condition, binds));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    @PlainSQL
+    public GroupObjective where(@Stringly.SQL String condition, QueryPart... parts) {
+        return where(DSL.condition(condition, parts));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupObjective whereExists(Select<?> select) {
+        return where(DSL.exists(select));
+    }
+
+    /**
+     * Create an inline derived table from this table
+     */
+    @Override
+    public GroupObjective whereNotExists(Select<?> select) {
+        return where(DSL.notExists(select));
     }
 }
